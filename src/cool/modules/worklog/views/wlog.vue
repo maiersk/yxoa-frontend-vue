@@ -47,9 +47,9 @@ export default {
 		service.worklog.wlog.page().then((res: any) => {
 			data.value = res.list
 		})
-		service.worklog.category.info({ id: 1 }).then((res: any) => {
-			console.log(res);
-		})
+		// service.worklog.category.wlogs({ id: 1 }).then((res: any) => {
+		// 	console.log(res);
+		// })
 
 		function onLoad({ ctx, app } : CrudLoad) {
 			ctx.service(service.worklog.wlog).done();
