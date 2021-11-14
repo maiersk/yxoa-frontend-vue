@@ -26,7 +26,7 @@ export default defineComponent({
 
     if (this.data.value) {
       this.data.value.forEach((item : any) => {
-        wlog_dom.push(h(WlogCard, { wlog: item, style: {  } }, []));
+        wlog_dom.push(h(WlogCard, { wlog: item, style: {  }, onDelWlog: () => { console.log(1) } }, []));
       });
     }
 
