@@ -1,11 +1,13 @@
 <template>
 	<el-card class="wlog-card">
 		<template #header class="crad-header">
-			{{ wlog.title }}
-			<cl-flex1></cl-flex1>
-			<span class="operator">
-				<button @click="delWlog(wlog.id)">删除</button>
-			</span>
+			<div class="header-body">
+				<span class="title">{{ wlog.title }}</span>
+
+				<span class="operator">
+					<a @click="delWlog()">删除</a>
+				</span>
+			</div>
 		</template>
 		<div v-html="wlog.context">
 		</div>
@@ -25,8 +27,8 @@ export default {
 	},
 	emits: ['delWlog'],
   setup(props: any, ctx: any) {
-		const delWlog = (id: number) => {
-			ctx.emit('delWlog')
+		const delWlog = () => {
+			ctx.emit('delWlog', props.wlog.id)
 		}
 		return {
 			delWlog
@@ -42,7 +44,23 @@ export default {
 		min-height: 10rem;
 		margin-right: 0.5rem;
 	}
-	.operator {
-		display: block;
+	.header-body {
+		display: flex;
+		justify-content: space-between;	
+		.title {
+			display: block;
+		}
+		.operator {
+			display: block;
+			a {
+				text-decoration: none;
+				color: rgb(180, 0, 0);
+			}
+			a:hover {
+				cursor: pointer;
+				color: red;
+			}
+		}
 	}
+
 </style>

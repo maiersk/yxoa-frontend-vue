@@ -1,4 +1,4 @@
-import { defineComponent, h, reactive, watch } from 'vue';
+import { defineComponent, h, inject } from 'vue';
 import WlogCard from "./wlogcard.vue";
 
 export default defineComponent({
@@ -15,10 +15,22 @@ export default defineComponent({
       }
     }
   },
-  setup() {
-    
-    return {
+  setup(props: any, ctx: any) {
+    const service = inject<any>('service')
 
+    const delWlog = (id: any) => {
+      ctx.message({
+
+      })
+      const ids: any = []
+      ids.push(id)
+      service.worklog.wlog.delete({ ids }).then((res: any) => {
+        console.log(res)
+      })
+    }
+
+    return {
+      delWlog
     }
   },
   render(ctx: any) {
@@ -26,7 +38,7 @@ export default defineComponent({
 
     if (this.data.value) {
       this.data.value.forEach((item : any) => {
-        wlog_dom.push(h(WlogCard, { wlog: item, style: {  }, onDelWlog: () => { console.log(1) } }, []));
+        wlog_dom.push(h(WlogCard, { wlog: item, style: {  }, onDelWlog: this.delWlog }, []));
       });
     }
 
