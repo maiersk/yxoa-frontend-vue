@@ -62,25 +62,18 @@ export default defineComponent({
 					}
 				},
 				{
-					prop: "categoryId",
+					prop: "category",
 					label: "类别",
 					span: 24,
+					value: [],
 					component: {
-						name: "el-select",
+						name: "cl-category-select",
 						props: {
-							placeholder: "请选择日志分组",
-							multiple: false
-						},
-						options: [
-							{
-								label: 'test',
-								value: 1
-							},
-							{
-								label: 'test2',
-								value: 2
+							props: {
+								placeholder: "请选择日志分组",
+								multiple: false
 							}
-						]
+						}
 					}
 				},
 				{
