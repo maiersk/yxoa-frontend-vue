@@ -32,8 +32,12 @@
 import { defineComponent, inject, onMounted, reactive } from "vue";
 import { CrudLoad, Upsert, Table } from "cl-admin-crud-vue3/types";
 import { useRefs } from "/@/core";
+import CategorySelect from "../../components/category/select.vue"
 
 export default defineComponent({
+	components: {
+		CategorySelect
+	},
 	cool: {
 		// 注入视图路由中
 		route: {

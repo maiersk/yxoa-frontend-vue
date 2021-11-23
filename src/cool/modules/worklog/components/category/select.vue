@@ -15,6 +15,7 @@ export default {
     modelValue: [String, Number, Array],
     props: Object
   },
+
   emits: ["update:modelValue"],
 
   setup(props: any, { emit }) {
@@ -47,7 +48,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
