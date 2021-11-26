@@ -8,9 +8,11 @@
 import { inject, ref, onMounted, watch, defineComponent } from 'vue'
 import { isArray } from '/@/core/utils';
 
-export default {
+export default defineComponent({
   name: "cl-category-select",
-
+  cool: {
+    global: true
+  },
   props: {
     modelValue: [String, Number, Array],
     props: Object
@@ -46,5 +48,5 @@ export default {
       onChange
     }
   }
-}
+})
 </script>

@@ -36,7 +36,7 @@ import CategorySelect from "../../components/category/select.vue"
 
 export default defineComponent({
 	components: {
-		CategorySelect
+		'cl-category-select': CategorySelect
 	},
 	cool: {
 		// 注入视图路由中
