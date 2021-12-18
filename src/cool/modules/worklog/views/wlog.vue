@@ -67,9 +67,7 @@ export default {
 </script>
 
 <style lang="scss">
-	.wlog-card {
-		width: 100%;
-		height: 100%;
+	.wlog-view {
 		background-color: white;
 	}
 </style>

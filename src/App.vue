@@ -9,7 +9,7 @@
 			</div>
 
 			<div class="footer">
-				<a href="http://127.0.0.1:9000/" target="_blank"> 基于COOL-ADMIN </a>
+				<a href="http://127.0.0.1:9100/" target="_blank"> 基于COOL-ADMIN </a>
 			</div>
 		</div>
 

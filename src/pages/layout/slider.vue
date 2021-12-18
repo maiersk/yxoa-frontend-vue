@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import Logo from "/@/assets/icon/logo/silder-simple.png";
+import Logo from "/@/assets/icon/logo/logo.png";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
@@ -31,7 +31,7 @@ export default defineComponent({
 
 		// 跳转官网
 		function toHome() {
-			location.href = "https://cool-js.com/";
+			location.href = "https://127.0.0.1:9100/";
 		}
 
 		return {

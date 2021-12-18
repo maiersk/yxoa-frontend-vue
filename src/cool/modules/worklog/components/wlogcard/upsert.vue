@@ -8,10 +8,14 @@
 import { ref, reactive } from 'vue';
 import { useRefs } from "/@/cool";
 import { UpsertItem, UpsertRef } from "@cool-vue/crud/types";
+import CategorySelect from '../category/select.vue';
 
 export default {
+	conponents: {
+		CategorySelect
+	},
   setup() {
-    const { refs, setRefs } = useRefs(); 
+    const { refs, setRefs } = useRefs();
     const upsert = ref<any>([]);
 
     const upsertRef = ref<UpsertRef>()
@@ -37,21 +41,7 @@ export default {
 				label: "类别",
 				span: 24,
 				component: {
-					name: "el-select",
-          props: {
-						placeholder: "请选择日志分组",
-						multiple: false
-          },
-          options: [
-            {
-              label: 'test',
-              value: 1
-            },
-            {
-              label: 'test2',
-              value: 2
-            }
-          ]
+					name: 'cl-role-select'
 				}
 			},
 			{
