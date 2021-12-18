@@ -22,14 +22,15 @@
 </template>
 
 <script lang="ts">
-import { CrudLoad, Table, Upsert } from "cl-admin-crud-vue3/types";
-import { defineComponent, inject, reactive } from "vue";
+import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
+import { defineComponent, reactive } from "vue";
+import { useCool } from "/@/cool";
 
 export default defineComponent({
 	name: "sys-role",
 
 	setup() {
-		const service = inject<any>("service");
+		const { service } = useCool();
 
 		// 表单值
 		const form = reactive<any>({
@@ -38,7 +39,9 @@ export default defineComponent({
 
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
-			width: "800px",
+			dialog: {
+				width: "800px"
+			},
 
 			items: [
 				{
@@ -153,7 +156,7 @@ export default defineComponent({
 
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
-			ctx.service(service.base.system.role).done();
+			ctx.service(service.base.sys.role).done();
 			app.refresh();
 		}
 

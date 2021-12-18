@@ -61,11 +61,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { ContextMenu } from "cl-admin-crud-vue3";
-import { useRefs } from "/@/core";
-import { deepTree, isArray, revDeepTree, isPc } from "/@/core/utils";
+import { ContextMenu } from "@cool-vue/crud";
+import { useCool } from "/@/cool";
+import { deepTree, isArray, revDeepTree, isPc } from "/@/cool/utils";
 
 export default defineComponent({
 	name: "cl-dept-tree",
@@ -84,7 +84,7 @@ export default defineComponent({
 	emits: ["list-change", "row-click", "user-add"],
 
 	setup(props, { emit }) {
-		const { refs, setRefs } = useRefs();
+		const { refs, setRefs, service } = useCool();
 
 		// 树形列表
 		const list = ref<any[]>([]);
@@ -94,9 +94,6 @@ export default defineComponent({
 
 		// 是否能拖动
 		const isDrag = ref<boolean>(false);
-
-		// 请求服务
-		const service = inject<any>("service");
 
 		// 允许托的规则
 		function allowDrag({ data }: any) {
@@ -113,7 +110,7 @@ export default defineComponent({
 			isDrag.value = false;
 			loading.value = true;
 
-			await service.base.system.dept.list().then((res: any[]) => {
+			await service.base.sys.department.list().then((res: any[]) => {
 				list.value = deepTree(res);
 				emit("list-change", list.value);
 			});
@@ -179,7 +176,7 @@ export default defineComponent({
 				form: e,
 				on: {
 					submit: (data: any, { done, close }: any) => {
-						service.base.system.dept[method]({
+						service.base.sys.department[method]({
 							id: e.id,
 							parentId: e.parentId,
 							name: data.name,
@@ -202,7 +199,7 @@ export default defineComponent({
 		// 删除部门
 		function rowDel(e: any) {
 			const del = async (f: boolean) => {
-				await service.base.system.dept
+				await service.base.sys.department
 					.delete({
 						ids: [e.id],
 						deleteUser: f
@@ -259,7 +256,7 @@ export default defineComponent({
 
 						deep(list.value, null);
 
-						await service.base.system.dept
+						await service.base.sys.department
 							.order(
 								ids.map((e, i) => {
 									return {
@@ -298,7 +295,7 @@ export default defineComponent({
 						"suffix-icon": "el-icon-plus",
 						hidden:
 							(n && n.level >= props.level) ||
-							!service.base.system.dept._permission.add,
+							!service.base.sys.department._permission.add,
 						callback: (_: any, done: Function) => {
 							rowEdit({
 								name: "",
@@ -311,7 +308,7 @@ export default defineComponent({
 					{
 						label: "编辑",
 						"suffix-icon": "el-icon-edit",
-						hidden: !service.base.system.dept._permission.update,
+						hidden: !service.base.sys.department._permission.update,
 						callback: (_: any, done: Function) => {
 							rowEdit(d);
 							done();
@@ -320,7 +317,7 @@ export default defineComponent({
 					{
 						label: "删除",
 						"suffix-icon": "el-icon-delete",
-						hidden: !d.parentId || !service.base.system.dept._permission.delete,
+						hidden: !d.parentId || !service.base.sys.department._permission.delete,
 						callback: (_: any, done: Function) => {
 							rowDel(d);
 							done();
@@ -329,7 +326,7 @@ export default defineComponent({
 					{
 						label: "新增成员",
 						"suffix-icon": "el-icon-user",
-						hidden: !service.base.system.user._permission.add,
+						hidden: !service.base.sys.user._permission.add,
 						callback: (_: any, done: Function) => {
 							emit("user-add", d);
 							done();

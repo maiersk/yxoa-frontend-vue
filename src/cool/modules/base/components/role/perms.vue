@@ -24,9 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { deepTree } from "/@/core/utils";
+import { deepTree } from "/@/cool/utils";
+import { useCool } from "/@/cool";
 
 export default defineComponent({
 	name: "cl-role-perms",
@@ -42,7 +43,7 @@ export default defineComponent({
 	emits: ["update:modelValue"],
 
 	setup(props, { emit }) {
-		const service = inject<any>("service");
+		const { service } = useCool();
 
 		// 树形列表
 		const list = ref<any[]>([]);
@@ -85,7 +86,7 @@ export default defineComponent({
 
 		// 刷新列表
 		function refresh() {
-			service.base.system.menu
+			service.base.sys.menu
 				.list()
 				.then((res: any[]) => {
 					list.value = deepTree(res);

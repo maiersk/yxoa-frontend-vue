@@ -35,10 +35,9 @@
 <script lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
 import { computed, defineComponent, inject, ref, watch } from "vue";
-import { useStore } from "vuex";
-import { isEmpty } from "/@/core/utils";
-import { ContextMenu } from "cl-admin-crud-vue3";
-import { useRefs } from "/@/core";
+import { isEmpty } from "/@/cool/utils";
+import { ContextMenu } from "@cool-vue/crud";
+import { useCool } from "/@/cool";
 
 export default defineComponent({
 	name: "cl-upload-space-category",
@@ -50,9 +49,8 @@ export default defineComponent({
 	emits: ["update:modelValue", "change"],
 
 	setup(_, { emit }) {
-		const store = useStore();
-		const { refs, setRefs }: any = useRefs();
-		const service: any = inject<any>("service");
+		const { refs, setRefs, service, store }: any = useCool();
+
 		const space = inject<any>("space");
 
 		// 数据列表
@@ -83,7 +81,7 @@ export default defineComponent({
 
 		// 刷新分类
 		function refresh() {
-			return service.upload.type.list().then((res: any) => {
+			return service.space.type.list().then((res: any) => {
 				res.unshift({
 					name: "全部文件",
 					id: null
@@ -126,9 +124,9 @@ export default defineComponent({
 						let next = null;
 
 						if (!item.id) {
-							next = service.upload.type.add(data);
+							next = service.space.type.add(data);
 						} else {
-							next = service.upload.type.update({
+							next = service.space.type.update({
 								...data,
 								id: item.id
 							});
@@ -166,7 +164,7 @@ export default defineComponent({
 				list: [
 					{
 						label: "刷新",
-						"suffix-icon": "el-icon-edit",
+						"suffix-icon": "el-icon-refresh",
 						callback: (_: any, done: Function) => {
 							refresh();
 							done();
@@ -192,7 +190,7 @@ export default defineComponent({
 								}
 							)
 								.then(() => {
-									service.upload.type
+									service.space.type
 										.delete({
 											ids: [id]
 										})

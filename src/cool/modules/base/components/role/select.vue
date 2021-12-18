@@ -5,8 +5,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref, watch } from "vue";
-import { isArray } from "/@/core/utils";
+import { defineComponent, onMounted, ref, watch } from "vue";
+import { useCool } from "/@/cool";
+import { isArray } from "/@/cool/utils";
 
 export default defineComponent({
 	name: "cl-role-select",
@@ -20,7 +21,7 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		// 请求服务
-		const service = inject<any>("service");
+		const { service } = useCool();
 
 		// 数据列表
 		const list = ref<any[]>([]);
@@ -45,7 +46,7 @@ export default defineComponent({
 		);
 
 		onMounted(async () => {
-			list.value = await service.base.system.role.list();
+			list.value = await service.base.sys.role.list();
 		});
 
 		return {

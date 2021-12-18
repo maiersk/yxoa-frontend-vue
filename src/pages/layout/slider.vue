@@ -13,12 +13,12 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import { useStore } from "vuex";
-import Logo from "/@/assets/icon/logo/logo.png";
+import Logo from "/@/assets/icon/logo/silder-simple.png";
+import { useCool } from "/@/cool";
 
 export default defineComponent({
 	setup() {
-		const store = useStore();
+		const { store } = useCool();
 
 		// 菜单是否展开
 		const menuCollapse = computed<any>(() => store.getters.menuCollapse);
@@ -31,7 +31,7 @@ export default defineComponent({
 
 		// 跳转官网
 		function toHome() {
-			location.href = "http://127.0.0.1:9000/";
+			location.href = "https://cool-js.com/";
 		}
 
 		return {

@@ -1,10 +1,11 @@
 <template>
-	<div class="cl-menu-tree">
+	<div class="cl-menu-tree__wrap">
 		<el-popover
+			v-model:visible="visible"
 			placement="bottom-start"
 			trigger="click"
 			width="500px"
-			popper-class="popper-menu-tree"
+			popper-class="cl-menu-tree"
 		>
 			<el-input v-model="keyword" size="small">
 				<template #prefix>
@@ -12,31 +13,34 @@
 				</template>
 			</el-input>
 
-			<el-tree
-				ref="treeRef"
-				node-key="menuId"
-				:data="treeList"
-				:props="{
-					label: 'name',
-					children: 'children'
-				}"
-				:highlight-current="true"
-				:expand-on-click-node="false"
-				:default-expanded-keys="expandedKeys"
-				:filter-node-method="filterNode"
-				@current-change="onCurrentChange"
-			/>
+			<div class="cl-menu-tree__scroller scroller1">
+				<el-tree
+					ref="treeRef"
+					node-key="menuId"
+					:data="treeList"
+					:props="{
+						label: 'name',
+						children: 'children'
+					}"
+					:highlight-current="true"
+					:expand-on-click-node="false"
+					:default-expanded-keys="expandedKeys"
+					:filter-node-method="filterNode"
+					@current-change="onCurrentChange"
+				/>
+			</div>
 
 			<template #reference>
-				<el-input v-model="name" readonly placeholder="请选择" />
+				<el-input v-model="name" readonly placeholder="请选择" @click="visible = true" />
 			</template>
 		</el-popover>
 	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
-import { deepTree } from "/@/core/utils";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { useCool } from "/@/cool";
+import { deepTree } from "/@/cool/utils";
 
 export default defineComponent({
 	name: "cl-menu-tree",
@@ -49,10 +53,12 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		// 请求服务
-		const service = inject<any>("service");
+		const { service } = useCool();
 
 		// 关键字
 		const keyword = ref<string>("");
+
+		const visible = ref<boolean>(false);
 
 		// 树形列表
 		const list = ref<any[]>([]);
@@ -66,11 +72,12 @@ export default defineComponent({
 		// 绑定值回调
 		function onCurrentChange({ id }: any) {
 			emit("update:modelValue", id);
+			visible.value = false;
 		}
 
 		// 刷新列表
 		function refresh() {
-			service.base.system.menu.list().then((res: any) => {
+			service.base.sys.menu.list().then((res: any) => {
 				const _list = res.filter((e: any) => e.type != 2);
 
 				_list.unshift({
@@ -107,6 +114,7 @@ export default defineComponent({
 		});
 
 		return {
+			visible,
 			keyword,
 			list,
 			expandedKeys,
@@ -122,11 +130,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.popper-menu-tree {
+.cl-menu-tree {
 	box-sizing: border-box;
 
 	.el-input {
 		margin-bottom: 10px;
+	}
+
+	&__scroller {
+		max-height: 400px;
+		overflow: hidden auto;
 	}
 }
 </style>

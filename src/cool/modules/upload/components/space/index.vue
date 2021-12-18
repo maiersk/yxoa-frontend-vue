@@ -138,13 +138,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, provide, reactive, ref, watch } from "vue";
-import { useStore } from "vuex";
+import { computed, defineComponent, provide, reactive, ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { ElFile } from "element-plus/lib/el-upload/src/upload.type";
-import { isEmpty } from "/@/core/utils";
+import { isEmpty } from "/@/cool/utils";
 import Category from "./category.vue";
 import FileItem from "./file-item.vue";
+import { useCool } from "/@/cool";
 
 export default defineComponent({
 	name: "cl-upload-space",
@@ -191,8 +190,7 @@ export default defineComponent({
 	emits: ["update:modelValue", "confirm"],
 
 	setup(props, { emit }) {
-		const store = useStore();
-		const service = inject<any>("service");
+		const { store, service } = useCool();
 
 		// 是否可见
 		const visible = ref<boolean>(false);
@@ -262,13 +260,13 @@ export default defineComponent({
 		}
 
 		// 上传成功
-		function onSuccess(res: any, file: ElFile) {
+		function onSuccess(res: any, file: any) {
 			const item = list.value.find((e: any) => file.uid == e.uid);
 
 			if (item) {
 				item.url = res.data;
 
-				service.upload.info
+				service.space.info
 					.add({
 						url: res.data,
 						type: item.type,
@@ -285,7 +283,7 @@ export default defineComponent({
 		}
 
 		// 上传失败
-		function onError(err: string, file: ElFile) {
+		function onError(err: string, file: any) {
 			const item = list.value.find((e) => file.uid == e.uid);
 
 			if (item) {
@@ -307,7 +305,7 @@ export default defineComponent({
 		}
 
 		// 上传进度
-		function onProgress({ percent }: any, file: ElFile) {
+		function onProgress({ percent }: any, file: any) {
 			const item = list.value.find(({ uid }: any) => uid == file.uid);
 
 			if (item) {
@@ -323,7 +321,7 @@ export default defineComponent({
 			// 加载中
 			loading.value = true;
 
-			await service.upload.info
+			await service.space.info
 				.page({
 					...pagination,
 					...params,
@@ -388,7 +386,7 @@ export default defineComponent({
 					});
 
 					// 删除请求
-					service.upload.info
+					service.space.info
 						.delete({
 							ids
 						})

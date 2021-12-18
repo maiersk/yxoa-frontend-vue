@@ -107,7 +107,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { isDev } from "/@/config/env";
-import { isArray, cloneDeep } from "/@/core/utils";
+import { isArray, cloneDeep } from "/@/cool/utils";
 
 export default {
 	name: "cl-theme",
@@ -264,6 +264,7 @@ export default {
 
 		&__body {
 			height: calc(100% - 63px);
+			padding: 0 5px;
 		}
 	}
 

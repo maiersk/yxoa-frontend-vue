@@ -35,16 +35,15 @@
 
 <script lang="ts">
 import { ElMessageBox } from "element-plus";
-import { defineComponent, inject, nextTick, reactive } from "vue";
-import { useRefs } from "/@/core";
-import { CrudLoad, Table, Upsert } from "cl-admin-crud-vue3/types";
+import { defineComponent, nextTick, reactive } from "vue";
+import { useCool } from "/@/cool";
+import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 
 export default defineComponent({
 	name: "sys-param",
 
 	setup() {
-		const service = inject<any>("service");
-		const { refs, setRefs } = useRefs();
+		const { refs, setRefs, service } = useCool();
 
 		// 选项卡
 		const tab = reactive<any>({
@@ -102,7 +101,9 @@ export default defineComponent({
 
 		// 新增编辑配置
 		const upsert = reactive<Upsert>({
-			width: "1000px",
+			dialog: {
+				width: "1000px"
+			},
 
 			items: [
 				{
@@ -159,7 +160,7 @@ export default defineComponent({
 
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
-			ctx.service(service.base.system.param).done();
+			ctx.service(service.base.sys.param).done();
 			app.refresh();
 		}
 

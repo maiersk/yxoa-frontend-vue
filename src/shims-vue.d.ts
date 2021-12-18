@@ -5,15 +5,15 @@ declare module "*.vue" {
 	export default component;
 }
 
-declare module "cl-admin-crud-vue3" {
-	import type { ClContextMenu } from "cl-admin-crud-vue3/types";
+declare module "@cool-vue/crud" {
+	import type { ClContextMenu } from "@cool-vue/crud/types";
 	import type { Plugin } from "vue";
 
 	const ContextMenu: ClContextMenu;
 	const Crud: Plugin;
 
 	export { ContextMenu, Crud };
-	export * from "cl-admin-crud-vue3";
+	export * from "@cool-vue/crud";
 }
 
 declare module "array.prototype.flat" {
@@ -24,11 +24,6 @@ declare module "array.prototype.flat" {
 declare module "vuedraggable/src/vuedraggable" {
 	const d: any;
 	export default d;
-}
-
-declare module "clone-deep" {
-	function CloneDeep(data: any): any;
-	export default CloneDeep;
 }
 
 declare module "store" {
@@ -62,3 +57,5 @@ declare module "mockjs" {
 	const Mock: any;
 	export default Mock;
 }
+
+declare const __PROXY_LIST__: any[];
