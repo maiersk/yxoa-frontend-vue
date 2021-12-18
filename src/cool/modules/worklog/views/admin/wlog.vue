@@ -70,15 +70,7 @@ export default defineComponent({
 					label: "类别",
 					span: 24,
 					value: [],
-					component: {
-						name: "cl-category-select",
-						props: {
-							props: {
-								placeholder: "请选择日志分组",
-								multiple: false
-							}
-						}
-					}
+					component: CategorySelect
 				},
 				{
 					prop: "context",

@@ -5,14 +5,12 @@
 </template>
 
 <script lang="ts">
-import { inject, ref, onMounted, watch, defineComponent } from 'vue'
+import { inject, ref, onMounted, watch, defineComponent } from 'vue';
 import { isArray } from '/@/core/utils';
 
 export default defineComponent({
   name: "cl-category-select",
-  cool: {
-    global: true
-  },
+
   props: {
     modelValue: [String, Number, Array],
     props: Object
@@ -29,17 +27,20 @@ export default defineComponent({
       emit("update:modelValue", val);
     }
 
-    watch(
-      () => props.modelValue,
-      (val: any) => {
-        value.value = (isArray(val) ? val : [val]).filter(Boolean);
-      }, {
-        immediate: true
-      }
-    );
+		// 解析值
+		watch(
+			() => props.modelValue,
+			(val: any) => {
+				value.value = (isArray(val) ? val : [val]).filter(Boolean);
+			},
+			{
+				immediate: true
+			}
+		);
 
     onMounted(async () => {
       list.value = await service.worklog.category.list();
+      console.log(list.value)
     });
 
     return {
