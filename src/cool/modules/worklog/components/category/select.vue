@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { inject, ref, onMounted, watch, defineComponent } from 'vue';
-import { isArray } from '/@/core/utils';
+import { isArray } from '/@/cool/utils';
 
 export default defineComponent({
   name: "cl-category-select",
