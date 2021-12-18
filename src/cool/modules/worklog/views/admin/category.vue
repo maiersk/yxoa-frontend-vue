@@ -30,8 +30,8 @@
 
 <script lang="ts">
 import { defineComponent, inject, reactive } from "vue";
-import { CrudLoad, Upsert, Table } from "cl-admin-crud-vue3/types";
-import { useRefs } from "/@/core";
+import { CrudLoad, Upsert, Table } from "@cool-vue/crud/types";
+import { useRefs } from "/@/cool";
 
 export default defineComponent({
 	cool: {

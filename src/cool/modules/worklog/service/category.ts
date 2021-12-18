@@ -1,4 +1,4 @@
-import { BaseService, Permission, Service } from "/@/core";
+import { BaseService, Permission, Service } from "/@/cool";
 
 @Service("worklog/category")
 class WorkLogCategoryService extends BaseService {

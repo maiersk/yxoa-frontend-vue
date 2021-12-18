@@ -19,24 +19,19 @@
 				/>
 				<demo-adv-search />
 			</el-row>
-
 			<el-row>
 				<demo-table />
 			</el-row>
-
 			<el-row>
 				<cl-flex1 />
 				<cl-pagination />
 			</el-row>
-
 			<demo-upsert />
 		</cl-crud>
 	</div>
 </template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
-import { CrudLoad } from "cl-admin-crud-vue3/types";
 import { TestService } from "../utils/service";
 import Dialog from "../components/crud/dialog.vue";
 import ContextMenu from "../components/crud/context-menu.vue";
@@ -45,10 +40,9 @@ import AdvSearch from "../components/crud/adv-search.vue";
 import Table from "../components/crud/table.vue";
 import Upsert from "../components/crud/upsert.vue";
 import Form from "../components/crud/form.vue";
-
+import { CrudLoad } from "@cool-vue/crud/types";
 export default defineComponent({
 	name: "crud",
-
 	components: {
 		"demo-dialog": Dialog,
 		"demo-context-menu": ContextMenu,
@@ -58,20 +52,17 @@ export default defineComponent({
 		"demo-upsert": Upsert,
 		"demo-form": Form
 	},
-
 	setup() {
 		function onLoad({ ctx, app }: CrudLoad) {
 			ctx.service(TestService).done();
 			app.refresh();
 		}
-
 		return {
 			onLoad
 		};
 	}
 });
 </script>
-
 <style lang="scss">
 html,
 body,
@@ -80,7 +71,6 @@ body,
 	height: 100%;
 	overflow: hidden;
 }
-
 * {
 	padding: 0;
 	margin: 0;

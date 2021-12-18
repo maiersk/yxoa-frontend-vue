@@ -27,10 +27,10 @@
 
 <script lang="ts">
 import { inject, reactive } from "vue";
-import { useRefs } from "/@/core";
+import { useRefs } from "/@/cool";
 import WlogUpsert from "../components/wlogcard/upsert.vue";
 import WlogList from "../components/wlogcard/wloglist";
-import { CrudLoad } from 'cl-admin-crud-vue3/types';
+import { CrudLoad } from '@cool-vue/crud/types';
 
 export default {
 	name: 'wlog',

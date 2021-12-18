@@ -6,8 +6,8 @@
 
 <script lang="ts">
 import { ref, reactive } from 'vue';
-import { useRefs } from "/@/core";
-import { UpsertItem, UpsertRef } from "cl-admin-crud-vue3/types";
+import { useRefs } from "/@/cool";
+import { UpsertItem, UpsertRef } from "@cool-vue/crud/types";
 
 export default {
   setup() {

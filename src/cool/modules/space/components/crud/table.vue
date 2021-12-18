@@ -6,13 +6,13 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { TableColumn } from "cl-admin-crud-vue3/types";
-import { useRefs } from "/@/core";
+import { TableColumn } from "@cool-vue/crud/types";
+import { useCool } from "/@/cool";
 import Test2 from "./render/test2";
 
 export default defineComponent({
 	setup() {
-		const { refs, setRefs } = useRefs();
+		const { refs, setRefs } = useCool();
 
 		const columns = ref<TableColumn[]>([
 			{
@@ -29,7 +29,20 @@ export default defineComponent({
 				label: "存款",
 				prop: "price",
 				sortable: true,
-				minWidth: 120
+				minWidth: 120,
+				component: {
+					name: "el-progress"
+				}
+			},
+			{
+				label: "文件",
+				prop: "urls",
+				component: {
+					name: "cl-link",
+					props: {
+						size: 50
+					}
+				}
 			},
 			{
 				label: "状态",
@@ -38,12 +51,11 @@ export default defineComponent({
 				dict: [
 					{
 						label: "启用",
-						value: 1,
-						type: "primary"
+						value: 1
 					},
 					{
 						label: "禁用",
-						value: 0,
+						value: 2,
 						type: "danger"
 					}
 				]
@@ -51,7 +63,13 @@ export default defineComponent({
 			{
 				label: "创建时间",
 				prop: "createTime",
-				minWidth: 150
+				minWidth: 150,
+				component: {
+					name: "cl-date",
+					props: {
+						format: "YYYY-MM-DD"
+					}
+				}
 			},
 			{
 				label: "操作",

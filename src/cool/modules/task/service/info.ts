@@ -1,4 +1,4 @@
-import { BaseService, Service, Permission } from "/@/core";
+import { BaseService, Service, Permission } from "/@/cool";
 
 @Service("task/info")
 class SysTask extends BaseService {
