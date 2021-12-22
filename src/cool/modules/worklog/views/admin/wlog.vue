@@ -32,11 +32,10 @@
 import { defineComponent, inject, onMounted, reactive } from "vue";
 import { CrudLoad, Upsert, Table } from "@cool-vue/crud/types";
 import { useRefs } from "/@/cool";
-import CategorySelect from "../../components/category/select.vue"
 
 export default defineComponent({
 	components: {
-		'cl-category-select': CategorySelect
+
 	},
 	cool: {
 		// 注入视图路由中
@@ -70,7 +69,12 @@ export default defineComponent({
 					label: "类别",
 					span: 24,
 					value: [],
-					component: CategorySelect
+					component: {
+						name: 'cl-category-select',
+						props: {
+							multipleLimit: 1
+						}
+					}
 				},
 				{
 					prop: "context",

@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { inject, reactive } from "vue";
+import { inject, onMounted, reactive } from "vue";
 import { useRefs } from "/@/cool";
 import WlogUpsert from "../components/wlogcard/upsert.vue";
 import WlogList from "../components/wlogcard/wloglist";
@@ -44,11 +44,13 @@ export default {
 		const service = inject<any>("service");
 		const data = reactive<any>([]);
 
-		service.worklog.wlog.page().then((res: any) => {
-			data.value = res.list
-		})
-		service.worklog.category.wlogs({ id: 1 }).then((res: any) => {
-			console.log(res);
+		onMounted(() => {
+			service.worklog.wlog.page().then((res: any) => {
+				data.value = res.list
+			})
+			service.worklog.category.wlogs({ id: 1 }).then((res: any) => {
+				console.log(res);
+			})
 		})
 
 		function onLoad({ ctx, app } : CrudLoad) {

@@ -8,11 +8,10 @@
 import { ref, reactive } from 'vue';
 import { useRefs } from "/@/cool";
 import { UpsertItem, UpsertRef } from "@cool-vue/crud/types";
-import CategorySelect from '../category/select.vue';
 
 export default {
 	conponents: {
-		CategorySelect
+
 	},
   setup() {
     const { refs, setRefs } = useRefs();
@@ -41,7 +40,10 @@ export default {
 				label: "类别",
 				span: 24,
 				component: {
-					name: 'cl-role-select'
+					name: 'cl-category-select',
+					props: {
+						multipleLimit: 1
+					}
 				}
 			},
 			{
