@@ -52,22 +52,6 @@ export default {
 				component: {
 					name: "cl-editor-quill"
 				}
-			},
-			{
-				prop: "author",
-				label: "发送人",
-				span: 24,
-				component: {
-					name: "el-input"
-				}
-			},
-			{
-				prop: "receive",
-				label: "接收人",
-				span: 24,
-				component: {
-					name: "el-input"
-				}
 			}
 		])
 

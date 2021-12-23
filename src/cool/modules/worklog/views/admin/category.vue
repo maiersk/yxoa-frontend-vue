@@ -65,6 +65,22 @@ export default defineComponent({
 					component: {
 						name: "cl-editor-quill"
 					}
+				},
+				{
+					prop: "author",
+					label: "发送人",
+					span: 24,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					prop: "receive",
+					label: "接收人",
+					span: 24,
+					component: {
+						name: "el-input"
+					}
 				}
 			]
 		});
@@ -73,7 +89,7 @@ export default defineComponent({
 		const table = reactive<Table>({
 			columns: [
 				{
-					type: 'selection',
+					type: "selection",
 					width: 60
 				},
 				{
@@ -85,8 +101,8 @@ export default defineComponent({
 					label: "模板"
 				},
 				{
-					label: '操作',
-					type: 'op'
+					label: "操作",
+					type: "op"
 				}
 			]
 		});
