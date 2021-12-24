@@ -1,10 +1,22 @@
 <template>
-  project 仪表盘
+  <div class="project-summary">
+    <project-list>
+    </project-list>
+  </div>
 </template>
 
 <script>
-export default {
+import ProjectList from '../components/project/list.vue';
 
+export default {
+  components: {
+    ProjectList
+  },
+  setup() {
+    return {
+      
+    }
+  }
 }
 </script>
 

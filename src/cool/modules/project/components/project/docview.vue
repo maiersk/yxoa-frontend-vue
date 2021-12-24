@@ -1,6 +1,6 @@
 <template>
   <div>
-    tree
+    doc view
   </div>
 </template>
 

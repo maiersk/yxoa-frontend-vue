@@ -1,6 +1,6 @@
 <template>
   <div>
-    tree
+    user view
   </div>
 </template>
 
