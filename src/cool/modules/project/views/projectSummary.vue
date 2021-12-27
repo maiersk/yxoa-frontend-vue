@@ -1,5 +1,5 @@
 <template>
-  <div class="project-summary">
+  <div class="project-summary scroller1">
     <project-list>
     </project-list>
   </div>

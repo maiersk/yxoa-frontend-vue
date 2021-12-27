@@ -3,13 +3,13 @@
     <div class="pane">
       <project-tabs>
         <template #detail>
-          <project-detail></project-detail>
+          <tabs-detail></tabs-detail>
         </template>
         <template #doc>
-          <project-doc></project-doc>
+          <tabs-doc></tabs-doc>
         </template>
         <template #user>
-          <project-user></project-user>
+          <tabs-user></tabs-user>
         </template>
       </project-tabs>
     </div>
@@ -18,16 +18,16 @@
 
 <script>
 import ProjectTabs from '../components/tabs.vue';
-import ProjectDetail from '../components/project/detailview.vue';
-import ProjectDoc from '../components/project/docview.vue';
-import ProjectUser from '../components/project/userview.vue';
+import TabsDetail from '../components/project/tabs-detail.vue';
+import TabsDoc from '../components/project/tabs-doc.vue';
+import TabsUser from '../components/project/tabs-user.vue';
 
 export default {
   components: {
     ProjectTabs,
-    ProjectDetail,
-    ProjectDoc,
-    ProjectUser
+    TabsDetail,
+    TabsDoc,
+    TabsUser
   },
   setup() {
 
