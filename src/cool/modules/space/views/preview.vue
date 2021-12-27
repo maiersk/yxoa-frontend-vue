@@ -16,32 +16,35 @@ import BClCrud from "../components/demo/b-cl-crud.vue";
 import BClContextMenu from "../components/demo/b-cl-context-menu.vue";
 import BErrorPage from "../components/demo/b-error-page.vue";
 import BClEditorQuill from "../components/demo/b-cl-editor-quill.vue";
+import BClProject from "../components/demo/b-cl-project.vue";
 import BClWorklog from "../components/demo/b-cl-worklog.vue";
 
 export default {
 	name: "demo",
 
 	components: {
-		BClUpload,
-		BVCopy,
-		BIconSvg,
-		BClCrud,
-		BClContextMenu,
-		BErrorPage,
-		BClEditorQuill,
+		// BClUpload,
+		// BVCopy,
+		// BIconSvg,
+		// BClCrud,
+		// BClContextMenu,
+		// BErrorPage,
+		// BClEditorQuill,
+		BClProject,
 		BClWorklog
 	},
 
 	setup() {
 		return {
 			list: [
-				"b-cl-upload",
-				"b-cl-crud",
-				"b-icon-svg",
-				"b-v-copy",
-				"b-cl-context-menu",
-				"b-error-page",
-				"b-cl-editor-quill",
+				// "b-cl-upload",
+				// "b-cl-crud",
+				// "b-icon-svg",
+				// "b-v-copy",
+				// "b-cl-context-menu",
+				// "b-error-page",
+				// "b-cl-editor-quill",
+				"b-cl-project",
 				"b-cl-worklog"
 			]
 		};
