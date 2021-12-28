@@ -41,6 +41,9 @@ export default defineComponent({
 
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
+			props: {
+				labelWidth: "180px"
+			},
 			items: [
 				{
 					label: "建设项目名称",
@@ -82,10 +85,30 @@ export default defineComponent({
 				{
 					label: "总价",
 					prop: "totalPrice",
-					component: { name: "el-input-number", props: { min: 0 } },
+					component: {
+						name: "el-input-number",
+						props: {
+							min: 0
+						}
+					},
 					required: true
 				},
-				{ label: "收款日", prop: "payDay", required: true, component: { name: "el-input" } }
+				{
+					label: "目标竣工日",
+					prop: "tcDay",
+					required: true,
+					component: {
+						name: "el-date-picker"
+					}
+				},
+				{
+					label: "收款日",
+					prop: "payDay",
+					required: true,
+					component: {
+						name: "el-date-picker"
+					}
+				}
 			]
 		});
 
@@ -94,14 +117,15 @@ export default defineComponent({
 			columns: [
 				{ type: "selection" },
 				{ label: "ID", prop: "id" },
-				{ label: "建设项目名称", prop: "name" },
-				{ label: "建设单位名称", prop: "builderName" },
-				{ label: "监理单位名称", prop: "SupervisionName" },
-				{ label: "承建单位名称", prop: "UndertookName" },
+				{ label: "建设项目名称", prop: "name", width: 130 },
+				{ label: "建设单位名称", prop: "builderName", width: 130 },
+				{ label: "监理单位名称", prop: "SupervisionName", width: 130 },
+				{ label: "承建单位名称", prop: "UndertookName", width: 130 },
 				{ label: "进度", prop: "process" },
 				{ label: "采购人", prop: "purchaser" },
 				{ label: "采购人联系电话", prop: "pur_phone" },
 				{ label: "总价", prop: "totalPrice" },
+				{ label: "目标竣工日", prop: "tcDay" },
 				{ label: "收款日", prop: "payDay" },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },

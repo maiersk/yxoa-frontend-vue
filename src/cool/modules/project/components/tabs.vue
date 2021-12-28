@@ -15,7 +15,7 @@ export default {
     ElTabs
   },
   setup() {
-    const activename = ref<string>('detail');
+    const activename = 'detail';
 
     const handleClick = function () {
 
