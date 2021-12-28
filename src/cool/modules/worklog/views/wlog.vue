@@ -30,10 +30,10 @@ import { inject, onMounted, reactive } from "vue";
 import { useRefs } from "/@/cool";
 import WlogUpsert from "../components/wlogcard/upsert.vue";
 import WlogList from "../components/wlogcard/wloglist";
-import { CrudLoad } from '@cool-vue/crud/types';
+import { CrudLoad } from "@cool-vue/crud/types";
 
 export default {
-	name: 'wlog',
+	name: "wlog",
 
 	components: {
 		WlogList,
@@ -44,16 +44,16 @@ export default {
 		const service = inject<any>("service");
 		const data = reactive<any>([]);
 
-		onMounted(() => {
-			service.worklog.wlog.page().then((res: any) => {
-				data.value = res.list
-			})
+		onMounted(async () => {
+			const res = await service.worklog.wlog.page();
+			data.value = res.list
+			console.log(res)
 			// service.worklog.category.wlogs({ id: 1 }).then((res: any) => {
 			// 	console.log(res);
 			// })
-		})
+		});
 
-		function onLoad({ ctx, app } : CrudLoad) {
+		function onLoad({ ctx, app }: CrudLoad) {
 			ctx.service(service.worklog.wlog).done();
 			app.refresh();
 		}
@@ -65,11 +65,11 @@ export default {
 			onLoad
 		};
 	}
-}
+};
 </script>
 
 <style lang="scss">
-	.wlog-view {
-		background-color: white;
-	}
+.wlog-view {
+	background-color: white;
+}
 </style>

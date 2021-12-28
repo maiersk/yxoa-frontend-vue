@@ -34,27 +34,39 @@ export default defineComponent({
     }
   },
   render(ctx: any) {
-    let wlog_dom : any = [];
+    let wlog_dom: any = [];
 
     if (this.data.value) {
-      this.data.value.forEach((item : any) => {
-        wlog_dom.push(h(WlogCard, { wlog: item, style: {  }, onDelWlog: this.delWlog }, []));
+      this.data.value.forEach((item: any) => {
+        wlog_dom.push(
+          h(
+            WlogCard,
+            {
+              wlog: item,
+              style: {},
+              onDelWlog: this.delWlog
+            },
+            {
+
+            }
+          )
+        );
       });
     }
 
     return (
       h(<el-row></el-row>, {
-					class: "wlog-list",
-					width: "100%",
-          style: {
-            'display': 'flex',
-            'flex-direction': 'column',
-            'flex-wrap': 'wrap'
-          }
-				}, [
-        	...wlog_dom
-      	]
-			)
+        class: "wlog-list",
+        width: "100%",
+        style: {
+          'display': 'flex',
+          'flex-direction': 'column',
+          'flex-wrap': 'wrap'
+        }
+      }, [
+        ...wlog_dom
+      ]
+      )
     )
   }
 });
