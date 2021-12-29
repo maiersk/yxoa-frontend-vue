@@ -11,9 +11,9 @@
 							<div class="card_title" style="margin: 0; padding: 0">
 								<span>{{ item.name }}</span>
 
-								<a style="float: right;">
+								<a style="float: right">
 									<router-link :to="`/project/detail/?id=${item.id}`">
-									  详细
+										详细
 									</router-link>
 								</a>
 								<!-- <el-button type="text" @click="toDetail(item.id)"
@@ -23,8 +23,33 @@
                 </el-button> -->
 							</div>
 						</template>
-						<div v-for="o in 4" :key="o" class="card_body">
-							{{ "列表内容 " + o }}
+						<div class="card_body">
+							<el-descriptions title="项目信息">
+								<el-descriptions-item label="建设项目名称:">
+									{{ item.name }}
+								</el-descriptions-item>
+								<el-descriptions-item label="建设单位名称:">
+									{{ item.builderName }}
+								</el-descriptions-item>
+								<el-descriptions-item label="监理单位名称:">
+									{{ item.supervisionName }}
+								</el-descriptions-item>
+								<el-descriptions-item label="承建单位名称:">
+									{{ item.undertookName }}
+								</el-descriptions-item>
+								<el-descriptions-item label="进度:">
+									<el-tag size="small">{{ item.process }}</el-tag>
+								</el-descriptions-item>
+								<el-descriptions-item label="总价:">
+									<el-tag size="small">{{ item.totalPrice }}</el-tag>
+								</el-descriptions-item>
+								<el-descriptions-item label="目标竣工日:">
+									<el-tag size="small">{{ item.tcDate }}</el-tag>
+								</el-descriptions-item>
+								<el-descriptions-item label="收款日:">
+									<el-tag size="small">{{ item.payDate }}</el-tag>
+								</el-descriptions-item>
+							</el-descriptions>
 						</div>
 					</el-card>
 				</li>
@@ -35,6 +60,7 @@
 
 <script lang="ts">
 import { useCool } from "/@/cool/core";
+
 export default {
 	props: {
 		list: {

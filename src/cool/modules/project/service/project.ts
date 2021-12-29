@@ -1,6 +1,6 @@
 import { BaseService, Service } from "/@/cool";
 
-@Service("project/prj")
+@Service("project/project")
 class ProjectService extends BaseService {}
 
 export default ProjectService;

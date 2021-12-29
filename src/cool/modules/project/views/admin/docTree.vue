@@ -34,21 +34,30 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
-	name: "project-projectdoc_tree",
-
+	name: "project-docTree",
+	cool: {
+		// 注入视图路由中
+		route: {
+			path: "/project/admin/docTree", // 路由地址
+			meta: {
+				keepAlive: true, // 是否缓存路由
+				label: "文档模板树" // 路由名称
+			}
+		}
+	},
 	setup() {
 		const { refs, setRefs, service } = useCool();
 
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
 			items: [
+				{ label: "文档Id", prop: "docId", required: true, component: { name: "el-input" } },
 				{
-					label: "项目Id",
-					prop: "projectId",
+					label: "父目录ID",
+					prop: "parentId",
 					required: true,
 					component: { name: "el-input" }
-				},
-				{ label: "文档Id", prop: "docId", required: true, component: { name: "el-input" } }
+				}
 			]
 		});
 
@@ -57,8 +66,8 @@ export default defineComponent({
 			columns: [
 				{ type: "selection" },
 				{ label: "ID", prop: "id" },
-				{ label: "项目Id", prop: "projectId" },
 				{ label: "文档Id", prop: "docId" },
+				{ label: "父目录ID", prop: "parentId" },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },
 				{ type: "op", buttons: ["edit", "delete"] }
@@ -68,7 +77,7 @@ export default defineComponent({
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
 			// 绑定 service
-			ctx.service(service.project.projectdoc_tree).done();
+			ctx.service(service.project.docTree).done();
 			app.refresh();
 		}
 

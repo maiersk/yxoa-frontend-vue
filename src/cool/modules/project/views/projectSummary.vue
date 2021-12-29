@@ -1,12 +1,16 @@
 <template>
 	<div class="project-summary scroller1">
-		<project-list />
+		<div class="project-title">
+			<span></span>
+		</div>
+		<project-list :list="list"></project-list>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import ProjectList from "../components/project/list.vue";
+import { useCool } from "/@/cool/core";
 
 export default defineComponent({
 	name: "projectDetail",
@@ -14,7 +18,19 @@ export default defineComponent({
 		ProjectList
 	},
 	setup() {
-		return {};
+		const { service } = useCool()
+		const data = reactive<any>({
+			list: []
+		})
+
+		onMounted(async () => {
+			const res = await service.project.project.page();
+			data.list = res.list
+		})
+
+		return {
+			...toRefs(data)
+		}
 	}
 });
 </script>

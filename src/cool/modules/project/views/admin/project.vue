@@ -34,79 +34,111 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
-	name: "projcet-list",
-
+	name: "project-list",
+	cool: {
+		// 注入视图路由中
+		route: {
+			path: "/project/admin/list", // 路由地址
+			meta: {
+				keepAlive: true, // 是否缓存路由
+				label: "项目列表" // 路由名称
+			}
+		}
+	},
 	setup() {
 		const { refs, setRefs, service } = useCool();
 
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
-			props: {
-				labelWidth: "180px"
-			},
 			items: [
 				{
 					label: "建设项目名称",
 					prop: "name",
 					required: true,
-					component: { name: "el-input" }
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
 				},
 				{
 					label: "建设单位名称",
 					prop: "builderName",
 					required: true,
-					component: { name: "el-input" }
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
 				},
 				{
 					label: "监理单位名称",
-					prop: "SupervisionName",
+					prop: "supervisionName",
 					required: true,
-					component: { name: "el-input" }
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
 				},
 				{
 					label: "承建单位名称",
-					prop: "UndertookName",
+					prop: "undertookName",
 					required: true,
-					component: { name: "el-input" }
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
 				},
-				{ label: "进度", prop: "process", required: true, component: { name: "el-input" } },
+				{
+					label: "进度",
+					prop: "process",
+					required: true,
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
+				},
 				{
 					label: "采购人",
 					prop: "purchaser",
 					required: true,
-					component: { name: "el-input" }
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
 				},
 				{
 					label: "采购人联系电话",
 					prop: "pur_phone",
 					required: true,
-					component: { name: "el-input" }
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
 				},
 				{
 					label: "总价",
 					prop: "totalPrice",
-					component: {
-						name: "el-input-number",
-						props: {
-							min: 0
-						}
-					},
-					required: true
+					required: true,
+					component: { name: "el-input-number", props: { min: 0 } },
+					props: {
+						labelWidth: "130px"
+					}
 				},
 				{
 					label: "目标竣工日",
-					prop: "tcDay",
+					prop: "tcDate",
 					required: true,
 					component: {
-						name: "el-date-picker"
+						name: "el-date-picker",
+						props: { type: "date", valueFormat: "YYYY-MM-DD" }
 					}
 				},
 				{
 					label: "收款日",
-					prop: "payDay",
+					prop: "payDate",
 					required: true,
 					component: {
-						name: "el-date-picker"
+						name: "el-date-picker",
+						props: { type: "date", valueFormat: "YYYY-MM-DD" }
 					}
 				}
 			]
@@ -117,16 +149,16 @@ export default defineComponent({
 			columns: [
 				{ type: "selection" },
 				{ label: "ID", prop: "id" },
-				{ label: "建设项目名称", prop: "name", width: 130 },
-				{ label: "建设单位名称", prop: "builderName", width: 130 },
-				{ label: "监理单位名称", prop: "SupervisionName", width: 130 },
-				{ label: "承建单位名称", prop: "UndertookName", width: 130 },
+				{ label: "建设项目名称", prop: "name" },
+				{ label: "建设单位名称", prop: "builderName" },
+				{ label: "监理单位名称", prop: "supervisionName" },
+				{ label: "承建单位名称", prop: "undertookName" },
 				{ label: "进度", prop: "process" },
 				{ label: "采购人", prop: "purchaser" },
 				{ label: "采购人联系电话", prop: "pur_phone" },
 				{ label: "总价", prop: "totalPrice" },
-				{ label: "目标竣工日", prop: "tcDay" },
-				{ label: "收款日", prop: "payDay" },
+				{ label: "目标竣工日", prop: "tcDate" },
+				{ label: "收款日", prop: "payDate" },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },
 				{ type: "op", buttons: ["edit", "delete"] }
@@ -136,7 +168,7 @@ export default defineComponent({
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
 			// 绑定 service
-			ctx.service(service.project.projcet).done();
+			ctx.service(service.project.project).done();
 			app.refresh();
 		}
 

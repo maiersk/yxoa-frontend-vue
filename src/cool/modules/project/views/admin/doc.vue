@@ -29,22 +29,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, inject, reactive } from "vue";
 import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
-import { useCool } from "/@/cool";
+import { useRefs } from "/@/cool";
 
 export default defineComponent({
 	name: "project-doc",
-
+	cool: {
+		// 注入视图路由中
+		route: {
+			path: "/project/admin/doc", // 路由地址
+			meta: {
+				keepAlive: true, // 是否缓存路由
+				label: "文档模板" // 路由名称
+			}
+		}
+	},
 	setup() {
-		const { refs, setRefs, service } = useCool();
+		const { refs, setRefs } = useRefs();
+		const service = inject<any>("service");
 
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
 			items: [
 				{ label: "名称", prop: "name", required: true, component: { name: "el-input" } },
 				{ label: "格式", prop: "format", required: true, component: { name: "el-input" } },
-				{ label: "数据", prop: "data", required: true, component: { name: "el-input" } },
 				{
 					label: "文件",
 					prop: "templateFile",
@@ -68,7 +77,6 @@ export default defineComponent({
 				{ label: "ID", prop: "id" },
 				{ label: "名称", prop: "name" },
 				{ label: "格式", prop: "format" },
-				{ label: "数据", prop: "data" },
 				{ label: "文件", prop: "templateFile", component: { name: "cl-link" } },
 				{ label: "数量", prop: "count" },
 				{ label: "留言", prop: "remark", showOverflowTooltip: true },
