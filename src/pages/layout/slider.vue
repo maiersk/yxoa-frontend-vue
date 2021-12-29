@@ -31,7 +31,7 @@ export default defineComponent({
 
 		// 跳转官网
 		function toHome() {
-			location.href = "https://127.0.0.1:9100/";
+			location.href = "http://127.0.0.1:9100/";
 		}
 
 		return {
