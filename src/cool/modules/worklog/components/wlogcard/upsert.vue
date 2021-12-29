@@ -5,28 +5,26 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive } from "vue";
 import { useRefs } from "/@/cool";
 import { UpsertItem, UpsertRef } from "@cool-vue/crud/types";
 
 export default {
-	conponents: {
+	conponents: {},
+	setup() {
+		const { refs, setRefs } = useRefs();
+		const upsert = ref<any>([]);
 
-	},
-  setup() {
-    const { refs, setRefs } = useRefs();
-    const upsert = ref<any>([]);
+		const upsertRef = ref<UpsertRef>();
 
-    const upsertRef = ref<UpsertRef>()
-
-    const dialog = {
+		const dialog = {
 			props: {
 				fullscreen: false,
-				width: "1200px"
+				width: "900px"
 			}
 		};
 
-    const items = reactive<UpsertItem[]>([
+		const items = reactive<UpsertItem[]>([
 			{
 				prop: "title",
 				label: "标题",
@@ -40,7 +38,7 @@ export default {
 				label: "类别",
 				span: 24,
 				component: {
-					name: 'cl-category-select',
+					name: "cl-category-select",
 					props: {
 						multipleLimit: 1
 					}
@@ -53,18 +51,18 @@ export default {
 					name: "cl-editor-quill"
 				}
 			}
-		])
+		]);
 
-    return {
-      refs,
-      setRefs,
-      upsert,
-      items,
-      upsertRef,
-      dialog
-    }
-  }
-}
+		return {
+			refs,
+			setRefs,
+			upsert,
+			items,
+			upsertRef,
+			dialog
+		};
+	}
+};
 </script>
 
 <style>

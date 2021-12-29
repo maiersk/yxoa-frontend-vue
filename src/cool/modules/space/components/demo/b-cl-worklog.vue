@@ -5,7 +5,7 @@
 			工作日志
 		</div>
 		<div class="c">
-			<router-link to="/wlog">传送门</router-link>
+			<router-link to="/worklog">传送门</router-link>
 		</div>
 		<div class="f">
       
