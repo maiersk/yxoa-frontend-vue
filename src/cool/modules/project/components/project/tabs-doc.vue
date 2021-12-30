@@ -1,18 +1,26 @@
 <template>
 	<div class="project-doc">
-    <data-table></data-table>
-  </div>
+		<el-row>
+			<el-col>
+				<data-table></data-table>
+			</el-col>
+			<el-col>
+        <doc-perview></doc-perview>
+      </el-col>
+		</el-row>
+	</div>
 </template>
 
 <script lang='ts'>
 import {} from "vue";
-import {} from "../doc/perview.vue";
-import DataTable from "../doc/dataTable";
+import DocPerview from "../doc/perview.vue";
+import DataTable from "../doc/dataTable.vue";
 
 export default {
-  components: {
-    // DataTable
-  },
+	components: {
+		DocPerview,
+		DataTable
+	},
 	setup() {
 		return {};
 	}

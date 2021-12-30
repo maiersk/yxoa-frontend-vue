@@ -1,5 +1,8 @@
 <template>
 	<div class="project-doc">
+		<div class="header">
+			<h3>{{ project.value?.name ?? "" }}</h3>
+		</div>
 		<div class="pane">
 			<project-tabs>
 				<template #detail>
@@ -62,7 +65,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.pane {
+.project-doc {
+	.header {
+		h3 {
+			margin: 0.5rem 0;
+		}
+	}
+	.header::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 2px;
+		background-color: var(--el-border-color-light);
+		z-index: var(--el-index-normal);
+	}
+
 	background-color: white;
 	padding: 1rem;
 }

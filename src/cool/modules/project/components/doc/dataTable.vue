@@ -1,8 +1,11 @@
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from "vue";
+import { ElMessage } from "element-plus";
+import { defineComponent, reactive, toRefs, watch, h } from "vue";
+import { useCool } from "/@/cool/core";
 
-const craeteFormItem = function (h: Function, k: string, item: any) {
-
+const craeteFormItem = function (k: string, item: any) {
+	let vnode
+	// const Component 
 };
 
 export default defineComponent({
@@ -12,20 +15,115 @@ export default defineComponent({
 			default: "{}"
 		}
 	},
-	setup() {
+	created() {
+		try {
+			this.initJson();
+		} catch (err) {
+			ElMessage.warning("错误的JSON数据");
+		}
+	},
+	setup(props: any, ctx: any) {
+		const { refs, setRefs } = useCool();
+
 		const data = reactive<any>({
 			form: {},
-			json: null,
-			showOPerator: false
+			json: {},
+			showOPerator: false,
+			vnodes: []
 		});
 
-		return {
-			...toRefs(data)
+		watch(
+			() => data.from,
+			() => {
+				ctx.emit("input", JSON.stringify(data.json));
+			}
+		);
+
+		const initJson = function () {
+			if (props.value === "{}") {
+				ElMessage.warning("请填写数据模板");
+				return;
+			}
+
+			data.json = JSON.parse(props.value);
+			Object.keys(data.json.template).forEach((k) => {
+				const template = data.json.template[k];
+				if (template.value !== undefined || template.value !== null) {
+					ctx.set(data.form, k, data.json.template[k].value);
+				}
+			});
+			data.showOperator = true;
 		};
+
+		return {
+			...toRefs(data),
+			initJson,
+			refs,
+			setRefs
+		};
+	},
+	render: function(ctx: any) {
+		if (ctx.json?.template ?? false) {
+			Object.keys(ctx.json.template).forEach((k) => {
+				const template = ctx.json.template[k]
+
+				if (template) {
+					ctx.vnodes.push(craeteFormItem.call(ctx, k, template))
+				}
+			})
+		}
+
+		return h('el-card', {}, [ 
+			h('template', { slot: 'header' }, [
+				h('span', '数据填写'),
+				h('div', { class: 'operator'}, [
+					h('el-button', {
+						props: {
+							type: 'text'
+						},
+						on: {
+							click: () => {
+								this.$forceUpdate()
+								this.initJson()
+								this.refs.value['ruleForm'].resetFields()
+							}
+						}
+					}, [
+						'刷新表单'
+					])
+				])
+			]),
+			h('el-form', {
+				ref: this.setRefs('ruleForm'),
+				class: 'form-datatab',
+				attrs: {
+					'label-position': 'right',
+					'label-width': '80px'
+				},
+				props: {
+					model: ctx.form
+				}
+			}, [
+				...ctx.vnodes,
+				ctx.showOperator ? h('el-form-item', {}, [
+					h('el-button', {
+						props: {
+							type: 'primary'
+						},
+						on: {
+							click: () => {
+								ctx.emit('Submit', ctx.form)
+							}
+						}
+					}, [
+						'测试生成'
+					])
+				]) : null
+			])
+		])
 	}
 });
 </script>
 
 <style lang="css" scoped>
-
 </style>
