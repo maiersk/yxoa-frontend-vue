@@ -1,14 +1,12 @@
 import { h } from 'vue';
 import EventEmitter from 'events'
 
-export interface TabCompOption {
+export declare interface TabCompOption {
   tag: string
   type: string
   value: string
   rules: Array<any>
-  option: {
-    props: object
-  }
+  option: any
   child: Array<any>
   props: object
   source: string
@@ -21,7 +19,7 @@ export default class BaseTabComp extends EventEmitter {
   type: string
   value: string
   rules: Array<any>
-  option: object
+  option: any
   child: Array<any>
 
   constructor(name: string, options: TabCompOption) {
@@ -29,13 +27,11 @@ export default class BaseTabComp extends EventEmitter {
 
     this.h = h
     this.name = name
-    this.tag = options?.tag ?? 'input'
+    this.tag = options?.tag ?? 'input '
     this.type = options?.type ?? 'string'
     this.value = options?.value ?? ''
     this.rules = options?.rules ?? []
-    this.option = options?.option ?? {
-      props: {}
-    }
+    this.option = options.option ?? {}
     this.child = options?.child ?? []
   }
 

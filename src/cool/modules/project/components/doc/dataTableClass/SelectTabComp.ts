@@ -1,4 +1,4 @@
-// import request from '@/utils/request'
+import request from "/@/service/request";
 import BaseTabComp, { TabCompOption } from './BaseTabComp'
 
 export default class SelectTabComp extends BaseTabComp {
