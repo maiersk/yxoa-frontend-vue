@@ -31,7 +31,7 @@ export default {
 
 		onMounted(() => {
 			if (props.docId !== "") {
-				service.project.doc.info({ id: props.id }).then((res: any) => {
+				service.project.doc.info({ id: props.docId }).then((res: any) => {
 					if (res?.data ?? undefined) {
 						resUrl.value = res.data.templateFile;
 					}

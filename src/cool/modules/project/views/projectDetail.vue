@@ -9,10 +9,10 @@
 					<tabs-detail :project="project.value"></tabs-detail>
 				</template>
 				<template #doc>
-					<tabs-doc></tabs-doc>
+					<tabs-doc :project="project.value"></tabs-doc>
 				</template>
 				<template #user>
-					<tabs-user></tabs-user>
+					<tabs-user :project="project.value"></tabs-user>
 				</template>
 			</project-tabs>
 		</div>

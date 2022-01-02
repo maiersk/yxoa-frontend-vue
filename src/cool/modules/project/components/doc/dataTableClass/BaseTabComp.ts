@@ -1,5 +1,5 @@
 import { h } from 'vue';
-import EventEmitter from 'events'
+import EventEmitter from 'events';
 
 export declare interface TabCompOption {
   tag: string
@@ -12,8 +12,9 @@ export declare interface TabCompOption {
   source: string
 }
 
-export default class BaseTabComp extends EventEmitter {
+export default class BaseTabComp {
   h: any
+  emitter: EventEmitter
   name: string
   tag: string
   type: string
@@ -23,9 +24,8 @@ export default class BaseTabComp extends EventEmitter {
   child: Array<any>
 
   constructor(name: string, options: TabCompOption) {
-    super()
-
     this.h = h
+    this.emitter = new EventEmitter()
     this.name = name
     this.tag = options?.tag ?? 'input '
     this.type = options?.type ?? 'string'
@@ -49,7 +49,7 @@ export default class BaseTabComp extends EventEmitter {
       on: {
         input: (event: any) => {
           const value = event && event.target ? event.target.value : event
-          this.emit('input', value)
+          this.emitter.emit('input', value)
         }
       }
     }

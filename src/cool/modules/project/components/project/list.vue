@@ -26,16 +26,16 @@
 						<div class="card_body">
 							<el-descriptions title="项目信息">
 								<el-descriptions-item label="建设项目名称:">
-									{{ item.name }}
+									<el-tag size="small">{{ item.name }}</el-tag>
 								</el-descriptions-item>
 								<el-descriptions-item label="建设单位名称:">
-									{{ item.builderName }}
+									<el-tag size="small">{{ item.builderName }}</el-tag>
 								</el-descriptions-item>
 								<el-descriptions-item label="监理单位名称:">
-									{{ item.supervisionName }}
+									<el-tag size="small">{{ item.supervisionName }}</el-tag>
 								</el-descriptions-item>
 								<el-descriptions-item label="承建单位名称:">
-									{{ item.undertookName }}
+									<el-tag size="small">{{ item.undertookName }}</el-tag>
 								</el-descriptions-item>
 								<el-descriptions-item label="进度:">
 									<el-tag size="small">{{ item.process }}</el-tag>

@@ -2,7 +2,11 @@ import InputTabComp from './InputTabComp'
 import SelectTabComp from './SelectTabComp'
 import ListTabComp from './ListTabComp'
 
-const components = {
+interface ComponentsIndex {
+  [index: string]: any
+}
+
+const components: ComponentsIndex = {
   input: InputTabComp,
   select: SelectTabComp,
   list: ListTabComp
