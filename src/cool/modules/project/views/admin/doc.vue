@@ -24,7 +24,11 @@
 		</el-row>
 
 		<!-- 新增、编辑 -->
-		<cl-upsert :ref="setRefs('upsert')" v-bind="upsert" />
+		<cl-upsert :ref="setRefs('upsert')" v-bind="upsert">
+			<template #doc-perview>
+				<doc-perview></doc-perview>
+			</template>
+		</cl-upsert>
 	</cl-crud>
 </template>
 
@@ -32,6 +36,7 @@
 import { defineComponent, inject, reactive } from "vue";
 import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useRefs } from "/@/cool";
+import DocPerview from "../../components/doc/perview.vue";
 
 export default defineComponent({
 	name: "project-doc",
@@ -45,6 +50,9 @@ export default defineComponent({
 			}
 		}
 	},
+	components: {
+		DocPerview
+	},
 	setup() {
 		const { refs, setRefs } = useRefs();
 		const service = inject<any>("service");
@@ -55,17 +63,42 @@ export default defineComponent({
 				{ label: "名称", prop: "name", required: true, component: { name: "el-input" } },
 				{ label: "格式", prop: "format", required: true, component: { name: "el-input" } },
 				{
-					label: "文件",
-					prop: "templateFile",
-					component: { name: "cl-upload", props: { listType: "text", limit: 1 } },
-					required: true
+					label: "数量",
+					prop: "count",
+					required: true,
+					value: 1,
+					component: {
+						name: "el-input-number",
+						props: {
+							min: 1,
+							max: 99
+						}
+					}
 				},
-				{ label: "数量", prop: "count", required: true, component: { name: "el-input" } },
 				{
-					label: "留言",
+					label: "备注",
 					prop: "remark",
 					component: { name: "el-input", props: { type: "textarea", rows: 4 } },
+				},
+				{
+					label: "文件",
+					prop: "templateFile",
+					component: {
+						name: "cl-upload",
+						props: {
+							listType: "text",
+							limit: 1,
+							accept: ".doc,.docx"
+						}
+					},
 					required: true
+				},
+				{
+					label: "数据模板",
+					prop: "data",
+					component: {
+						name: "cl-codemirror"
+					}
 				}
 			]
 		});
