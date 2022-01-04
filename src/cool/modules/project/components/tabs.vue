@@ -1,5 +1,5 @@
 <template>
-	<el-tabs v-model="activename" @tab-click="handleClick">
+	<el-tabs class="project-tabs" v-model="activename" @tab-click="handleClick">
 		<el-tab-pane label="详细" name="detail"><slot name="detail"></slot></el-tab-pane>
 		<el-tab-pane label="文档" name="doc"><slot name="doc"></slot></el-tab-pane>
 		<el-tab-pane label="参与人" name="user"><slot name="user"></slot></el-tab-pane>
@@ -8,7 +8,6 @@
 
 <script>
 import { ElTabs } from 'element-plus';
-import { ref } from 'vue-demi';
 
 export default {
   components: {
@@ -29,5 +28,10 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.project-tabs {
+ .el-tabs__content {
+   height: 100%;
+ }
+}
 </style>

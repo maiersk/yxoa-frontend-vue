@@ -48,6 +48,7 @@ export default {
 
 <style lang="scss" scoped>
 .project-doc {
+	height: 100%;
 	display: flex;
 	flex-direction: row;
 

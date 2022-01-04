@@ -1,5 +1,5 @@
 <template>
-	<div class="system-user">
+	<div class="project-doctree">
 		<div class="pane">
 			<!-- 文档架构 -->
 			<div class="dept" :class="[isExpand ? '_expand' : '_collapse']">
@@ -506,7 +506,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.system-user {
+.project-doctree {
 	.pane {
 		display: flex;
 		height: 100%;

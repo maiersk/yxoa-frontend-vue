@@ -1,8 +1,5 @@
 <template>
 	<div class="project-summary scroller1">
-		<div class="project-title">
-			<span></span>
-		</div>
 		<project-list :list="list"></project-list>
 	</div>
 </template>

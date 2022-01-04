@@ -1,21 +1,16 @@
 <template>
-	<div class="project-doc">
-		<div class="header">
-			<h3>{{ project.value?.name ?? "" }}</h3>
-		</div>
-		<div class="pane">
-			<project-tabs>
-				<template #detail>
-					<tabs-detail :project="project.value"></tabs-detail>
-				</template>
-				<template #doc>
-					<tabs-doc :project="project.value"></tabs-doc>
-				</template>
-				<template #user>
-					<tabs-user :project="project.value"></tabs-user>
-				</template>
-			</project-tabs>
-		</div>
+	<div class="project-detail scroller1">
+		<project-tabs>
+			<template #detail>
+				<tabs-detail :project="project.value"></tabs-detail>
+			</template>
+			<template #doc>
+				<tabs-doc :project="project.value"></tabs-doc>
+			</template>
+			<template #user>
+				<tabs-user :project="project.value"></tabs-user>
+			</template>
+		</project-tabs>
 	</div>
 </template>
 
@@ -65,7 +60,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.project-doc {
+.project-detail {
 	.header {
 		h3 {
 			margin: 0.5rem 0;
