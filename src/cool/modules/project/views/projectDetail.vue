@@ -78,6 +78,5 @@ export default defineComponent({
 	}
 
 	background-color: white;
-	padding: 1rem;
 }
 </style>

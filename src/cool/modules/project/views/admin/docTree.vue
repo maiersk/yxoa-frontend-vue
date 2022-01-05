@@ -1,212 +1,244 @@
 <template>
-	<div class="project-doctree">
-		<div class="pane">
-			<!-- 文档架构 -->
-			<div class="dept" :class="[isExpand ? '_expand' : '_collapse']">
-				<prj-tree
-					@row-click="onDeptRowClick"
-					@user-add="onDeptUserAdd"
-					@list-change="onDeptListChange"
-				/>
-			</div>
+	<cl-crud :ref="setRefs('crud')" :on-refresh="onRefresh" @load="onLoad">
+		<el-row type="flex">
+			<cl-refresh-btn />
+			<cl-add-btn />
+			<cl-menu-quick @success="refresh()" v-if="isDev" />
+		</el-row>
 
-			<!-- 文档列表 -->
-			<div class="user">
-				<div class="header">
-					<div class="icon" @click="deptExpand">
-						<i class="el-icon-arrow-left" v-if="isExpand"></i>
-						<i class="el-icon-arrow-right" v-else></i>
-					</div>
+		<el-row>
+			<cl-table :ref="setRefs('table')" v-bind="table" @row-click="onRowClick">
+				<!-- 名称 -->
+				<template #column-name="{ scope }">
+					<span>{{ scope.row.name }}</span>
+					<el-tag
+						v-if="!scope.row.isShow"
+						size="mini"
+						effect="dark"
+						type="danger"
+						style="margin-left: 10px"
+						>隐藏</el-tag
+					>
+				</template>
 
-					<span>文档列表</span>
-				</div>
+				<!-- 图标 -->
+				<template #column-icon="{ scope }">
+					<icon-svg :name="scope.row.icon" size="16px" style="margin-top: 5px" />
+				</template>
 
-				<div class="container">
-					<cl-crud :ref="setRefs('crud')" :on-refresh="onRefresh" @load="onLoad">
-						<el-row type="flex">
-							<cl-refresh-btn />
-							<cl-add-btn />
-							<cl-multi-delete-btn />
-							<el-button
-								v-permission="service.base.sys.user.permission.move"
-								size="mini"
-								type="success"
-								:disabled="selects.ids.length == 0"
-								@click="toMove()"
-								>转移</el-button
-							>
-							<cl-flex1 />
-							<cl-search-key />
-						</el-row>
+				<!-- 权限 -->
+				<template #column-perms="{ scope }">
+					<el-tag
+						v-for="(item, index) in scope.row.permList"
+						:key="index"
+						size="mini"
+						effect="dark"
+						style="margin: 2px; letter-spacing: 0.5px"
+						>{{ item }}</el-tag
+					>
+				</template>
 
-						<el-row>
-							<cl-table
-								:ref="setRefs('table')"
-								v-bind="table"
-								@selection-change="onSelectionChange"
-							>
-								<!-- 头像 -->
-								<template #column-headImg="{ scope }">
-									<cl-avatar
-										shape="square"
-										size="medium"
-										:src="scope.row.headImg"
-										:style="{ margin: 'auto' }"
-									/>
-								</template>
+				<!-- 路由 -->
+				<template #column-router="{ scope }">
+					<el-link v-if="scope.row.type == 1" type="primary" :href="scope.row.router">{{
+						scope.row.router
+					}}</el-link>
+					<span v-else>{{ scope.row.router }}</span>
+				</template>
 
-								<!-- 权限 -->
-								<template #column-roleName="{ scope }">
-									<el-tag
-										v-for="(item, index) in scope.row.roleNameList"
-										:key="index"
-										disable-transitions
-										size="small"
-										effect="dark"
-										style="margin: 2px"
-										>{{ item }}</el-tag
-									>
-								</template>
+				<!-- 路由缓存 -->
+				<template #column-keepAlive="{ scope }">
+					<template v-if="scope.row.type == 1">
+						<i v-if="scope.row.keepAlive" class="el-icon-check"></i>
+						<i v-else class="el-icon-close"></i>
+					</template>
+				</template>
 
-								<!-- 单个转移 -->
-								<template #slot-move-btn="{ scope }">
-									<el-button
-										v-permission="service.base.sys.user.permission.move"
-										type="text"
-										size="mini"
-										@click="toMove(scope.row)"
-										>转移</el-button
-									>
-								</template>
-							</cl-table>
-						</el-row>
+				<!-- 行新增 -->
+				<template #slot-add="{ scope }">
+					<el-button
+						v-if="scope.row.type != 2"
+						type="text"
+						size="mini"
+						@click="upsertAppend(scope.row)"
+						>新增</el-button
+					>
+				</template>
+			</cl-table>
+		</el-row>
 
-						<el-row type="flex">
-							<cl-flex1 />
-							<cl-pagination />
-						</el-row>
+		<el-row type="flex">
+			<cl-flex1 />
+			<cl-pagination :props="{ layout: 'total' }" />
+		</el-row>
 
-						<cl-upsert
-							:ref="setRefs('upsert')"
-							v-bind="upsert"
-							:on-submit="onUpsertSubmit"
-						/>
-					</cl-crud>
-				</div>
-			</div>
-		</div>
-
-		<!-- 部门移动 -->
-		<cl-dept-move :ref="setRefs('dept-move')" @success="refresh({ page: 1 })" />
-	</div>
+		<!-- 编辑 -->
+		<cl-upsert v-bind="upsert" />
+	</cl-crud>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from "vue";
 import { useCool } from "/@/cool";
-import { Table, Upsert } from "@cool-vue/crud/types";
-import PrjTree from "../../components/project/tree.vue";
+import { deepTree } from "/@/cool/utils";
+import { defineComponent, reactive } from "vue";
+import { CrudLoad, Table, Upsert, RefreshOp } from "@cool-vue/crud/types";
+import { isDev } from "/@/config/env";
 
 export default defineComponent({
-	name: "sys-user",
-	components: {
-		PrjTree,
-	},
+	name: "project-doctree",
+
 	setup() {
-		const { refs, setRefs, store, service } = useCool();
+		const { refs, setRefs, service, router } = useCool();
 
-		// 是否展开
-		const isExpand = ref<boolean>(true);
+		// crud 加载
+		function onLoad({ ctx, app }: CrudLoad) {
+			ctx.service(service.project.docTree).done();
+			app.refresh();
+		}
 
-		// 选择项
-		const selects = reactive<any>({
-			dept: {},
-			ids: []
-		});
+		// 刷新监听
+		function onRefresh(_: any, { render }: RefreshOp) {
+			service.project.docTree.list().then((list: any[]) => {
+				list.map((e) => {
+					e.permList = e.perms ? e.perms.split(",") : [];
+				});
 
-		// 部门列表
-		const dept = ref<any[]>([]);
+				render(deepTree(list), {
+					total: list.length
+				});
+			});
+		}
+
+		// 行点击展开
+		function onRowClick(row: any, column: any) {
+			if (column.property && row.children) {
+				refs.value.table.toggleRowExpansion(row);
+			}
+		}
+
+		// 子集新增
+		function upsertAppend({ type, id }: any) {
+			refs.value.crud.rowAppend({
+				parentId: id,
+				type: type + 1
+			});
+		}
+
+		// 设置权限
+		function setPermission({ id }: any) {
+			refs.value.crud.rowAppend({
+				parentId: id,
+				type: 2
+			});
+		}
+
+		// 跳转
+		function toUrl(url: string) {
+			router.push(url);
+		}
+
+		// 刷新
+		function refresh() {
+			refs.value.crud.refresh();
+		}
 
 		// 表格配置
 		const table = reactive<Table>({
 			props: {
-				"default-sort": {
-					prop: "createTime",
-					order: "descending"
-				}
+				"row-key": "id"
 			},
+			"context-menu": [
+				(row: any) => {
+					return {
+						label: "新增",
+						hidden: row.type == 2,
+						callback: (_: any, done: Function) => {
+							upsertAppend(row);
+							done();
+						}
+					};
+				},
+				"update",
+				"delete",
+				(row: any) => {
+					return {
+						label: "权限",
+						hidden: row.type != 1,
+						callback: (_: any, done: Function) => {
+							setPermission(row);
+							done();
+						}
+					};
+				}
+			],
 			columns: [
 				{
-					type: "selection",
-					width: 60
-				},
-				{
-					prop: "headImg",
-					label: "头像"
-				},
-				{
 					prop: "name",
-					label: "姓名",
-					minWidth: 150
+					label: "名称",
+					align: "left",
+					width: 200
 				},
 				{
-					prop: "username",
-					label: "用户名",
-					minWidth: 150
+					prop: "icon",
+					label: "图标",
+					width: 80
 				},
 				{
-					prop: "nickName",
-					label: "昵称",
-					minWidth: 150
-				},
-				{
-					prop: "departmentName",
-					label: "部门名称",
-					minWidth: 150
-				},
-				{
-					prop: "roleName",
-					label: "角色",
-					headerAlign: "center",
-					minWidth: 200
-				},
-				{
-					prop: "phone",
-					label: "手机号码",
-					minWidth: 150
-				},
-				{
-					prop: "remark",
-					label: "备注",
-					minWidth: 150
-				},
-				{
-					prop: "status",
-					label: "状态",
-					minWidth: 120,
+					prop: "type",
+					label: "类型",
+					width: 100,
 					dict: [
 						{
-							label: "启用",
-							value: 1,
-							type: "success"
+							label: "目录",
+							value: 0
 						},
 						{
-							label: "禁用",
-							value: 0,
-							type: "danger"
+							label: "菜单",
+							value: 1
+						},
+						{
+							label: "权限",
+							value: 2
 						}
 					]
 				},
 				{
-					prop: "createTime",
-					label: "创建时间",
-					sortable: "custom",
-					minWidth: 150
+					prop: "router",
+					label: "节点路由",
+					minWidth: 160
 				},
 				{
+					prop: "keepAlive",
+					label: "路由缓存",
+					width: 100
+				},
+				{
+					prop: "viewPath",
+					label: "文件路径",
+					minWidth: 200,
+					showOverflowTooltip: true
+				},
+				{
+					prop: "perms",
+					label: "权限",
+					headerAlign: "center",
+					minWidth: 300
+				},
+				{
+					prop: "orderNum",
+					label: "排序号",
+					width: 90
+				},
+				{
+					prop: "updateTime",
+					label: "更新时间",
+					sortable: "custom",
+					width: 150
+				},
+				{
+					label: "操作",
 					type: "op",
-					buttons: ["slot-move-btn", "edit", "delete"],
-					width: 160
+					buttons: ["slot-add", "edit", "delete"]
 				}
 			]
 		});
@@ -216,364 +248,151 @@ export default defineComponent({
 			dialog: {
 				width: "800px"
 			},
-
 			items: [
 				{
-					prop: "headImg",
-					label: "头像",
+					prop: "type",
+					value: 0,
+					label: "节点类型",
 					span: 24,
 					component: {
-						name: "cl-upload",
-						props: {
-							text: "选择头像",
-							icon: "el-icon-picture"
-						}
+						name: "el-radio-group",
+						options: [
+							{
+								label: "目录",
+								value: 0
+							},
+							{
+								label: "菜单",
+								value: 1
+							},
+							{
+								label: "权限",
+								value: 2
+							}
+						]
 					}
 				},
 				{
 					prop: "name",
-					label: "姓名",
-					span: 12,
-					component: {
-						name: "el-input",
-						props: {
-							placeholder: "请填写姓名"
-						}
-					},
-					rules: {
-						required: true,
-						message: "姓名不能为空"
-					}
-				},
-				{
-					prop: "nickName",
-					label: "昵称",
-					span: 12,
-					component: {
-						name: "el-input",
-						props: {
-							placeholder: "请填写昵称"
-						}
-					},
-					rules: {
-						required: true,
-						message: "昵称不能为空"
-					}
-				},
-				{
-					prop: "username",
-					label: "用户名",
-					span: 12,
-					component: {
-						name: "el-input",
-						props: {
-							placeholder: "请填写用户名"
-						}
-					},
-					rules: [
-						{
-							required: true,
-							message: "用户名不能为空"
-						}
-					]
-				},
-				{
-					prop: "password",
-					label: "密码",
-					span: 12,
-					component: {
-						name: "el-input",
-						props: {
-							placeholder: "请填写密码",
-							type: "password"
-						}
-					},
-					rules: [
-						{
-							min: 6,
-							max: 16,
-							message: "密码长度在 6 到 16 个字符"
-						}
-					]
-				},
-				{
-					prop: "roleIdList",
-					label: "角色",
-					span: 24,
-					value: [],
-					component: {
-						name: "cl-role-select",
-						props: {
-							props: {
-								"multiple-limit": 3
-							}
-						}
-					},
-					rules: {
-						required: true,
-						message: "角色不能为空"
-					}
-				},
-				{
-					prop: "phone",
-					label: "手机号码",
-					span: 12,
-					component: {
-						name: "el-input",
-						props: {
-							placeholder: "请填写手机号码"
-						}
-					}
-				},
-				{
-					prop: "email",
-					label: "邮箱",
-					span: 12,
-					component: {
-						name: "el-input",
-						props: {
-							placeholder: "请填写邮箱"
-						}
-					}
-				},
-				{
-					prop: "remark",
-					label: "备注",
+					label: "节点名称",
 					span: 24,
 					component: {
 						name: "el-input",
 						props: {
-							placeholder: "请填写备注",
-							type: "textarea",
-							rows: 4
+							placeholder: "请输入节点名称"
+						}
+					},
+					required: true
+				},
+				{
+					prop: "parentId",
+					label: "上级节点",
+					span: 24,
+					component: {
+						name: "cl-menu-tree"
+					}
+				},
+				{
+					prop: "router",
+					label: "节点路由",
+					span: 24,
+					hidden: ({ scope }: any) => scope.type != 1,
+					component: {
+						name: "el-input",
+						props: {
+							placeholder: "请输入节点路由，如：/test"
 						}
 					}
 				},
 				{
-					prop: "status",
-					label: "状态",
-					value: 1,
+					prop: "keepAlive",
+					value: true,
+					label: "路由缓存",
+					span: 24,
+					hidden: ({ scope }: any) => scope.type != 1,
 					component: {
 						name: "el-radio-group",
 						options: [
 							{
 								label: "开启",
-								value: 1
+								value: true
 							},
 							{
 								label: "关闭",
-								value: 0
+								value: false
 							}
 						]
+					}
+				},
+				{
+					prop: "isShow",
+					label: "是否显示",
+					span: 24,
+					value: true,
+					hidden: ({ scope }: any) => scope.type == 2,
+					flex: false,
+					component: {
+						name: "el-switch"
+					}
+				},
+				{
+					prop: "viewPath",
+					label: "文件路径",
+					span: 24,
+					hidden: ({ scope }: any) => scope.type != 1,
+					component: {
+						name: "cl-menu-file"
+					}
+				},
+				{
+					prop: "icon",
+					label: "节点图标",
+					span: 24,
+					hidden: ({ scope }: any) => scope.type == 2,
+					component: {
+						name: "cl-menu-icons"
+					}
+				},
+				{
+					prop: "orderNum",
+					label: "排序号",
+					span: 24,
+					component: {
+						name: "el-input-number",
+						props: {
+							placeholder: "请填写排序号",
+							min: 0,
+							max: 99,
+							"controls-position": "right"
+						}
+					}
+				},
+				{
+					prop: "perms",
+					label: "权限",
+					span: 24,
+					hidden: ({ scope }: any) => scope.type != 2,
+					component: {
+						name: "cl-menu-perms"
 					}
 				}
 			]
 		});
 
-		// 浏览器信息
-		const browser = computed(() => store.getters.browser);
-
-		// 监听屏幕大小变化
-		watch(
-			() => browser.value.isMini,
-			(val: boolean) => {
-				isExpand.value = !val;
-			},
-			{
-				immediate: true
-			}
-		);
-
-		// crud 加载
-		function onLoad({ ctx, app }: any) {
-			ctx.service(service.base.sys.user).done();
-			app.refresh();
-		}
-
-		// 刷新列表
-		function refresh(params: any) {
-			refs.value.crud.refresh(params);
-		}
-
-		// 刷新监听
-		async function onRefresh(params: any, { next, render }: any) {
-			const { list } = await next(params);
-
-			render(
-				list.map((e: any) => {
-					if (e.roleName) {
-						e.roleNameList = e.roleName.split(",");
-					}
-
-					e.status = Boolean(e.status);
-
-					return e;
-				})
-			);
-		}
-
-		// 提交钩子
-		function onUpsertSubmit(_: boolean, data: any, { next }: any) {
-			let departmentId = data.departmentId;
-
-			if (!departmentId) {
-				departmentId = selects.dept.id;
-
-				if (!departmentId) {
-					departmentId = dept.value[0].id;
-				}
-			}
-
-			next({
-				...data,
-				departmentId
-			});
-		}
-
-		// 多选监听
-		function onSelectionChange(selection: any[]) {
-			selects.ids = selection.map((e) => e.id);
-		}
-
-		// 部门选择监听
-		function onDeptRowClick({ item, ids }: any) {
-			selects.dept = item;
-
-			refresh({
-				page: 1,
-				departmentIds: ids
-			});
-
-			// 收起
-			if (browser.value.isMini) {
-				isExpand.value = false;
-			}
-		}
-
-		// 部门下新增成员
-		function onDeptUserAdd(item: any) {
-			refs.value.crud.rowAppend({
-				departmentId: item.id
-			});
-		}
-
-		// 部门列表监听
-		function onDeptListChange(list: any[]) {
-			dept.value = list;
-		}
-
-		// 是否显示部门
-		function deptExpand() {
-			isExpand.value = !isExpand.value;
-		}
-
-		// 移动成员
-		async function toMove(e?: any) {
-			let ids = [];
-
-			if (!e) {
-				ids = selects.ids;
-			} else {
-				ids = [e.id];
-			}
-
-			refs.value["dept-move"].toMove(ids);
-		}
-
 		return {
-			service,
 			refs,
-			isExpand,
-			selects,
-			dept,
 			table,
 			upsert,
-			browser,
 			setRefs,
 			onLoad,
-			refresh,
 			onRefresh,
-			onUpsertSubmit,
-			onSelectionChange,
-			onDeptRowClick,
-			onDeptUserAdd,
-			onDeptListChange,
-			deptExpand,
-			toMove
+			onRowClick,
+			upsertAppend,
+			setPermission,
+			toUrl,
+			refresh,
+			isDev
 		};
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.project-doctree {
-	.pane {
-		display: flex;
-		height: 100%;
-		width: 100%;
-		position: relative;
-	}
-
-	.dept {
-		height: 100%;
-		width: 300px;
-		max-width: calc(100% - 50px);
-		background-color: #fff;
-		transition: width 0.3s;
-		margin-right: 10px;
-		flex-shrink: 0;
-
-		&._collapse {
-			margin-right: 0;
-			width: 0;
-		}
-	}
-
-	.user {
-		width: calc(100% - 310px);
-		flex: 1;
-
-		.header {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			height: 40px;
-			position: relative;
-			background-color: #fff;
-
-			span {
-				font-size: 14px;
-				white-space: nowrap;
-				overflow: hidden;
-			}
-
-			.icon {
-				position: absolute;
-				left: 0;
-				top: 0;
-				font-size: 18px;
-				cursor: pointer;
-				background-color: #fff;
-				height: 40px;
-				width: 80px;
-				line-height: 40px;
-				padding-left: 10px;
-			}
-		}
-	}
-
-	.dept,
-	.user {
-		overflow: hidden;
-		.container {
-			height: calc(100% - 40px);
-		}
-	}
-
-	@media only screen and (max-width: 768px) {
-		.dept {
-			width: calc(100% - 100px);
-		}
-	}
-}
-</style>
