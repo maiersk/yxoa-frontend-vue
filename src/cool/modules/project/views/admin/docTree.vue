@@ -3,55 +3,19 @@
 		<el-row type="flex">
 			<cl-refresh-btn />
 			<cl-add-btn />
-			<cl-menu-quick @success="refresh()" v-if="isDev" />
 		</el-row>
 
 		<el-row>
 			<cl-table :ref="setRefs('table')" v-bind="table" @row-click="onRowClick">
-				<!-- 名称 -->
-				<template #column-name="{ scope }">
-					<span>{{ scope.row.name }}</span>
-					<el-tag
-						v-if="!scope.row.isShow"
+				<!-- 测试模板文档 -->
+				<template #slot-build="{ scope }">
+					<el-button
+						v-if="scope.row.type != 1"
+						type="text"
 						size="mini"
-						effect="dark"
-						type="danger"
-						style="margin-left: 10px"
-						>隐藏</el-tag
+						@click="testBuild(scope.row)"
+						>测试</el-button
 					>
-				</template>
-
-				<!-- 图标 -->
-				<template #column-icon="{ scope }">
-					<icon-svg :name="scope.row.icon" size="16px" style="margin-top: 5px" />
-				</template>
-
-				<!-- 权限 -->
-				<template #column-perms="{ scope }">
-					<el-tag
-						v-for="(item, index) in scope.row.permList"
-						:key="index"
-						size="mini"
-						effect="dark"
-						style="margin: 2px; letter-spacing: 0.5px"
-						>{{ item }}</el-tag
-					>
-				</template>
-
-				<!-- 路由 -->
-				<template #column-router="{ scope }">
-					<el-link v-if="scope.row.type == 1" type="primary" :href="scope.row.router">{{
-						scope.row.router
-					}}</el-link>
-					<span v-else>{{ scope.row.router }}</span>
-				</template>
-
-				<!-- 路由缓存 -->
-				<template #column-keepAlive="{ scope }">
-					<template v-if="scope.row.type == 1">
-						<i v-if="scope.row.keepAlive" class="el-icon-check"></i>
-						<i v-else class="el-icon-close"></i>
-					</template>
 				</template>
 
 				<!-- 行新增 -->
@@ -82,7 +46,6 @@ import { useCool } from "/@/cool";
 import { deepTree } from "/@/cool/utils";
 import { defineComponent, reactive } from "vue";
 import { CrudLoad, Table, Upsert, RefreshOp } from "@cool-vue/crud/types";
-import { isDev } from "/@/config/env";
 
 export default defineComponent({
 	name: "project-doctree",
@@ -137,11 +100,6 @@ export default defineComponent({
 			router.push(url);
 		}
 
-		// 刷新
-		function refresh() {
-			refs.value.crud.refresh();
-		}
-
 		// 表格配置
 		const table = reactive<Table>({
 			props: {
@@ -179,11 +137,6 @@ export default defineComponent({
 					width: 200
 				},
 				{
-					prop: "icon",
-					label: "图标",
-					width: 80
-				},
-				{
 					prop: "type",
 					label: "类型",
 					width: 100,
@@ -193,40 +146,35 @@ export default defineComponent({
 							value: 0
 						},
 						{
-							label: "菜单",
+							label: "文档",
 							value: 1
-						},
-						{
-							label: "权限",
-							value: 2
 						}
 					]
 				},
 				{
-					prop: "router",
-					label: "节点路由",
+					prop: "docId",
+					label: "文档Id",
+					minWidth: 100
+				},
+				{
+					prop: "templateFile",
+					label: "模板文件",
 					minWidth: 160
 				},
 				{
-					prop: "keepAlive",
-					label: "路由缓存",
+					prop: "count",
+					label: "数量",
 					width: 100
 				},
 				{
-					prop: "viewPath",
-					label: "文件路径",
+					prop: "remark",
+					label: "备注",
 					minWidth: 200,
 					showOverflowTooltip: true
 				},
 				{
-					prop: "perms",
-					label: "权限",
-					headerAlign: "center",
-					minWidth: 300
-				},
-				{
 					prop: "orderNum",
-					label: "排序号",
+					label: "排序",
 					width: 90
 				},
 				{
@@ -262,12 +210,8 @@ export default defineComponent({
 								value: 0
 							},
 							{
-								label: "菜单",
+								label: "文档",
 								value: 1
-							},
-							{
-								label: "权限",
-								value: 2
 							}
 						]
 					}
@@ -276,6 +220,7 @@ export default defineComponent({
 					prop: "name",
 					label: "节点名称",
 					span: 24,
+					hidden: ({ scope }: any) => scope.type != 0,
 					component: {
 						name: "el-input",
 						props: {
@@ -289,68 +234,32 @@ export default defineComponent({
 					label: "上级节点",
 					span: 24,
 					component: {
-						name: "cl-menu-tree"
+						name: "cl-prj-select-tree"
 					}
 				},
 				{
-					prop: "router",
-					label: "节点路由",
+					prop: "docId",
+					label: "文档",
 					span: 24,
 					hidden: ({ scope }: any) => scope.type != 1,
 					component: {
-						name: "el-input",
+						name: "cl-doc-select",
 						props: {
-							placeholder: "请输入节点路由，如：/test"
+							multipleLimit: 1,
+							filterable: true,
+							placeholder: "请选择模板文档"
 						}
 					}
 				},
 				{
-					prop: "keepAlive",
-					value: true,
-					label: "路由缓存",
-					span: 24,
-					hidden: ({ scope }: any) => scope.type != 1,
-					component: {
-						name: "el-radio-group",
-						options: [
-							{
-								label: "开启",
-								value: true
-							},
-							{
-								label: "关闭",
-								value: false
-							}
-						]
-					}
-				},
-				{
 					prop: "isShow",
-					label: "是否显示",
+					label: "待上传",
 					span: 24,
 					value: true,
-					hidden: ({ scope }: any) => scope.type == 2,
+					hidden: ({ scope }: any) => scope.type != 1,
 					flex: false,
 					component: {
 						name: "el-switch"
-					}
-				},
-				{
-					prop: "viewPath",
-					label: "文件路径",
-					span: 24,
-					hidden: ({ scope }: any) => scope.type != 1,
-					component: {
-						name: "cl-menu-file"
-					}
-				},
-				{
-					prop: "icon",
-					label: "节点图标",
-					span: 24,
-					hidden: ({ scope }: any) => scope.type == 2,
-					component: {
-						name: "cl-menu-icons"
 					}
 				},
 				{
@@ -366,15 +275,6 @@ export default defineComponent({
 							"controls-position": "right"
 						}
 					}
-				},
-				{
-					prop: "perms",
-					label: "权限",
-					span: 24,
-					hidden: ({ scope }: any) => scope.type != 2,
-					component: {
-						name: "cl-menu-perms"
-					}
 				}
 			]
 		});
@@ -389,9 +289,7 @@ export default defineComponent({
 			onRowClick,
 			upsertAppend,
 			setPermission,
-			toUrl,
-			refresh,
-			isDev
+			toUrl
 		};
 	}
 });

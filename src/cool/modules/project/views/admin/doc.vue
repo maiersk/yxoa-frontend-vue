@@ -14,7 +14,17 @@
 
 		<el-row>
 			<!-- 数据表格 -->
-			<cl-table :ref="setRefs('table')" v-bind="table" />
+			<cl-table :ref="setRefs('table')" v-bind="table" >
+				<!-- 测试模板文档 -->
+				<template #slot-build="{ scope }">
+					<el-button
+						type="text"
+						size="mini"
+						@click="testBuild(scope.row)"
+						>测试</el-button
+					>
+				</template>
+			</cl-table>
 		</el-row>
 
 		<el-row type="flex">
@@ -115,7 +125,7 @@ export default defineComponent({
 				{ label: "留言", prop: "remark", showOverflowTooltip: true },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },
-				{ type: "op", buttons: ["edit", "delete"] }
+				{ type: "op", buttons: ["slot-build", "edit", "delete"] }
 			]
 		});
 
