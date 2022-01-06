@@ -72,7 +72,8 @@ export default defineComponent({
 					component: {
 						name: 'cl-category-select',
 						props: {
-							multipleLimit: 1
+							multipleLimit: 1,
+							filterable: true
 						}
 					}
 				},
@@ -120,7 +121,7 @@ export default defineComponent({
 					width: 300
 				},
 				{
-					prop: "category",
+					prop: "categoryName",
 					label: "日志类型",
 					width: 300
 				},
