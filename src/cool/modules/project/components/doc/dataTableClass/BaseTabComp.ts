@@ -1,8 +1,8 @@
+import { ElInput } from 'element-plus';
 import { h } from 'vue';
-import EventEmitter from 'events';
 
 export declare interface TabCompOption {
-  tag: string
+  tag: Object
   type: string
   value: string
   rules: Array<any>
@@ -14,9 +14,8 @@ export declare interface TabCompOption {
 
 export default class BaseTabComp {
   h: any
-  emitter: EventEmitter
   name: string
-  tag: string
+  tag: Object
   type: string
   value: string
   rules: Array<any>
@@ -25,9 +24,8 @@ export default class BaseTabComp {
 
   constructor(name: string, options: TabCompOption) {
     this.h = h
-    this.emitter = new EventEmitter()
     this.name = name
-    this.tag = options?.tag ?? 'input '
+    this.tag = options?.tag ?? ElInput
     this.type = options?.type ?? 'string'
     this.value = options?.value ?? ''
     this.rules = options?.rules ?? []
@@ -49,7 +47,7 @@ export default class BaseTabComp {
       on: {
         input: (event: any) => {
           const value = event && event.target ? event.target.value : event
-          this.emitter.emit('input', value)
+          // this.emitter.emit('input', value)
         }
       }
     }

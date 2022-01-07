@@ -1,5 +1,5 @@
 <template>
-	<el-card class="preview-card" body-style="height: 100%;">
+	<el-card class="preview-card scroller1" body-style="height: 100%;">
 		<template #header>
 			<span>预览模板</span>
 		</template>

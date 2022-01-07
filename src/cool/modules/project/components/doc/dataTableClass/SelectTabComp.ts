@@ -1,5 +1,6 @@
 import request from "/@/service/request";
 import BaseTabComp, { TabCompOption } from './BaseTabComp'
+import { ElSelect } from "element-plus";
 
 export default class SelectTabComp extends BaseTabComp {
   source: string
@@ -7,7 +8,7 @@ export default class SelectTabComp extends BaseTabComp {
 
   constructor(name: string, options: TabCompOption) {
     super(name, options)
-    this.tag = 'el-select'
+    this.tag = ElSelect
     this.source = options?.source ?? '/'
     this.datalist = []
   }
@@ -31,14 +32,14 @@ export default class SelectTabComp extends BaseTabComp {
     return this.h(this.tag, {
       ...this.option
     }, [
-      this.datalist.map((item) => {
-        return this.h('el-option', {
-          props: {
-            label: item.name,
-            value: item.id
-          }
-        })
-      })
+      // this.datalist.map((item) => {
+      //   return this.h('el-option', {
+      //     props: {
+      //       label: item.name,
+      //       value: item.id
+      //     }
+      //   })
+      // })
     ])
   }
 }

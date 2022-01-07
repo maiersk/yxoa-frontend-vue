@@ -17,10 +17,10 @@ const craeteFormItem = function (ctx: any, k: string, item: any) {
 		compObj.props({
 			value: ctx.form[k]
 		});
-		compObj.on("input", (value: any) => {
-			ctx.form[k] = value;
-			ctx.form.template[k].value = value;
-		});
+		// compObj.on("input", (value: any) => {
+		// 	ctx.form[k] = value;
+		// 	ctx.form.template[k].value = value;
+		// });
 
 		vnode = compObj.create();
 	}
@@ -28,9 +28,7 @@ const craeteFormItem = function (ctx: any, k: string, item: any) {
 	return h(
 		ElFormItem,
 		{
-			attrs: {
-				label: item.cname
-			},
+			label: item.cname,
 			props: {
 				rules: item.rules,
 				prop: k
@@ -41,12 +39,6 @@ const craeteFormItem = function (ctx: any, k: string, item: any) {
 };
 
 export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: "{}"
-		}
-	},
 	created() {
 		try {
 			this.initJson();
@@ -54,7 +46,7 @@ export default defineComponent({
 			ElMessage.warning("错误的JSON数据");
 		}
 	},
-	setup(props: any, ctx: any) {
+	setup(props: any, { emit, attrs, set }: any) {
 		const { refs, setRefs } = useCool();
 
 		const data = reactive<any>({
@@ -67,21 +59,22 @@ export default defineComponent({
 		watch(
 			() => data.from,
 			() => {
-				ctx.emit("input", JSON.stringify(data.json));
+				emit("input", JSON.stringify(data.json));
 			}
 		);
 
 		const initJson = function () {
-			if (props.value === "{}") {
+			if (attrs.modelValue === "{}") {
 				ElMessage.warning("请填写数据模板");
 				return;
 			}
+			console.log(attrs.modelValue);
+			data.json = JSON.parse(attrs.modelValue);
 
-			data.json = JSON.parse(props.value);
 			Object.keys(data.json.template).forEach((k) => {
 				const template = data.json.template[k];
 				if (template.value !== undefined || template.value !== null) {
-					ctx.set(data.form, k, data.json.template[k].value);
+					data.form[k] = data.json.template[k].value
 				}
 			});
 			data.showOperator = true;
@@ -108,20 +101,22 @@ export default defineComponent({
 
 		return h(ElCard, {}, [
 			h("div", { slot: 'header' }, [
-				h("span", "数据填写"),
-				h("div", { class: "operator" }, [
-					h(
-						ElButton,
-						{
-							type: "primary",
-							onClick: () => {
-								this.$forceUpdate();
-								this.initJson();
-								this.refs.value["ruleForm"].resetFields();
-							}
-						},
-						["刷新表单"]
-					)
+				h("div", { class: "data-card" }, [
+					h("span", "数据填写"),
+					h("div", { class: "operator" }, [
+						h(
+							ElButton,
+							{
+								type: "text",
+								onClick: () => {
+									this.$forceUpdate();
+									this.initJson();
+									this.refs.value["ruleForm"].resetFields();
+								}
+							},
+							["刷新表单"]
+						)
+					])
 				])
 			]),
 			h(
@@ -129,10 +124,10 @@ export default defineComponent({
 				{
 					ref: this.setRefs("ruleForm"),
 					class: "form-datatab",
-					attrs: {
-						"label-position": "right",
-						"label-width": "80px"
-					},
+					// attrs: {
+					// 	"label-position": "right",
+					// 	"label-width": "80px"
+					// },
 					props: {
 						model: ctx.form
 					}
@@ -161,10 +156,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  .operator {
-    float: right;
+	.data-card {
+		margin: 0;
+		padding: 0;
+	}
+	.data-card::before,
+	.data-card::after {
+		display: table;
+		content: "";
+	}
+	.data-card::after {
+		clear: both;
+	}
 
+  .operator {
+		float: right;
     > button {
+			min-height: 0;
       padding: 0;
     }
   }
