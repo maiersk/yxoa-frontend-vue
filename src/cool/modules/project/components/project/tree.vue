@@ -110,7 +110,7 @@ export default defineComponent({
 			isDrag.value = false;
 			loading.value = true;
 
-			await service.base.sys.menu.list().then((res: any[]) => {
+			await service.project.docTree.list().then((res: any[]) => {
 				list.value = deepTree(res);
 				emit("list-change", list.value);
 			});
@@ -176,7 +176,7 @@ export default defineComponent({
 				form: e,
 				on: {
 					submit: (data: any, { done, close }: any) => {
-						service.base.sys.department[method]({
+						service.project.docTree[method]({
 							id: e.id,
 							parentId: e.parentId,
 							name: data.name,
@@ -199,7 +199,7 @@ export default defineComponent({
 		// 删除
 		function rowDel(e: any) {
 			const del = async (f: boolean) => {
-				await service.base.sys.department
+				await service.project.docTree
 					.delete({
 						ids: [e.id],
 						deleteUser: f
@@ -256,7 +256,7 @@ export default defineComponent({
 
 						deep(list.value, null);
 
-						await service.base.sys.department
+						await service.project.docTree
 							.order(
 								ids.map((e, i) => {
 									return {
@@ -295,7 +295,7 @@ export default defineComponent({
 						"suffix-icon": "el-icon-plus",
 						hidden:
 							(n && n.level >= props.level) ||
-							!service.base.sys.department._permission.add,
+							!service.project.docTree._permission.add,
 						callback: (_: any, done: Function) => {
 							rowEdit({
 								name: "",
@@ -308,7 +308,7 @@ export default defineComponent({
 					{
 						label: "编辑",
 						"suffix-icon": "el-icon-edit",
-						hidden: !service.base.sys.department._permission.update,
+						hidden: !service.project.docTree._permission.update,
 						callback: (_: any, done: Function) => {
 							rowEdit(d);
 							done();
@@ -317,7 +317,7 @@ export default defineComponent({
 					{
 						label: "删除",
 						"suffix-icon": "el-icon-delete",
-						hidden: !d.parentId || !service.base.sys.department._permission.delete,
+						hidden: !d.parentId || !service.project.docTree._permission.delete,
 						callback: (_: any, done: Function) => {
 							rowDel(d);
 							done();
@@ -326,7 +326,7 @@ export default defineComponent({
 					{
 						label: "新增文档",
 						"suffix-icon": "el-icon-user",
-						hidden: !service.base.sys.user._permission.add,
+						hidden: !service.project.doc._permission.add,
 						callback: (_: any, done: Function) => {
 							emit("user-add", d);
 							done();

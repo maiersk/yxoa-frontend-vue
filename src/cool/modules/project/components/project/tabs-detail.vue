@@ -1,6 +1,6 @@
 <template>
-	<div class="prj-detail">
-		<el-descriptions class="prj-desc" title="项目信息">
+	<div class="prj-detail scroller1">
+		<el-descriptions class="prj-desc" title="项目信息" direction="vertical" :column="4" border>
 			<el-descriptions-item label="建设项目名称:">
 				<el-tag size="small">{{ project.name }}</el-tag>
 			</el-descriptions-item>

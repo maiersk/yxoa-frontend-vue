@@ -1,5 +1,5 @@
 <template>
-	<cl-crud class="project-crud-user" :ref="setRefs('crud')" @load="onLoad">
+	<cl-crud class="project-crud-user scroller1" :ref="setRefs('crud')" @load="onLoad">
 		<el-row type="flex" align="middle">
 			<!-- 刷新按钮 -->
 			<cl-refresh-btn />

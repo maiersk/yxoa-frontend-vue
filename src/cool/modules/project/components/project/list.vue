@@ -8,7 +8,7 @@
 				<li v-for="(item, i) in list" :key="i">
 					<el-card class="project-card" shadow="hover">
 						<template #header>
-							<div class="card_title" style="margin: 0; padding: 0">
+							<div class="card_title" style="margin: 0; padding: 0;">
 								<span>{{ item.name }}</span>
 
 								<a style="float: right">
@@ -16,15 +16,10 @@
 										详细
 									</router-link>
 								</a>
-								<!-- <el-button type="text" @click="toDetail(item.id)"
-                  style="float: right; padding: 3px 0; min-height:0px;"
-                >
-                  详细
-                </el-button> -->
 							</div>
 						</template>
 						<div class="card_body">
-							<el-descriptions title="项目信息">
+							<el-descriptions title="项目信息" direction="vertical" border>
 								<el-descriptions-item label="建设项目名称:">
 									<el-tag size="small">{{ item.name }}</el-tag>
 								</el-descriptions-item>
