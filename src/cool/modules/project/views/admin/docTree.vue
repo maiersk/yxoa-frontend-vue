@@ -7,21 +7,21 @@
 
 		<el-row>
 			<cl-table :ref="setRefs('table')" v-bind="table" @row-click="onRowClick">
-				<!-- 测试模板文档 -->
+				<!-- 生成模板文档 -->
 				<template #slot-build="{ scope }">
 					<el-button
-						v-if="scope.row.type != 1"
+						v-if="scope.row.type != 0"
 						type="text"
 						size="mini"
-						@click="testBuild(scope.row)"
-						>测试</el-button
+						@click="openBuildDialog(scope.row)"
+						>生成文档</el-button
 					>
 				</template>
 
 				<!-- 行新增 -->
 				<template #slot-add="{ scope }">
 					<el-button
-						v-if="scope.row.type != 2"
+						v-if="scope.row.type != 1"
 						type="text"
 						size="mini"
 						@click="upsertAppend(scope.row)"
@@ -36,6 +36,12 @@
 			<cl-pagination :props="{ layout: 'total' }" />
 		</el-row>
 
+		<!-- 测试生成模板文档 -->
+		<cl-dialog title="测试" v-model="buildDialog"
+			width="1000px"
+		>
+			<build-doc :docId="buildDocId" />
+		</cl-dialog>
 		<!-- 编辑 -->
 		<cl-upsert v-bind="upsert" />
 	</cl-crud>
@@ -44,14 +50,26 @@
 <script lang="ts">
 import { useCool } from "/@/cool";
 import { deepTree } from "/@/cool/utils";
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { CrudLoad, Table, Upsert, RefreshOp } from "@cool-vue/crud/types";
+import BuildDoc from "../../components/doc/buildDoc.vue";
 
 export default defineComponent({
 	name: "project-doctree",
+  components: {
+		BuildDoc
+	},
 
 	setup() {
 		const { refs, setRefs, service, router } = useCool();
+		const buildDialog = ref<boolean>(false);
+		const buildDocId	= ref<number>(0);
+
+		// 打开生成对话框
+		function openBuildDialog(scope: any) {
+			buildDocId.value = scope.docId
+			buildDialog.value = true
+		}
 
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
@@ -186,7 +204,7 @@ export default defineComponent({
 				{
 					label: "操作",
 					type: "op",
-					buttons: ["slot-add", "edit", "delete"]
+					buttons: ["slot-add", "slot-build", "edit", "delete"]
 				}
 			]
 		});
@@ -252,14 +270,14 @@ export default defineComponent({
 					}
 				},
 				{
-					prop: "isShow",
-					label: "待上传",
+					prop: "remark",
+					label: "备注",
 					span: 24,
-					value: true,
-					hidden: ({ scope }: any) => scope.type != 1,
-					flex: false,
 					component: {
-						name: "el-switch"
+						name: "el-input",
+						props: {
+							placeholder: "请输入备注"
+						}
 					}
 				},
 				{
@@ -289,6 +307,9 @@ export default defineComponent({
 			onRowClick,
 			upsertAppend,
 			setPermission,
+			openBuildDialog,
+			buildDialog,
+			buildDocId,
 			toUrl
 		};
 	}

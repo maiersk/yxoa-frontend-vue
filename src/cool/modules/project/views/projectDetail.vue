@@ -1,5 +1,5 @@
 <template>
-	<div class="project-detail scroller1">
+	<div class="project-detail">
 		<project-tabs>
 			<template #detail>
 				<tabs-detail :project="project.value"></tabs-detail>
