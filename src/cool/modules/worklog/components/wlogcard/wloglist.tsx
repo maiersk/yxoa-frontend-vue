@@ -1,5 +1,7 @@
+import { ElMessage } from 'element-plus';
 import { defineComponent, h, inject } from 'vue';
 import WlogCard from "./wlogcard.vue";
+import { useCool } from '/@/cool';
 
 export default defineComponent({
   name: "cl-wloglist",
@@ -16,21 +18,28 @@ export default defineComponent({
     }
   },
   setup(props: any, ctx: any) {
-    const service = inject<any>('service')
+    const { service, refs, setRefs } = useCool();
+  
+    const delWlog = async (id: any) => {
+      let ids = [];
+      ids.push(id);
+      await service.worklog.wlog.delete({ ids });
+      ElMessage.success('删除成功');
+      refresh()
+    }
 
-    const delWlog = (id: any) => {
-      ctx.message({
-
+    const refresh = () => {
+      const wlogsDom = [...refs.value['wlogListRef'].$el.children]
+      wlogsDom.map((e: any) => {
+        e.remove()
       })
-      const ids: any = []
-      ids.push(id)
-      service.worklog.wlog.delete({ ids }).then((res: any) => {
-        console.log(res)
-      })
+      ctx.emit('onLoad')
     }
 
     return {
-      delWlog
+      delWlog,
+      refs,
+      setRefs
     }
   },
   render(ctx: any) {
@@ -58,6 +67,7 @@ export default defineComponent({
       h(<el-row></el-row>, {
         class: "wlog-list",
         width: "100%",
+        ref: ctx.setRefs('wlogListRef'),
         style: {
           'display': 'flex',
           'flex-direction': 'column',
@@ -65,8 +75,7 @@ export default defineComponent({
         }
       }, [
         ...wlog_dom
-      ]
-      )
+      ])
     )
   }
 });

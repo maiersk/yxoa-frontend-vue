@@ -5,7 +5,7 @@
 				<span class="title">{{ wlog.title }}</span>
 
 				<span class="operator">
-					<a @click="delWlog()">删除</a>
+					<a @click="delWlog($event)">删除</a>
 				</span>
 			</div>
 		</template>
