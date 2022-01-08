@@ -105,14 +105,6 @@ export default defineComponent({
 			});
 		}
 
-		// 设置权限
-		function setPermission({ id }: any) {
-			refs.value.crud.rowAppend({
-				parentId: id,
-				type: 2
-			});
-		}
-
 		// 跳转
 		function toUrl(url: string) {
 			router.push(url);
@@ -127,7 +119,7 @@ export default defineComponent({
 				(row: any) => {
 					return {
 						label: "新增",
-						hidden: row.type == 2,
+						hidden: row.type == 1,
 						callback: (_: any, done: Function) => {
 							upsertAppend(row);
 							done();
@@ -135,17 +127,7 @@ export default defineComponent({
 					};
 				},
 				"update",
-				"delete",
-				(row: any) => {
-					return {
-						label: "权限",
-						hidden: row.type != 1,
-						callback: (_: any, done: Function) => {
-							setPermission(row);
-							done();
-						}
-					};
-				}
+				"delete"
 			],
 			columns: [
 				{
@@ -306,7 +288,6 @@ export default defineComponent({
 			onRefresh,
 			onRowClick,
 			upsertAppend,
-			setPermission,
 			openBuildDialog,
 			buildDialog,
 			buildDocId,
