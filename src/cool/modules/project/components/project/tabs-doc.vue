@@ -1,5 +1,5 @@
 <template>
-	<div class="project-doc scroller1">
+	<div class="project-doctdetail scroller1">
 		<div class="pane">
 			<!-- 文档架构 -->
 			<div class="dept" :class="[isExpand ? '_expand' : '_collapse']">
@@ -506,7 +506,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.project-doctree {
+.project-doctdetail {
 	.pane {
 		display: flex;
 		height: 100%;

@@ -14,6 +14,16 @@ export default defineComponent({
 	components: {
 		ProjectList
 	},
+	cool: {
+		// 注入视图路由中
+		route: {
+			path: "/project/", // 路由地址
+			meta: {
+				keepAlive: true, // 是否缓存路由
+				label: "项目" // 路由名称
+			}
+		}
+	},
 	setup() {
 		const { service } = useCool()
 		const data = reactive<any>({

@@ -37,8 +37,8 @@ export default {
 .project-tabs {
   min-height: calc(100% - 2px);
 
-  .el-tabs__content  {
-    height: 100%;
+  .el-tabs__content {
+    min-height: 100vh;
   }
 }
 </style>
