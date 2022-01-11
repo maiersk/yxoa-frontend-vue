@@ -1,8 +1,8 @@
 <script lang="ts">
 import { ElButton, ElCard, ElForm, ElFormItem, ElMessage } from "element-plus";
-import { defineComponent, onMounted, reactive, toRefs, watch, h } from "vue";
+import { defineComponent, ref, reactive, toRefs, watch, h } from "vue";
 import { useCool } from "/@/cool/core";
-import components from "./dataTableClass";
+import components from "./dataTableComp";
 
 export default defineComponent({
 	props: {
@@ -11,7 +11,8 @@ export default defineComponent({
 			default: "{}"
 		}
 	},
-	setup(props: any, { emit, attrs, set }: any) {
+	emits: ['update:modelValue'],
+	setup(props: any, { emit }: any) {
 		const { refs, setRefs } = useCool();
 
 		const data = reactive<any>({
@@ -24,64 +25,86 @@ export default defineComponent({
 		watch(
 			() => data.form,
 			() => {
-				emit("input", JSON.stringify(data.json));
+				emit("update:modelValue", JSON.stringify(data.json));
 			}
 		);
 
-		const initJson = function () {
-			if (props.modelValue === "{}") {
-				ElMessage.warning("请填写数据模板");
-				return;
-			}
-			console.log(props.modelValue);
-			data.json = JSON.parse(props.modelValue);
-
-			Object.keys(data.json.template).forEach((k) => {
-				const template = data.json.template[k];
-				if (template.value !== undefined || template.value !== null) {
-					data.form[k] = data.json.template[k].value
-				}
-			});
-			data.showOperator = true;
-		};
-
-		onMounted(() => {
-			try {
+		watch(
+			() => props.modelValue,
+			() => {
 				initJson();
-			} catch (err) {
-				ElMessage.warning("错误的JSON数据");
 			}
-		})
+		)
+
+		const initJson = function () {
+			try {
+				if (props.modelValue === "{}") {
+					ElMessage.warning("请填写数据模板");
+					return;
+				}
+				console.log(props.modelValue);
+				data.json = JSON.parse(props.modelValue);
+	
+				if (data?.json?.template ?? false) {
+					Object.keys(data.json.template).forEach((k) => {
+						const template = data.json.template[k];
+						if (template.value !== undefined || template.value !== null) {
+							data.form[k] = ref<any>(data.json.template[k].value)
+						}
+					});
+					data.showOperator = true;
+				}
+
+			} catch (err) {
+				ElMessage.warning("错误的JSON数据")
+			}
+		};
 
 		const createFormItem = function (k: string, item: any) {
 			let vnode;
 			const Component: any = components[item.tag];
 
+			// if (Component) {
+			// 	const compObj = new Component(k, item);
+			// 	const template = data.json.template[k];
+
+			// 	data.form[k] = template.value !== "" ? `${template.value}` : data.form[k];
+
+			// 	compObj.props({
+				// 		modelValue: data.form[k].value
+			// 	});
+			// 	compObj.on("input", (value: any) => {
+				// 		console.log("on", value);
+			// 		data.form[k].value = value;
+			// 		data.form.template[k].value = value;
+			// 	});
+
+			// 	vnode = compObj.create();
+			// }
 			if (Component) {
-				const compObj = new Component(k, item);
 				const template = data.json.template[k];
+				data.form[k].value = template.value !== "" ? `${template.value}` : data.form[k].value;
 
-				data.form[k] = template.value !== "" ? `${template.value}` : data.form[k];
-
-				compObj.props({
-					value: data.form[k]
-				});
-				// compObj.on("input", (value: any) => {
-				// 	ctx.form[k] = value;
-				// 	ctx.form.template[k].value = value;
-				// });
-
-				vnode = compObj.create();
+				vnode = h(
+					Component,
+					{
+						modelValue: data.form[k].value,
+						oninput(value: any) {
+							console.log("on", value);
+							data.form[k].value = value;
+							data.form.template[k].value = value;
+						}
+					},
+					[]
+				)
 			}
 
 			return h(
 				ElFormItem,
 				{
 					label: item.cname,
-					props: {
-						rules: item.rules,
-						prop: k
-					}
+					rules: item.rules,
+					prop: k
 				},
 				[vnode]
 			);
@@ -101,7 +124,7 @@ export default defineComponent({
 				const template = ctx.json.template[k];
 
 				if (template) {
-					// ctx.vnodes.push(ctx.createFormItem(ctx, k, template));
+					ctx.vnodes.push(ctx.createFormItem(k, template));
 				}
 			});
 		}
@@ -118,7 +141,8 @@ export default defineComponent({
 							onClick: () => {
 								ctx.$forceUpdate();
 								ctx.initJson();
-								ctx.refs.value.ruleForm.resetFields();
+								console.log(ctx.refs.ruleForm)
+								ctx.refs.ruleForm.resetFields();
 							}
 						},
 						["刷新表单"]

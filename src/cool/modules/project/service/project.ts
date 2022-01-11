@@ -23,7 +23,7 @@ class ProjectService extends BaseService {
   @Permission("getbyuser")
   getByUser(userId: number) {
     return this.request({
-      url: `/adduser?userId=${userId}`,
+      url: `/getbyuser?userId=${userId}`,
       method: "GET"
     })
   }
@@ -31,7 +31,7 @@ class ProjectService extends BaseService {
   @Permission("getusers")
   getUsers(projectId: number) {
     return this.request({
-      url: `/addusers?projectId=${projectId}`,
+      url: `/getusers?projectId=${projectId}`,
       method: "GET"
     })
   }

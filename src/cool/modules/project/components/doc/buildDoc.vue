@@ -30,9 +30,6 @@ export default {
       default: 0
     }
   },
-  created() {
-    console.log(this)
-  },
   setup(props: any, ctx: any) {
     const { service } = useCool();
     const doc = ref<Object>({ data: '{}' })

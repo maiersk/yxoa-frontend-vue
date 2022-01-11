@@ -35,10 +35,19 @@ export default {
 
 <style lang="scss">
 .project-tabs {
-  min-height: calc(100% - 2px);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex: 1;
 
   .el-tabs__content {
-    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 }
 </style>

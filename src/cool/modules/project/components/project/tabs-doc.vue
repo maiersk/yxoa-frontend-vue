@@ -112,6 +112,14 @@ export default defineComponent({
 	components: {
 		PrjTree,
 	},
+	props: {
+		project: {
+			type: Object,
+			default() {
+				return {}
+			}
+		}
+	},
 	setup() {
 		const { refs, setRefs, store, service } = useCool();
 

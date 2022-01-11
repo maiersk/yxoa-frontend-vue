@@ -1,5 +1,6 @@
 import { ElInput } from 'element-plus';
 import { h } from 'vue';
+import mitt from 'mitt';
 
 export declare interface TabCompOption {
   tag: Object
@@ -21,6 +22,7 @@ export default class BaseTabComp {
   rules: Array<any>
   option: any
   child: Array<any>
+  emitter: any
 
   constructor(name: string, options: TabCompOption) {
     this.h = h
@@ -31,11 +33,12 @@ export default class BaseTabComp {
     this.rules = options?.rules ?? []
     this.option = options.option ?? {}
     this.child = options?.child ?? []
+    this.emitter = mitt()
   }
 
   props(other: Array<any>) {
-    this.option.props = {
-      ...this.option.props,
+    this.option = {
+      ...this.option,
       ...other
     }
   }
@@ -44,13 +47,16 @@ export default class BaseTabComp {
     this.option = {
       ...this.option,
       native: true,
-      on: {
-        input: (event: any) => {
-          const value = event && event.target ? event.target.value : event
-          // this.emitter.emit('input', value)
-        }
+      oninput: (event: any) => {
+        const value = event && event.target ? event.target.value : event
+        console.log('emit', value)
+        this.emitter.emit('input', () => value)
       }
     }
+  }
+
+  on(option: any) {
+    this.emitter.on(option)
   }
 
   handleRules() {
