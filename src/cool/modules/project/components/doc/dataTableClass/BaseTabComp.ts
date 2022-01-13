@@ -50,13 +50,13 @@ export default class BaseTabComp {
       oninput: (event: any) => {
         const value = event && event.target ? event.target.value : event
         console.log('emit', value)
-        this.emitter.emit('input', () => value)
+        this.emitter.emit('input', value)
       }
     }
   }
 
-  on(option: any) {
-    this.emitter.on(option)
+  on(tag: string, func: Function) {
+    this.emitter.on(tag, func)
   }
 
   handleRules() {
@@ -65,6 +65,10 @@ export default class BaseTabComp {
 
   create() {
     this.combinationOption()
-    return this.h(this.tag, this.option, this.child)
+    return this.h(this.tag, this.option, {
+      default() {
+        return [this.child]
+      }
+    })
   }
 }

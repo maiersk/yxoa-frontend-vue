@@ -1,8 +1,8 @@
 <script lang="ts">
 import { ElButton, ElCard, ElForm, ElFormItem, ElMessage } from "element-plus";
-import { defineComponent, ref, reactive, toRefs, watch, h } from "vue";
+import { defineComponent, ref, reactive, toRefs, watch, h, onMounted } from "vue";
 import { useCool } from "/@/cool/core";
-import components from "./dataTableComp";
+import components from "./dataTableClass";
 
 export default defineComponent({
 	props: {
@@ -29,12 +29,6 @@ export default defineComponent({
 			}
 		);
 
-		watch(
-			() => props.modelValue,
-			() => {
-				initJson();
-			}
-		)
 
 		const initJson = function () {
 			try {
@@ -62,41 +56,24 @@ export default defineComponent({
 
 		const createFormItem = function (k: string, item: any) {
 			let vnode;
-			const Component: any = components[item.tag];
+			const Component: any = components[item.tag]
 
-			// if (Component) {
-			// 	const compObj = new Component(k, item);
-			// 	const template = data.json.template[k];
-
-			// 	data.form[k] = template.value !== "" ? `${template.value}` : data.form[k];
-
-			// 	compObj.props({
-				// 		modelValue: data.form[k].value
-			// 	});
-			// 	compObj.on("input", (value: any) => {
-				// 		console.log("on", value);
-			// 		data.form[k].value = value;
-			// 		data.form.template[k].value = value;
-			// 	});
-
-			// 	vnode = compObj.create();
-			// }
 			if (Component) {
+				const compObj = new Component(k, item);
 				const template = data.json.template[k];
-				data.form[k].value = template.value !== "" ? `${template.value}` : data.form[k].value;
 
-				vnode = h(
-					Component,
-					{
-						modelValue: data.form[k].value,
-						oninput(value: any) {
-							console.log("on", value);
-							data.form[k].value = value;
-							data.form.template[k].value = value;
-						}
-					},
-					[]
-				)
+				data.form[k] = template.value !== "" ? `${template.value}` : data.form[k];
+
+				compObj.props({
+					modelValue: data.form[k]
+				});
+				compObj.on("input", (value: any) => {
+					console.log("on", value);
+					data.form[k] = value;
+					data.json.template[k].value = value;
+				});
+
+				vnode = compObj.create();
 			}
 
 			return h(
@@ -110,7 +87,12 @@ export default defineComponent({
 			);
 		};
 
+		onMounted(() => {
+			initJson()
+		})
+
 		return {
+			onMounted,
 			...toRefs(data),
 			initJson,
 			refs,
@@ -128,27 +110,27 @@ export default defineComponent({
 				}
 			});
 		}
-		console.log(ctx)
 
 		return h(ElCard, {}, {
-			header: () => h("div", { class:"data-card" }, [
-				h("span", "数据填写"),
-				h("div", { class: "operator" }, [
-					h(
-						ElButton,
-						{
-							type: "text",
-							onClick: () => {
-								ctx.$forceUpdate();
-								ctx.initJson();
-								console.log(ctx.refs.ruleForm)
-								ctx.refs.ruleForm.resetFields();
-							}
-						},
-						["刷新表单"]
-					)
-				])
-			]),
+			header: () => h("div", { class:"data-card" }, {
+				default: () => [
+					h("span", "数据填写"),
+					h("div", { class: "operator" }, [
+						h(
+							ElButton,
+							{
+								type: "text",
+								onClick: () => {
+									ctx.$forceUpdate();
+									ctx.initJson();
+									ctx.refs.ruleForm.resetFields();
+								}
+							},
+							"刷新表单"
+						)
+					])
+				]
+			}),
 			default: () => h(
 				ElForm,
 				{
@@ -158,21 +140,23 @@ export default defineComponent({
 					"label-position": "right",
 					"label-width": "80px",
 				},
-				[
-					...ctx.vnodes,
-					ctx.showOperator ? h(ElFormItem, {}, [
-						h(
-							ElButton,
-							{
-								type: "primary",
-								onClick: () => {
-									ctx.$emit("Submit", ctx.form);
-								}
-							},
-							["测试生成"]
-						)
-					]) : null
-				]
+				{
+					default: () => [
+						...ctx.vnodes,
+						ctx.showOperator ? h(ElFormItem, {}, [
+							h(
+								ElButton,
+								{
+									type: "primary",
+									onClick: () => {
+										ctx.$emit("Submit", ctx.form);
+									}
+								},
+								"测试生成"
+							)
+						]) : null
+					]
+				}
 			)
 		});
 	}
