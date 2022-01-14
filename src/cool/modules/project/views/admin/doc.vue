@@ -32,7 +32,7 @@
 
 		<!-- 测试生成模板文档 -->
 		<cl-dialog title="生成文档" v-model="buildDialog" width="1000px">
-			<build-doc :docId="buildDocId"></build-doc>
+			<build-doc></build-doc>
 		</cl-dialog>
 
 		<!-- 新增、编辑 -->
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, reactive, ref } from "vue";
+import { defineComponent, inject, provide, reactive, ref } from "vue";
 import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useRefs } from "/@/cool";
 import BuildDoc from "../../components/doc/buildDoc.vue";
@@ -69,11 +69,12 @@ export default defineComponent({
 		const { refs, setRefs } = useRefs();
 		const service = inject<any>("service");
 		const buildDialog = ref<boolean>(false);
-		const buildDocId = ref<Number>(0);
+		const buildDocObj = ref<Object>({});
+		provide('docObj', buildDocObj);
 
 		// 打开生成对话框 
 		function openBuildDialog(scope: any) {
-			buildDocId.value = scope.id;
+			buildDocObj.value = scope;
 			buildDialog.value = true;
 		}
 
@@ -196,7 +197,7 @@ export default defineComponent({
 			onLoad,
 			openBuildDialog,
 			buildDialog,
-			buildDocId
+			buildDocObj
 		};
 	}
 });

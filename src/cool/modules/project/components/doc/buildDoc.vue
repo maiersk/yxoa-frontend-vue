@@ -14,33 +14,20 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref } from 'vue';
+import { inject } from 'vue';
 import DataTable from './dataTable.vue';
 import DocPerview from './perview.vue';
-import { useCool } from '/@/cool/core';
 
 export default {
   components: {
     DataTable,
     DocPerview
   },
-  props: {
-    docId: {
-      type: Number,
-      default: 0
-    }
-  },
   setup(props: any, ctx: any) {
-    const { service } = useCool();
-    const doc = ref<Object>({ data: '{}' })
-
-    onMounted(async () => {
-      doc.value = await service.project.doc.info({ id: props.docId })
-    })
+    const doc = inject('docObj');
 
     return {
-      doc,
-      onMounted
+      doc
     }
   }
 };

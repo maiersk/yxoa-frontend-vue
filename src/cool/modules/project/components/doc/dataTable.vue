@@ -16,16 +16,16 @@ export default defineComponent({
 		const { refs, setRefs } = useCool();
 
 		const data = reactive<any>({
-			form: {},
-			json: {},
 			showOperator: false,
 			vnodes: []
 		});
+		const form = reactive<any>({});
+		const json = reactive<any>({});
 
 		watch(
-			() => data.form,
+			() => form,
 			() => {
-				emit("update:modelValue", JSON.stringify(data.json));
+				emit("update:modelValue", JSON.stringify(json.value));
 			}
 		);
 
@@ -37,13 +37,14 @@ export default defineComponent({
 					return;
 				}
 				console.log(props.modelValue);
-				data.json = JSON.parse(props.modelValue);
+				json.value = JSON.parse(props.modelValue);
 	
-				if (data?.json?.template ?? false) {
-					Object.keys(data.json.template).forEach((k) => {
-						const template = data.json.template[k];
+				if (json?.value?.template ?? false) {
+					Object.keys(json.value.template).forEach((k) => {
+						const template = json.value.template[k];
 						if (template.value !== undefined || template.value !== null) {
-							data.form[k] = ref<any>(data.json.template[k].value)
+							form[k] = reactive<any>(json.value.template[k].value)
+							data.vnodes.push(createFormItem(k, template));
 						}
 					});
 					data.showOperator = true;
@@ -60,17 +61,18 @@ export default defineComponent({
 
 			if (Component) {
 				const compObj = new Component(k, item);
-				const template = data.json.template[k];
+				const template = json.value.template[k];
 
-				data.form[k] = template.value !== "" ? `${template.value}` : data.form[k];
+				form[k] = template.value !== "" ? `${template.value}` : form[k];
 
 				compObj.props({
-					modelValue: data.form[k]
+					modelValue: form[k].value
 				});
 				compObj.on("input", (value: any) => {
 					console.log("on", value);
-					data.form[k] = value;
-					data.json.template[k].value = value;
+
+					form[k] = value;
+					json.value.template[k].value = value;
 				});
 
 				vnode = compObj.create();
@@ -94,6 +96,8 @@ export default defineComponent({
 		return {
 			onMounted,
 			...toRefs(data),
+			form,
+			json,
 			initJson,
 			refs,
 			setRefs,
@@ -101,16 +105,6 @@ export default defineComponent({
 		};
 	},
 	render(ctx: any) {
-		if (ctx.json?.template ?? false) {
-			Object.keys(ctx.json.template).forEach((k) => {
-				const template = ctx.json.template[k];
-
-				if (template) {
-					ctx.vnodes.push(ctx.createFormItem(k, template));
-				}
-			});
-		}
-
 		return h(ElCard, {}, {
 			header: () => h("div", { class:"data-card" }, {
 				default: () => [
@@ -123,7 +117,7 @@ export default defineComponent({
 								onClick: () => {
 									ctx.$forceUpdate();
 									ctx.initJson();
-									ctx.refs.ruleForm.resetFields();
+									ctx.refs["ruleForm"].resetFields();
 								}
 							},
 							"刷新表单"
