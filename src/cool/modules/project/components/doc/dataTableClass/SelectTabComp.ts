@@ -26,8 +26,8 @@ export default class SelectTabComp extends BaseTabComp {
     return Promise.resolve()
   }
 
-  create() {
-    this.combinationOption()
+  create(option: Object) {
+    this.combinationOption(option)
 
     return this.h(this.tag, {
       ...this.option

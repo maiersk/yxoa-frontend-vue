@@ -36,16 +36,10 @@ export default class BaseTabComp {
     this.emitter = mitt()
   }
 
-  props(other: Array<any>) {
+  combinationOption(other: Object) {
     this.option = {
       ...this.option,
-      ...other
-    }
-  }
-
-  combinationOption() {
-    this.option = {
-      ...this.option,
+      ...other,
       native: true,
       oninput: (event: any) => {
         const value = event && event.target ? event.target.value : event
@@ -63,8 +57,8 @@ export default class BaseTabComp {
 
   }
 
-  create() {
-    this.combinationOption()
+  create(option: Object) {
+    this.combinationOption(option)
     return this.h(this.tag, this.option, {
       default() {
         return [this.child]

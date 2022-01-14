@@ -26,7 +26,8 @@ export default defineComponent({
 			() => form,
 			() => {
 				emit("update:modelValue", JSON.stringify(json.value));
-			}
+			},
+			{ deep: true }
 		);
 
 
@@ -43,7 +44,7 @@ export default defineComponent({
 					Object.keys(json.value.template).forEach((k) => {
 						const template = json.value.template[k];
 						if (template.value !== undefined || template.value !== null) {
-							form[k] = reactive<any>(json.value.template[k].value)
+							form[k] = json.value.template[k].value
 							data.vnodes.push(createFormItem(k, template));
 						}
 					});
@@ -65,17 +66,16 @@ export default defineComponent({
 
 				form[k] = template.value !== "" ? `${template.value}` : form[k];
 
-				compObj.props({
-					modelValue: form[k].value
-				});
 				compObj.on("input", (value: any) => {
 					console.log("on", value);
-
+					console.log("form", form[k]);
 					form[k] = value;
 					json.value.template[k].value = value;
 				});
 
-				vnode = compObj.create();
+				vnode = compObj.create({
+					modelValue: form[k]
+				});
 			}
 
 			return h(
