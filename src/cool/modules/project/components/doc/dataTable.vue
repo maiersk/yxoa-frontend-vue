@@ -1,6 +1,6 @@
 <script lang="ts">
 import { ElButton, ElCard, ElForm, ElFormItem, ElMessage } from "element-plus";
-import { defineComponent, ref, reactive, toRefs, watch, h, onMounted } from "vue";
+import { defineComponent, reactive, ref, toRefs, toRef, watch, h, onMounted, getCurrentInstance } from "vue";
 import { useCool } from "/@/cool/core";
 import components from "./dataTableClass";
 
@@ -30,21 +30,21 @@ export default defineComponent({
 			{ deep: true }
 		);
 
-
 		const initJson = function () {
 			try {
+				data.vnodes = []
 				if (props.modelValue === "{}") {
 					ElMessage.warning("请填写数据模板");
 					return;
 				}
-				console.log(props.modelValue);
+
 				json.value = JSON.parse(props.modelValue);
 	
 				if (json?.value?.template ?? false) {
 					Object.keys(json.value.template).forEach((k) => {
 						const template = json.value.template[k];
 						if (template.value !== undefined || template.value !== null) {
-							form[k] = json.value.template[k].value
+						 	form[k] = ref<any>(json.value.template[k].value)
 							data.vnodes.push(createFormItem(k, template));
 						}
 					});
@@ -63,18 +63,19 @@ export default defineComponent({
 			if (Component) {
 				const compObj = new Component(k, item);
 				const template = json.value.template[k];
+				const modelVal = toRef(form, k);
 
-				form[k] = template.value !== "" ? `${template.value}` : form[k];
+				modelVal.value = template.value !== "" ? `${template.value}` : modelVal.value;
 
 				compObj.on("input", (value: any) => {
 					console.log("on", value);
-					console.log("form", form[k]);
-					form[k] = value;
+					console.log("form", modelVal.value);
+					modelVal.value = value;
 					json.value.template[k].value = value;
 				});
 
 				vnode = compObj.create({
-					modelValue: form[k]
+					modelValue: modelVal.value
 				});
 			}
 
@@ -106,15 +107,15 @@ export default defineComponent({
 	},
 	render(ctx: any) {
 		return h(ElCard, {}, {
-			header: () => h("div", { class:"data-card" }, {
+			header: () => h("div", { class: "data-card" }, {
 				default: () => [
 					h("span", "数据填写"),
 					h("div", { class: "operator" }, [
-						h(
-							ElButton,
+						h(ElButton,
 							{
 								type: "text",
 								onClick: () => {
+									ctx.vnodes = []
 									ctx.$forceUpdate();
 									ctx.initJson();
 									ctx.refs["ruleForm"].resetFields();

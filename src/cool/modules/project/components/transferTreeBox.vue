@@ -26,7 +26,7 @@
 
 			<div class="boxCenter">
 				<el-tree
-					ref="afterTree"
+					:ref="setRefs('afterTree')"
 					:data="props.cascaderData"
 					:props="defaultProps"
 					show-checkbox
@@ -40,13 +40,15 @@
 
 <script lang='ts'>
 import { getCurrentInstance, onMounted, reactive, ref } from 'vue';
+import { useCool } from '/@/cool/core';
 
 export default {
 	props: {
 		cascaderData: [Object, Array]
 	},
 	setup(props: any, { emit }: any) {
-    const instance = getCurrentInstance()
+		const { refs, setRefs } = useCool();
+
 		const defaultProps = reactive({
 			children: "children",
 			label: "label"
@@ -60,8 +62,7 @@ export default {
 		});
 
 		const keyClear = (str: string) => {
-      const refs = instance.refs ?? {};
-			let node = refs[str].getNode(props.cascaderData[0].nodeCode).parent;
+      let node = refs[str].getNode(props.cascaderData[0].nodeCode).parent;
 
 			clearClickRecursion(node.childNodes);
 		};
@@ -76,8 +77,7 @@ export default {
 		};
 
 		const towardsRight = () => {
-      const refs = instance?.refs ?? []
-			let currentBeforeKeyarr = refs.beforeTree.getCheckedNode(true);
+			let currentBeforeKeyarr = refs.value.beforeTree.getCheckedNode(true);
 
 			let arr = beforeKeyarr.filter(
         (item: any) => !currentBeforeKeyarr.some((ele: any) => ele.value === item.value)
@@ -89,8 +89,7 @@ export default {
 		};
 
     const towardsLeft = () => {
-      const refs = instance?.refs ?? []
-      afterKeyarr.value = refs.afterTree.getCheckedNodes(true);
+      afterKeyarr.value = refs.value.afterTree.getCheckedNodes(true);
 
       let arr = beforeKeyarr.filter((item: any) => {
         return !afterKeyarr.some((ele: any) => ele.value === item.value)
@@ -102,7 +101,6 @@ export default {
     }
 
 		const shuttle = async () => {
-      const refs = instance?.refs ?? []
 
 			let str = "";
 
@@ -117,11 +115,11 @@ export default {
 			keyClear("beforeTree");
 			keyClear("afterTree");
 
-			await refs.beforeTree.setCheckedKey([]);
-			await refs.afterTree.setCheckedKey([]);
+			await refs.value.beforeTree.setCheckedKey([]);
+			await refs.value.afterTree.setCheckedKey([]);
 
-			refs.beforeTree.filter(str);
-			refs.afterTree.filter(str);
+			refs.value.beforeTree.filter(str);
+			refs.value.afterTree.filter(str);
 
 			emit("getcascaderlist", beforeKeyarr);
 		};
@@ -144,21 +142,21 @@ export default {
 
 		// 点击全选
 		const clickAllSelect = () => {
-      const refs = instance?.refs ?? []
-			refs.beforeTree.setCheckedNodes(props.cascaderData);
+			refs.value.beforeTree.setCheckedNodes(props.cascaderData);
 
 			towardsRight();
 		};
 
 		// 点击取消全选
 		const clickCancelAllSelect = () => {
-      const refs = instance?.refs ?? []
-			refs.afterTree.setCheckedNodes(props.cascaderData);
+			refs.value.afterTree.setCheckedNodes(props.cascaderData);
 
 			towardsLeft();
 		};
 
 		return {
+			refs,
+			setRefs,
 			defaultProps,
 			beforeKeyarr,
       afterKeyarr,
