@@ -1,0 +1,29 @@
+{
+  "template": {
+    "unitName": {
+      "label": "申报单位",
+      "value": "",
+      "required": true,
+      "component": {
+        "name": "el-input"
+      }
+    },
+    "unitAddres": {
+      "label": "单位地址",
+      "source": "/docs",
+      "value": "",
+      "required": true,
+      "component": {
+        "name": "el-select"
+      }
+    },
+    "total": {
+      "label": "总价",
+      "required": true,
+      "value": "",
+      "component": {
+        "name": "el-input"
+      }
+    }
+  }
+}

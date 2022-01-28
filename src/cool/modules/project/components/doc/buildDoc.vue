@@ -3,7 +3,7 @@
     <main>
       <el-row class="doc-build__body">
         <el-col class="form-data">
-          <data-table v-model="doc.data"></data-table>
+          <data-form v-model="doc.data"></data-form>
         </el-col>
         <el-col class="doc-perview">
           <doc-perview></doc-perview>
@@ -15,12 +15,12 @@
 
 <script lang="ts">
 import { inject } from 'vue';
-import DataTable from './dataTable.vue';
+import DataForm from './dataForm/';
 import DocPerview from './perview.vue';
 
 export default {
   components: {
-    DataTable,
+    DataForm,
     DocPerview
   },
   setup(props: any, ctx: any) {

@@ -12,7 +12,7 @@
 <script lang='ts'>
 import { reactive, toRefs } from "vue";
 import DocPerview from "../doc/perview.vue";
-import DataTable from "../doc/dataTable.vue";
+import DataTable from "../doc/dataForm/";
 
 export default {
 	components: {
