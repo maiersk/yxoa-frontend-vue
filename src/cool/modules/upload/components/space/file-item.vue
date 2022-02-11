@@ -29,6 +29,30 @@
 				></video>
 			</template>
 
+			<template v-else-if="fileformat === 'doc' || fileformat === 'docx' || fileformat === 'wps'">
+				<icon-svg class="file-icon" name="file-word"></icon-svg>
+			</template>
+
+			<template v-else-if="fileformat === 'xls' || fileformat === 'xlsx'">
+				<icon-svg class="file-icon" name="file-excel"></icon-svg>
+			</template>
+
+			<template v-else-if="fileformat == 'zip' || fileformat === 'rar'">
+				<icon-svg class="file-icon" name="file-zip"></icon-svg>
+			</template>
+
+			<template v-else-if="fileformat == 'ppt'">
+				<icon-svg class="file-icon" name="file-ppt"></icon-svg>
+			</template>
+
+			<template v-else-if="fileformat == 'pdf'">
+				<icon-svg class="file-icon" name="file-pdf"></icon-svg>
+			</template>
+
+			<template v-else-if="fileformat == 'cad'">
+				<icon-svg class="file-icon" name="file-cad"></icon-svg>
+			</template>
+
 			<!-- 其他 -->
 			<template v-else>
 				<span>{{ info.url }}</span>
@@ -80,6 +104,7 @@ export default defineComponent({
 		const isSelected = computed(() => index.value >= 0);
 
 		// 文件类型
+		const fileformat = computed(() => (info.value.url || "").split(".").reverse()[0]);
 		const type = computed(() => (info.value.type || "").split("/")[0]);
 
 		// 选择
@@ -139,6 +164,7 @@ export default defineComponent({
 		return {
 			info,
 			index,
+			fileformat,
 			type,
 			isSelected,
 			select,
@@ -209,5 +235,9 @@ export default defineComponent({
 			border-radius: 20px;
 		}
 	}
+}
+
+.file-icon {
+	font-size:5rem;
 }
 </style>
