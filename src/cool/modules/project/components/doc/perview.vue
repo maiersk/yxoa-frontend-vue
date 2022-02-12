@@ -11,6 +11,8 @@
 <script lang='ts'>
 import { computed, onMounted, ref } from "vue-demi";
 import { useCool } from "/@/cool/core";
+import ViewUrl from "../../utils/viewFile";
+
 export default {
 	props: {
 		url: {
@@ -25,19 +27,8 @@ export default {
 	name: "doc-perview",
 	setup(props: any, ctx: any) {
 		const { service } = useCool();
-		const resUrl = ref<string>("");
 
-		const getUrl = computed(() => resUrl.value);
-
-		onMounted(() => {
-			if (props.docId !== "") {
-				service.project.doc.info({ id: props.docId }).then((res: any) => {
-					if (res?.data ?? undefined) {
-						resUrl.value = res.data.templateFile;
-					}
-				});
-			}
-		});
+		const getUrl = computed(() => ViewUrl`test${props.url}`);
 
 		return {
 			onMounted,

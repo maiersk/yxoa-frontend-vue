@@ -27,6 +27,9 @@ const baseUrl: String = (function () {
 // Socket
 const socketUrl: String = (isDev ? `${host}` : "") + "/socket";
 
+// kkview
+const kkviewUrl: String = "http://127.0.0.1:8012";
+
 // 阿里字体图标库 https://at.alicdn.com/t/**.css
 const iconfontUrl = ``;
 
@@ -50,4 +53,4 @@ const app: any = store.get("__app__") || {
 // 自定义菜单列表
 const menuList: MenuItem[] = [];
 
-export { routerMode, baseUrl, socketUrl, iconfontUrl, app, isDev, menuList };
+export { routerMode, baseUrl, socketUrl, iconfontUrl, app, isDev, menuList, kkviewUrl };
