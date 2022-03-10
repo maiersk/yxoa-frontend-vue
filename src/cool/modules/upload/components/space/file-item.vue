@@ -62,6 +62,11 @@
 		<!-- 大小 -->
 		<div class="cl-upload-space-item__size"></div>
 
+		<!-- 文件名 -->
+		<div v-if="info?.name ?? false" class="cl-upload-space-item__name">
+			<span>{{ info.name }}</span>
+		</div>
+
 		<!-- 遮罩层 -->
 		<div v-if="isSelected" class="cl-upload-space-item__mask">
 			<span>{{ index + 1 }}</span>
@@ -74,6 +79,7 @@ import { computed, defineComponent, inject } from "vue";
 import { ContextMenu } from "@cool-vue/crud";
 import { ElMessage } from "element-plus";
 import Clipboard from "clipboard";
+import { useCool } from "/@/cool";
 
 export default defineComponent({
 	name: "cl-upload-space-item",
@@ -91,6 +97,7 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		const space = inject<any>("space");
+		const { service } = useCool();
 
 		// 文件信息
 		const info = computed(() => props.modelValue);
@@ -121,6 +128,37 @@ export default defineComponent({
 		function openContextMenu(e: any) {
 			ContextMenu.open(e, {
 				list: [
+					{
+						label: "下载",
+						callback: async (e: any, done: Function) => {
+							const file = info.value.url;
+							const fileurl = new URL(file).pathname
+							const fileName = fileurl.split('/').reverse()[0];
+
+							const fileRes = await fetch('/dev/' + fileurl.split('/').splice(1, fileurl.length).join('/'));
+							console.log(fileRes)
+							const blob = await fileRes.blob();
+							const objectUrl = await URL.createObjectURL(blob);
+							const a = await document.createElement('a');
+							a.setAttribute('target', '_blank');
+							a.setAttribute('download', fileName);
+							a.href = objectUrl;
+							a.style.display = 'none';
+
+							document.body.appendChild(a);
+
+							a.dispatchEvent(new MouseEvent('click', {
+								bubbles: true,
+								cancelable: true,
+								view: window
+							}));
+
+							document.body.removeChild(a);
+
+							ElMessage.success("开始下载");
+							done();
+						}
+					},
 					{
 						label: "复制地址",
 						callback: (e: any, done: Function) => {
@@ -233,6 +271,26 @@ export default defineComponent({
 			text-align: center;
 			line-height: 20px;
 			border-radius: 20px;
+		}
+	}
+
+	&__name {
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		background-color: rgba(0, 0, 0, 0);
+
+		span {
+			position: relative;
+			background-color: #4b99da;
+			top: 134px;
+			height: 25px;
+			width: 158px;
+			color: #fff;
+			display: inline-block;
+			overflow:hidden;
+			text-overflow:ellipsis;
+			white-space:nowrap;
 		}
 	}
 }

@@ -23,7 +23,7 @@ export default {
 	name: "demo",
 
 	components: {
-		// BClUpload,
+		BClUpload,
 		// BVCopy,
 		// BIconSvg,
 		// BClCrud,
@@ -37,7 +37,7 @@ export default {
 	setup() {
 		return {
 			list: [
-				// "b-cl-upload",
+				"b-cl-upload",
 				// "b-cl-crud",
 				// "b-icon-svg",
 				// "b-v-copy",

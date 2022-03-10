@@ -25,6 +25,7 @@
 						:on-error="onError"
 						:on-progress="onProgress"
 						:before-upload="beforeUpload"
+						:ref="setRefs('uploadbtn')"
 					>
 						<el-button size="mini" type="primary">点击上传</el-button>
 					</cl-upload>
@@ -37,11 +38,7 @@
 						>使用选中文件 {{ limitTip }}</el-button
 					> -->
 
-					<el-button
-						type="danger"
-						size="mini"
-						:disabled="!isSelected"
-						@click="remove()"
+					<el-button type="danger" size="mini" :disabled="!isSelected" @click="remove()"
 						>删除选中文件</el-button
 					>
 				</div>
@@ -84,9 +81,7 @@
 							:before-upload="beforeUpload"
 						>
 							<i class="el-icon-upload"></i>
-							<div class="el-upload__text">
-								将文件拖到此处，或<em>点击上传</em>
-							</div>
+							<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 						</cl-upload>
 					</div>
 				</div>
@@ -122,7 +117,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { isEmpty } from "/@/cool/utils";
 import Category from "../../upload/components/space/category.vue";
 import FileItem from "../../upload/components/space/file-item.vue";
-import { useCool } from "/@/cool";
+import { useCool, useRefs } from "/@/cool";
 
 export default defineComponent({
 	name: "cl-upload-space-view",
@@ -216,6 +211,8 @@ export default defineComponent({
 		// 是否选中
 		const isSelected = computed(() => !isEmpty(selection.value));
 
+		const { refs, setRefs } = useRefs();
+
 		// Provide
 		provide("space", {
 			category,
@@ -244,16 +241,21 @@ export default defineComponent({
 
 			if (item) {
 				item.url = res.data;
+				const urls = refs.value["uploadbtn"].urls;
+				const name = urls[0] ? urls[0].name : "";
 
 				service.space.info
 					.add({
 						url: res.data,
+						name,
+						ownerId: store.getters.userInfo.id,
 						type: item.type,
 						classifyId: item.classifyId
 					})
 					.then((res: any) => {
 						item.loading = false;
 						item.id = res.id;
+						item.name = name;
 					})
 					.catch((err: string) => {
 						ElMessage.error(err);
@@ -391,6 +393,8 @@ export default defineComponent({
 			browser,
 			limitTip,
 			isSelected,
+			refs,
+			setRefs,
 			open,
 			close,
 			refresh,

@@ -269,6 +269,7 @@ export default defineComponent({
 				service.space.info
 					.add({
 						url: res.data,
+						name: new URL(res.data).pathname.split('/').reverse()[0],
 						type: item.type,
 						classifyId: item.classifyId
 					})
