@@ -40,10 +40,10 @@ export default defineComponent({
 	cool: {
 		// 注入视图路由中
 		route: {
-			path: "/project/admin/contacts", // 路由地址
+			path: "/project/admin/equipment", // 路由地址
 			meta: {
 				keepAlive: true, // 是否缓存路由
-				label: "各方联系人" // 路由名称
+				label: "项目设备" // 路由名称
 			}
 		}
 	},
@@ -58,50 +58,47 @@ export default defineComponent({
 			items: [
 				{
 					prop: "name",
-					label: "描述",
+					label: "货物名称",
 					span: 24,
 					component: {
 						name: "el-input"
 					}
 				},
 				{
-					prop: "device",
-					label: "代表设备/项目性质",
+					prop: "brand",
+					label: "品牌",
 					span: 24,
 					value: [],
 					component: {
 						name: 'el-input'
-					},
-					props: {
-						labelWidth: "130px"
+					}
+				},
+				{
+					prop: "model",
+					label: "型号",
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					prop: "norm",
+					label: "规格",
+					span: 24,
+					component: {
+						name: "el-input"
 					}
 				},
 				{
 					prop: "manufacturer",
-					label: "生产商",
-					component: {
-						name: "el-input"
-					}
-				},
-				{
-					prop: "jobs",
-					label: "职位",
+					label: "制造商名称",
 					span: 24,
 					component: {
 						name: "el-input"
 					}
 				},
 				{
-					prop: "person",
-					label: "联系人",
-					span: 24,
-					component: {
-						name: "el-input"
-					}
-				},
-				{
-					prop: "phone",
-					label: "联系电话",
+					prop: "country",
+					label: "国籍",
 					span: 24,
 					component: {
 						name: "el-input"
@@ -119,33 +116,33 @@ export default defineComponent({
 				},
 				{
 					prop: "name",
-					label: "描述",
-					width: 200
-				},
-				{
-					prop: "device",
-					label: "代表设备/项目性质",
-					width: 350
-				},
-				{
-					prop: "manufacturer",
-					label: "生产商",
+					label: "货物名称",
 					width: 300
 				},
 				{
-					prop: "jobs",
-					label: "职位",
+					prop: "brand",
+					label: "品牌",
 					width: 200
 				},
 				{
-					prop: "person",
-					label: "联系人",
-					width: 80
+					prop: "model",
+					label: "型号",
+					width: 300
 				},
 				{
-					prop: "phone",
-					label: "联系电话",
-					width: 180
+					prop: "norm",
+					label: "规格",
+					width: 200
+				},
+				{
+					prop: "manufacturer",
+					label: "制造商名称",
+					width: 200
+				},
+				{
+					prop: "country",
+					label: "国籍",
+					width: 80
 				},
 				{
 					label: "操作",
@@ -157,7 +154,7 @@ export default defineComponent({
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
 			// 绑定 service
-			ctx.service(service.project.contacts).done();
+			ctx.service(service.project.equipment).done();
 			app.refresh();
 		}
 
@@ -175,3 +172,7 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+
+</style>

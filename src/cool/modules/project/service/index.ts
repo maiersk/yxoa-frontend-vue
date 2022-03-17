@@ -1,11 +1,11 @@
 import ProjectDocService from './doc';
 import ProjectService from './project';
-import ProjectDocTreeService from './docTree';
+import ProjectDocTreeService from './doctree';
 
 export default {
   project: {
     doc: new ProjectDocService(),
     project: new ProjectService(),
-    docTree: new ProjectDocTreeService()
+    doctree: new ProjectDocTreeService(),
   }
 };
