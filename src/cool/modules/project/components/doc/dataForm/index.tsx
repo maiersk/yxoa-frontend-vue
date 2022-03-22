@@ -1,9 +1,8 @@
 import { useCool } from '/@/cool';
 import { defineComponent, h, reactive, toRefs, watch, ref, toRaw, resolveComponent, onMounted } from 'vue'
-import DataCard from './dataCard.vue';
+import DataCard from '../dataCard.vue';
 import { ElButton, ElForm, ElFormItem, ElMessage } from 'element-plus';
 import _ from "lodash";
-import {} from './util';
 
 export default defineComponent({
   name: "dataForm",
@@ -14,14 +13,22 @@ export default defineComponent({
     ElButton
   },
   props: {
+    docId: {
+      type: Number,
+      default: -1
+    },
+    testMode: {
+      type: Boolean,
+      default: false
+    },
     modelValue: {
       type: String,
       defalut: "{}"
     }
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "buildDoc"],
   setup(props: any, { emit }: any) {
-    const { refs, setRefs } = useCool();
+    const { refs, setRefs, service } = useCool();
   
     const data = reactive<any>({
       showOperator: false,
@@ -31,7 +38,8 @@ export default defineComponent({
     const form = reactive<any>({});
     const json = reactive<any>({});
     const loading = ref<boolean>(true);
-
+    const jsonError = ref<boolean>(false);
+    
     watch(
       () => form,
       (val: any) => {
@@ -58,18 +66,34 @@ export default defineComponent({
             }
           })
         };
+
+        if (props.testMode) {
+          form['projectId'] = ref<any>(null);
+        }
+
         loading.value = false
+        jsonError.value = false
       } catch (err) {
-        ElMessage.error("错误的JSON数据")
+        // ElMessage.error("错误的JSON数据")
+        jsonError.value = true
       }
     }
 
     const handelRefresh = function() {
+      refs.value['ruleForm'].$forceUpdate()
       initJson()
       refs.value['ruleForm'].resetFields()
     }
+
     const handelBuild = () => {
-      console.log("build")
+      refs.value['ruleForm'].validate((valid: boolean) => {
+        if (valid) {
+          emit('buildDoc', form)
+        } else {
+          ElMessage.error('请完成表单')
+          return false;
+        }
+      });
     };
 
     onMounted(() => {
@@ -81,6 +105,7 @@ export default defineComponent({
       form,
       json,
       loading,
+      jsonError,
       setRefs,
       ...toRefs(data),
       handelRefresh,
@@ -115,6 +140,7 @@ export default defineComponent({
                       return (
                         h(renderEl,
                           {
+                            ...e.component.props,
                             modelValue: ctx.form[k],
                             "onUpdate:modelValue": function(val: any) {
                               ctx.form[k] = val;
@@ -139,9 +165,48 @@ export default defineComponent({
       }
     }
 
+    const errDom = () => {
+      if (ctx.jsonError) {
+        return <span style={'color:red;'}>数据缺失/错误</span>
+      }
+    }
+
+    const isTestMode = () => {
+      if (ctx.testMode) {
+        const el: any = toRaw(resolveComponent('cl-project-select')) 
+
+        return (
+          <el-form-item label="选择项目" prop="projectId" rules={[
+            { required: true, message: "请选择项目数据源", trigger: 'blur' },
+            // { type: 'number', message: "请选择项目数据源", trigger: ['blur', 'change'] }
+          ]} >
+            {
+              h(el, {
+                  multipleLimit: 1,
+                  modelValue: ctx.form.projectId,
+                  "onUpdate:modelValue": function(val: any) {
+                    ctx.form.projectId = val;
+                  }
+                },
+                {
+                  default: () => {
+                    return []
+                  }
+                }
+              )
+            }
+          </el-form-item>
+        )
+      }
+    }
+
     const FormItems = (
       <div>
+        { isTestMode() }
         { renderFormItem() }
+        <el-form-item>
+          { errDom() }
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" onClick={ctx.handelBuild} >
             测试生成

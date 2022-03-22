@@ -14,7 +14,21 @@
 
 		<el-row>
 			<!-- 数据表格 -->
-			<cl-table :ref="setRefs('table')" v-bind="table" style="max-height:700px" />
+			<cl-table	:ref="setRefs('table')"
+				v-bind="table"
+				style="max-height:700px"
+				:filter-method="handelFilter"
+			>
+				<!-- 头像 -->
+				<template #column-headImg="{ scope }">
+					<cl-avatar
+						shape="square"
+						size="medium"
+						:src="scope.row.headImg"
+						:style="{ margin: 'auto' }"
+					/>
+				</template>
+			</cl-table>
 		</el-row>
 
 		<!-- <el-row type="flex">
@@ -39,7 +53,7 @@ export default defineComponent({
 		project: {
 			type: Object,
 			default() {
-				return {}
+				return {};
 			}
 		}
 	},
@@ -85,46 +99,56 @@ export default defineComponent({
 		});
 
 		onMounted(async () => {
-			const res = await service.project.project.getUsers(props.project.id)
-			console.log(res);
+			// console.log(props.project.id)
+
 		})
 
+		const handelFilter = (value: any, row: any, column: any) => {
+			const property = column['property'];
+			return row[property] === value;
+		}
+
 		// crud 加载
-		function onLoad({ ctx, app }: CrudLoad) {
-			setTimeout(() => {
-				// 绑定 service
-				ctx.service({
-					async page() {
-						return Promise.resolve({
-							list: []
-						})
-					},
-					// list() {
-					// 	return service.project.project.getUsers(props.project.id)
-					// },
-					add(data) {
-						 return service.project.project.addUser({
-							projectId: props.project.id,
-							userId: data.userId,
-							workCtx: data.workCtx
-						})
-					},
-					delete(data) {
-						return service.project.project.delUser({
-							userId: data.userId
-						})
-					}
-				}).done();
-				app.refresh();
-			}, 1000)
+		async function onLoad({ ctx, app }: CrudLoad) {
+			// const res = await service.project.project.getUsers(props.project.id)
+			// console.log(res);
+			ctx.service(service.base.sys.user).done();
+			app.refresh();
+			// setTimeout(() => {
+			// 	// 绑定 service
+			// 	ctx.service({
+			// 		async page() {
+			// 			return Promise.resolve({
+			// 				list: []
+			// 			})
+			// 		},
+			// 		// list() {
+			// 		// 	return service.project.project.getUsers(props.project.id)
+			// 		// },
+			// 		add(data) {
+			// 			 return service.project.project.addUser({
+			// 				projectId: props.project.id,
+			// 				userId: data.userId,
+			// 				workCtx: data.workCtx
+			// 			})
+			// 		},
+			// 		delete(data) {
+			// 			return service.project.project.delUser({
+			// 				userId: data.userId
+			// 			})
+			// 		}
+			// 	}).done();
+			// 	app.refresh();
+			// }, 1000)
 		}
 
 		return {
 			refs,
-			setRefs,
 			upsert,
 			table,
-			onLoad
+			onLoad,
+			setRefs,
+			handelFilter,
 		};
 	}
 });
@@ -132,6 +156,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .project-crud-user {
-	min-height: 100%;
+	height: calc(100% - 30%);
+	margin: 0.5rem;
+	padding: 1rem;
+	background-color: white;
+	box-shadow: 0 2px 4px 0 rgb(54 58 80 / 32%);
 }
 </style>

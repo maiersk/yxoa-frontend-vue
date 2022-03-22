@@ -7,7 +7,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import ProjectList from "../components/project/list.vue";
-import { useCool } from "/@/cool/core";
+import { useCool } from "/@/cool";
 
 export default defineComponent({
 	name: "projectDetail",

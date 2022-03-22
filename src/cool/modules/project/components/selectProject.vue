@@ -1,44 +1,30 @@
 <template>
   <el-select v-model="value" v-bind="props" multiple @change="onChange">
-    <el-option v-for="(item, i) in list" :key="i" :value="i" :label="item.name" />
+    <el-option v-for="(item, i) in list" :key="i" :value="item.id" :label="item.name" />
   </el-select>
 </template>
 
 <script lang="ts">
 import { inject, ref, onMounted, watch, defineComponent } from 'vue';
-import { isEmpty } from '/@/cool/core/utils';
 import { isArray } from '/@/cool/utils';
 
 export default defineComponent({
-  name: "cl-doc-select",
+  name: "cl-project-select",
 
   props: {
-    modelValue: [String, Number, Array],
-    props: Object,
-    cloneValue: [String, Number]
+    modelValue: [Object, String, Number, Array],
+    props: Object
   },
 
   emits: ["update:modelValue"],
 
   setup(props: any, { emit }) {
     const service = inject<any>("service");
-    const form = inject<any>("form");
-
     const list = ref<any[]>([]);
     const value = ref<any>();
 
-    function onChange(idx: any) {
-      console.log(idx);
-      if (!isEmpty(idx)) {
-        const item = list.value[idx];
-  
-        // 该组件使用在cl-form时，可以传入方法把值传出
-        if (!isEmpty(form) && !isEmpty(item)) {
-          form[props.cloneValue] = item[props.cloneValue] ?? '';
-        }
-  
-        emit("update:modelValue", [item.id]);
-      }
+    function onChange(val: any) {
+      emit("update:modelValue", val);
     }
 
 		// 解析值
@@ -53,7 +39,7 @@ export default defineComponent({
 		);
 
     onMounted(async () => {
-      list.value = await service.project.doc.list();
+      list.value = await service.project.project.list();
     });
 
     return {

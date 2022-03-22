@@ -56,19 +56,31 @@
 			</el-tree>
 		</div>
 
+		<!-- 打开树形穿梭框 -->
+		<cl-dialog title="项目文档" v-model="docTreeDialog"
+			width="1000px"
+		>
+			<!-- <transfer-tree-box :treelist="list"></transfer-tree-box> -->
+		</cl-dialog>
+
 		<cl-form :ref="setRefs('form')" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, inject, onMounted, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { ContextMenu } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
 import { deepTree, isArray, revDeepTree, isPc } from "/@/cool/utils";
+// import TransferTreeBox from '../transferTree/index.vue';
 
 export default defineComponent({
 	name: "cl-prj-tree",
+
+	components: {
+		// TransferTreeBox
+	},
 
 	props: {
 		drag: {
@@ -81,19 +93,28 @@ export default defineComponent({
 		}
 	},
 
-	emits: ["list-change", "row-click", "user-add"],
+	emits: ["list-change", "row-click", "doc-add"],
 
-	setup(props, { emit }) {
+	setup(props: any, { emit }) {
 		const { refs, setRefs, service } = useCool();
+
+		const projectObj: any = inject('project');
 
 		// 树形列表
 		const list = ref<any[]>([]);
+		const toTree = ref<any[]>([]);
 
 		// 加载中
 		const loading = ref<boolean>(false);
 
 		// 是否能拖动
 		const isDrag = ref<boolean>(false);
+
+		const docTreeDialog = ref<boolean>(false);
+
+		function openDocTreeDialog() {
+			docTreeDialog.value = true
+		}
 
 		// 允许托的规则
 		function allowDrag({ data }: any) {
@@ -110,7 +131,10 @@ export default defineComponent({
 			isDrag.value = false;
 			loading.value = true;
 
-			await service.project.docTree.list().then((res: any[]) => {
+			await service.project.doctree.prjdoclist(
+				projectObj.value.tableName
+			).then((res: any[]) => {
+				// console.log(res);
 				list.value = deepTree(res);
 				emit("list-change", list.value);
 			});
@@ -127,7 +151,7 @@ export default defineComponent({
 
 		// 编辑
 		function rowEdit(e: any) {
-			const method = e.id ? "update" : "add";
+			const method = e.id ? "prjdocupdate" : "prjdocadd";
 
 			refs.value.form.open({
 				title: "编辑",
@@ -137,38 +161,88 @@ export default defineComponent({
 				},
 				items: [
 					{
-						label: "名称",
+						prop: "type",
+						value: 0,
+						label: "节点类型",
+						span: 24,
+						component: {
+							name: "el-radio-group",
+							options: [
+								{
+									label: "目录",
+									value: 0
+								},
+								{
+									label: "文档",
+									value: 1
+								}
+							]
+						}
+					},
+					{
 						prop: "name",
+						label: "节点名称",
+						span: 24,
+						value: '',
+						hidden: ({ scope }: any) => scope.type != 0,
 						component: {
 							name: "el-input",
 							props: {
-								placeholder: "请填写名称"
+								placeholder: "请输入节点名称"
 							}
 						},
-						rules: {
-							required: true,
-							message: "名称不能为空"
-						}
+						required: true
 					},
 					{
-						label: "上级",
-						prop: "parentName",
+						prop: "parentId",
+						label: "上级节点",
+						span: 24,
 						component: {
-							name: "el-input",
+							name: "cl-prj-select-tree",
 							props: {
-								disabled: true
+								listStr: 'prjdoclist',
+								tableName: projectObj.value.tableName
 							}
 						}
 					},
 					{
-						label: "排序",
+						prop: "docId",
+						label: "文档",
+						span: 24,
+						hidden: ({ scope }: any) => scope.type != 1,
+						component: {
+							name: "cl-doc-select",
+							props: {
+								cloneValue: "remark",
+								multipleLimit: 1,
+								filterable: true,
+								placeholder: "请选择模板文档"
+							}
+						}
+					},
+					{
+						prop: "remark",
+						label: "备注",
+						span: 24,
+						component: {
+							name: "el-input",
+							props: {
+								placeholder: "请输入备注"
+							}
+						}
+					},
+					{
 						prop: "orderNum",
+						label: "排序号",
+						value: 0,
+						span: 24,
 						component: {
 							name: "el-input-number",
 							props: {
-								"controls-position": "right",
+								placeholder: "请填写排序号",
 								min: 0,
-								max: 100
+								max: 99,
+								"controls-position": "right"
 							}
 						}
 					}
@@ -176,14 +250,17 @@ export default defineComponent({
 				form: e,
 				on: {
 					submit: (data: any, { done, close }: any) => {
-						service.project.docTree[method]({
-							id: e.id,
-							parentId: e.parentId,
+						service.project.doctree[method]({
+							id: data.id,
+							type: data.type,
+							docId: data.docId,
 							name: data.name,
-							orderNum: data.orderNum
+							parentId: e.parentId,
+							orderNum: data.orderNum,
+							tableName: projectObj.value.tableName,
 						})
 							.then(() => {
-								ElMessage.success(`新增${data.name}成功`);
+								ElMessage.success(`新增成功`);
 								close();
 								refresh();
 							})
@@ -199,8 +276,9 @@ export default defineComponent({
 		// 删除
 		function rowDel(e: any) {
 			const del = async (f: boolean) => {
-				await service.project.docTree
-					.delete({
+				await service.project.doctree
+					.prjdocdelete({
+						tableName: projectObj.value.tableName,
 						ids: [e.id],
 						deleteUser: f
 					})
@@ -256,16 +334,17 @@ export default defineComponent({
 
 						deep(list.value, null);
 
-						await service.project.docTree
-							.order(
-								ids.map((e, i) => {
+						await service.project.doctree.prjdocorder({
+								tableName: projectObj.value.tableName,
+								ids: ids.map((e, i) => {
 									return {
-										id: e.id,
-										parentId: e.parentId,
-										orderNum: i
-									};
-								})
-							)
+											id: e.id,
+											parentId: e.parentId,
+											orderNum: i
+										};
+									}
+								)
+							})
 							.then(() => {
 								ElMessage.success("更新排序成功");
 							})
@@ -295,8 +374,9 @@ export default defineComponent({
 						"suffix-icon": "el-icon-plus",
 						hidden:
 							(n && n.level >= props.level) ||
-							!service.project.docTree._permission.add,
+							!service.project.doctree._permission.prjdocadd,
 						callback: (_: any, done: Function) => {
+							// openDocTreeDialog()
 							rowEdit({
 								name: "",
 								parentName: d.name,
@@ -308,7 +388,7 @@ export default defineComponent({
 					{
 						label: "编辑",
 						"suffix-icon": "el-icon-edit",
-						hidden: !service.project.docTree._permission.update,
+						hidden: !service.project.doctree._permission.update,
 						callback: (_: any, done: Function) => {
 							rowEdit(d);
 							done();
@@ -317,26 +397,27 @@ export default defineComponent({
 					{
 						label: "删除",
 						"suffix-icon": "el-icon-delete",
-						hidden: !d.parentId || !service.project.docTree._permission.delete,
+						hidden: !service.project.doctree._permission.prjdocdelete,
 						callback: (_: any, done: Function) => {
 							rowDel(d);
 							done();
 						}
 					},
-					{
-						label: "新增文档",
-						"suffix-icon": "el-icon-user",
-						hidden: !service.project.doc._permission.add,
-						callback: (_: any, done: Function) => {
-							emit("user-add", d);
-							done();
-						}
-					}
+					// {
+					// 	label: "新增文档",
+					// 	"suffix-icon": "el-icon-user",
+					// 	hidden: !service.project.doc._permission.add,
+					// 	callback: (_: any, done: Function) => {
+					// 		emit("doc-add", d);
+					// 		done();
+					// 	}
+					// }
 				]
 			});
 		}
 
 		onMounted(function () {
+			console.log(projectObj);
 			refresh();
 		});
 
@@ -354,7 +435,9 @@ export default defineComponent({
 			rowClick,
 			rowEdit,
 			rowDel,
-			treeOrder
+			treeOrder,
+			docTreeDialog,
+			toTree,
 		};
 	}
 });

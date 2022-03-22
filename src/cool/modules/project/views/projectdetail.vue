@@ -1,33 +1,18 @@
 <template>
 	<div class="project-detail">
 		<project-tabs>
-			<template #detail>
-				<tabs-detail :project="project.value"></tabs-detail>
-			</template>
-			<template #doc>
-				<tabs-doc :project="project.value"></tabs-doc>
-			</template>
-			<template #user>
-				<tabs-user :project="project.value"></tabs-user>
-			</template>
 		</project-tabs>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from "vue";
-import ProjectTabs from "../components/project/tabs.vue";
-import TabsDetail from "../components/project/tabs-detail.vue";
-import TabsDoc from "../components/project/tabs-doc.vue";
-import TabsUser from "../components/project/tabs-user.vue";
+import { defineComponent, onMounted, provide, ref } from "vue";
 import { useCool } from "/@/cool";
+import ProjectTabs from "../components/project/tabs.vue";
 
 export default defineComponent({
 	components: {
-		ProjectTabs,
-		TabsDetail,
-		TabsDoc,
-		TabsUser
+		ProjectTabs
 	},
 	cool: {
 		// 注入视图路由中
@@ -41,7 +26,22 @@ export default defineComponent({
 	},
 	setup() {
 		const { route, service } = useCool();
-		const project = reactive<any>({});
+		const project = ref<any>({
+			value: {
+				name: "",
+				builderName:"",
+				supervisionName:"",
+				undertookName:"",
+				process:"",
+				purchaser:"",
+				pur_phone:"",
+				totalPrice: 0,
+				tableName:"",
+				tcDate:"",
+				payDate:""
+			}
+		});
+		provide('project', project);
 
 		onMounted(async () => {
 			const id = route.query?.id ?? 0;
@@ -49,9 +49,11 @@ export default defineComponent({
 			if (id !== 0) {
 				project.value = await service.project.project.info({ id });
 			}
-		});
+		})
 
 		return {
+			route,
+			service,
 			project,
 			onMounted
 		};
@@ -77,6 +79,10 @@ export default defineComponent({
 		z-index: var(--el-index-normal);
 	}
 
-	background-color: white;
+	// background-color: white;
 }
+</style>
+
+<style lang="scss" scoped>
+
 </style>

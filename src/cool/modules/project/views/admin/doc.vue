@@ -18,7 +18,7 @@
 				<!-- 测试模板文档 -->
 				<template #slot-build="{ scope }">
 					<el-button type="text" size="mini" @click="openBuildDialog(scope.row)">
-						生成文档
+						文档设置
 					</el-button>
 				</template>
 			</cl-table>
@@ -31,8 +31,8 @@
 		</el-row>
 
 		<!-- 测试生成模板文档 -->
-		<cl-dialog title="生成文档" v-model="buildDialog" width="1000px">
-			<build-doc></build-doc>
+		<cl-dialog title="文档设置" v-model="buildDialog" width="1000px">
+			<build-doc v-if="buildDialog" :test-mode="true"></build-doc>
 		</cl-dialog>
 
 		<!-- 新增、编辑 -->
@@ -69,8 +69,8 @@ export default defineComponent({
 		const { refs, setRefs } = useRefs();
 		const service = inject<any>("service");
 		const buildDialog = ref<boolean>(false);
-		const buildDocObj = ref<Object>({});
-		provide('docObj', buildDocObj);
+		const buildDocObj = ref<any>({});
+		provide('doc', buildDocObj);
 
 		// 打开生成对话框 
 		function openBuildDialog(scope: any) {
@@ -142,13 +142,6 @@ export default defineComponent({
 						}
 					},
 					required: true
-				},
-				{
-					label: "数据模板",
-					prop: "data",
-					component: {
-						name: "cl-codemirror"
-					}
 				}
 			]
 		});
@@ -202,3 +195,7 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+
+</style>

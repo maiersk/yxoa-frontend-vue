@@ -38,8 +38,11 @@
 								<el-descriptions-item label="总价:">
 									<el-tag size="small">{{ item.totalPrice }}</el-tag>
 								</el-descriptions-item>
-								<el-descriptions-item label="目标竣工日:">
-									<el-tag size="small">{{ item.tcDate }}</el-tag>
+								<el-descriptions-item label="计划开工日期:">
+									<el-tag size="small">{{ item.startDate }}</el-tag>
+								</el-descriptions-item>
+								<el-descriptions-item label="计划竣工日期:">
+									<el-tag size="small">{{ item.planDate }}</el-tag>
 								</el-descriptions-item>
 								<el-descriptions-item label="收款日:">
 									<el-tag size="small">{{ item.payDate }}</el-tag>
@@ -54,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { useCool } from "/@/cool/core";
+import { useCool } from "/@/cool";
 
 export default {
 	props: {
@@ -83,10 +86,18 @@ export default {
 
 <style lang="scss" scoped>
 .project-list {
-	padding: 1rem;
-	background-color: white;
-	border-radius: 5px;
 
+	.__header {
+		height: 40px;
+		width: 100vw;
+		line-height: 40px;
+		padding: 0 1rem;
+		background-color: white;
+	}
+
+	.__body {
+
+	}
 	.project-ul {
 		list-style: none;
 

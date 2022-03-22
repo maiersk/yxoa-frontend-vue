@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
 import { useCool } from "/@/cool";
 import { deepTree } from "/@/cool/utils";
 
@@ -46,12 +46,23 @@ export default defineComponent({
 	name: "cl-prj-select-tree",
 
 	props: {
-		modelValue: [Number, String]
+		modelValue: [Number, String],
+		listStr: {
+			type: String,
+			default: "list"
+		},
+		tableName: {
+			type: String,
+			default: ""
+		}
 	},
 
 	emits: ["update:modelValue"],
 
 	setup(props, { emit }) {
+
+		const projectObj : any = inject("porject");
+
 		// 请求服务
 		const { service } = useCool();
 
@@ -77,7 +88,7 @@ export default defineComponent({
 
 		// 刷新列表
 		function refresh() {
-			service.project.docTree.list().then((res: any) => {
+			service.project.doctree[props.listStr](props.tableName).then((res: any) => {
 				const _list = res.filter((e: any) => e.type != 2);
 
 				_list.unshift({

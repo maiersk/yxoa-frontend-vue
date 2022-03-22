@@ -1,6 +1,6 @@
 <template>
 	<div class="prj-detail scroller1">
-		<el-descriptions class="prj-desc" title="项目信息" direction="vertical" :column="4" border>
+		<el-descriptions class="prj-desc" title="项目概要" direction="vertical" :column="4" border>
 			<el-descriptions-item label="建设项目名称:">
 				<el-tag size="small">{{ project.name }}</el-tag>
 			</el-descriptions-item>
@@ -25,8 +25,11 @@
 			<el-descriptions-item label="总价:">
 				<el-tag size="small">{{ project.totalPrice }}</el-tag>
 			</el-descriptions-item>
-			<el-descriptions-item label="目标竣工日:">
-				<el-tag size="small">{{ project.tcDate }}</el-tag>
+			<el-descriptions-item label="计划开工日期:">
+				<el-tag size="small">{{ project.startDate }}</el-tag>
+			</el-descriptions-item>
+			<el-descriptions-item label="计划竣工日期:">
+				<el-tag size="small">{{ project.planDate }}</el-tag>
 			</el-descriptions-item>
 			<el-descriptions-item label="收款日:">
 				<el-tag size="small">{{ project.payDate }}</el-tag>
@@ -36,23 +39,24 @@
 </template>
 
 <script lang='ts'>
+import { inject } from 'vue-demi';
+
 export default {
-	props: {
-		project: {
-			type: Object,
-			default() {
-				return {};
-			}
-		}
-	},
 	setup() {
-		return {};
+		const project = inject('project')
+
+		return {
+			project
+		};
 	}
 };
 </script>
 
 <style lang="scss" scoped>
 	.prj-detail {
-
+		margin: 0.5rem;
+		padding: 1rem;
+		background-color: white;
+	  box-shadow: 0 2px 4px 0 rgb(54 58 80 / 32%);
 	}
 </style>

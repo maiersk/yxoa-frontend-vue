@@ -40,7 +40,7 @@
 		<cl-dialog title="测试" v-model="buildDialog"
 			width="1000px"
 		>
-			<build-doc :docId="buildDocId" />
+			<build-doc :test-mode="true"></build-doc>
 		</cl-dialog>
 
 		<!-- 编辑 -->
@@ -51,7 +51,7 @@
 <script lang="ts">
 import { useCool } from "/@/cool";
 import { deepTree } from "/@/cool/utils";
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, h, provide, reactive, ref } from "vue";
 import { CrudLoad, Table, Upsert, RefreshOp } from "@cool-vue/crud/types";
 import BuildDoc from "../../components/doc/buildDoc.vue";
 
@@ -64,12 +64,15 @@ export default defineComponent({
 	setup() {
 		const { refs, setRefs, service, router } = useCool();
 		const buildDialog = ref<boolean>(false);
-		const buildDocId	= ref<number>(0);
+		const buildDocObj	= ref<any>({});
+    provide('doc', buildDocObj);
 
 		// 打开生成对话框
 		function openBuildDialog(scope: any) {
-			buildDocId.value = scope.docId
-			buildDialog.value = true
+      service.project.doc.info({id: scope.docId}).then((data: any) => {
+        buildDocObj.value = data
+			  buildDialog.value = true
+      })
 		}
 
 		// crud 加载
@@ -81,10 +84,6 @@ export default defineComponent({
 		// 刷新监听
 		function onRefresh(_: any, { render }: RefreshOp) {
 			service.project.doctree.list().then((list: any[]) => {
-
-				list.map((e) => {
-					e.permList = e.perms ? e.perms.split(",") : [];
-				});
 
 				render(deepTree(list), {
 					total: list.length
@@ -121,7 +120,6 @@ export default defineComponent({
 				(row: any) => {
 					return {
 						label: "新增",
-						"suffix-icon": "el-icon-circle-plus-outline",
 						hidden: row.type == 1,
 						callback: (_: any, done: Function) => {
 							upsertAppend(row);
@@ -130,7 +128,6 @@ export default defineComponent({
 					};
 				},
 				"update",
-				"edit",
 				"delete"
 			],
 			columns: [
@@ -161,11 +158,6 @@ export default defineComponent({
 					minWidth: 100
 				},
 				{
-					prop: "templateFile",
-					label: "模板文件",
-					minWidth: 160
-				},
-				{
 					prop: "count",
 					label: "数量",
 					width: 100
@@ -188,7 +180,7 @@ export default defineComponent({
 					width: 150
 				},
 				{
-					type: "op", buttons: ["edit", "delete"] 
+					type: "op", buttons: ["slot-add", "slot-build", "edit", "delete"] 
 				}
 			]
 		});
@@ -247,6 +239,7 @@ export default defineComponent({
 					component: {
 						name: "cl-doc-select",
 						props: {
+              cloneValue: "remark",
 							multipleLimit: 1,
 							filterable: true,
 							placeholder: "请选择模板文档"
@@ -267,6 +260,7 @@ export default defineComponent({
 				{
 					prop: "orderNum",
 					label: "排序号",
+          value: 0,
 					span: 24,
 					component: {
 						name: "el-input-number",
@@ -292,9 +286,12 @@ export default defineComponent({
 			upsertAppend,
 			openBuildDialog,
 			buildDialog,
-			buildDocId,
 			toUrl
 		};
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+
+</style>

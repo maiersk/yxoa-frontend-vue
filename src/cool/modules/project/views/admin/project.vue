@@ -124,12 +124,36 @@ export default defineComponent({
 					}
 				},
 				{
-					label: "目标竣工日",
-					prop: "tcDate",
+					label: "计划开工日期",
+					prop: "startDate",
 					required: true,
 					component: {
 						name: "el-date-picker",
 						props: { type: "date", valueFormat: "YYYY-MM-DD" }
+					},
+					props: {
+						labelWidth: "130px"
+					}
+				},
+				{
+					label: "计划竣工日期",
+					prop: "planDate",
+					required: true,
+					component: {
+						name: "el-date-picker",
+						props: { type: "date", valueFormat: "YYYY-MM-DD" }
+					},
+					props: {
+						labelWidth: "130px"
+					}
+				},
+				{
+					label: "工期(天)",
+					prop: "dateCount",
+					required: true,
+					component: { name: "el-input-number", props: { min: 0 } },
+					props: {
+						labelWidth: "130px"
 					}
 				},
 				{
@@ -157,7 +181,9 @@ export default defineComponent({
 				{ label: "采购人", prop: "purchaser" },
 				{ label: "采购人联系电话", prop: "pur_phone" },
 				{ label: "总价", prop: "totalPrice" },
-				{ label: "目标竣工日", prop: "tcDate" },
+				{ label: "计划开工日期", prop: "startDate" },
+				{ label: "工期", prop: "dateCount" },
+				{ label: "计划竣工日期", prop: "planDate" },
 				{ label: "收款日", prop: "payDate" },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },
@@ -182,3 +208,7 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+
+</style>

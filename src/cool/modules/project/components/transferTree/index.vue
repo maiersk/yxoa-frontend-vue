@@ -3,16 +3,10 @@
 		<!-- 左侧项目模板文档结构 -->
 		<div class="leftside">
 			<h3>项目模板文档结构</h3>
-			<div class="treeBox">
-				<div class="__title">
-					<el-checkbox type="text" size="mini" @click="clickAllSelect">
-						全选
-					</el-checkbox>
-				</div>
 
-				<div class="__content">
-					<el-tree
-						:ref="setRefs('beforeTree')"
+      <tree-box>
+        <template #content>
+          <el-tree :ref="setRefs('beforeTree')"
 						:data="treelist"
 						:props="defaultProps"
 						show-checkbox
@@ -20,8 +14,8 @@
 						:accordion="true"
 						node-key="id"
 					/>
-				</div>
-			</div>
+        </template>
+      </tree-box>
 		</div>
 
 		<div class="transferBtns">
@@ -36,24 +30,19 @@
 		<!-- 右侧项目文档结构 -->
 		<div class="rightside">
 			<h3>项目文档结构</h3>
-			<div class="treeBox">
-				<div class="__title">
-					<el-checkbox type="text" size="mini" @click="clickCancelAllSelect">
-						全选
-					</el-checkbox>
-				</div>
 
-				<div class="__content">
+      <tree-box>
+        <template #content>
 					<el-tree
 						:ref="setRefs('afterTree')"
-						:data="treelist"
+						:data="afterTreeArr"
 						:props="defaultProps"
 						show-checkbox
 						:filter-node-method="afterFilterNode"
 						node-key="id"
 					/>
-				</div>
-			</div>
+        </template>
+      </tree-box>
 		</div>
 	</div>
 </template>
@@ -62,7 +51,8 @@
 import { ElTree, ElCheckbox } from "element-plus";
 import { nextTick, onMounted, reactive, ref } from "vue";
 import { useCool } from "/@/cool";
-import { deepTree } from "/@/cool/utils";
+import TreeBox from "./treeBox.vue";
+import { revDeepTree } from '/@/cool/core/utils';
 
 export default {
 	props: {
@@ -70,7 +60,8 @@ export default {
 	},
 	components: {
 		ElTree,
-		ElCheckbox
+		ElCheckbox,
+    TreeBox
 	},
 	setup(props: any, { emit }: any) {
 		const { refs, setRefs } = useCool();
@@ -79,16 +70,19 @@ export default {
 			children: "children",
 			label: "name"
 		});
-		const beforeKeyarr = reactive<any>([]);
-		const afterKeyarr = reactive<any>([]);
+
+		const afterTreeArr = ref<any[]>([]);
+		const beforeKeyarr = ref<any>([]);
+		const afterKeyarr = ref<any>([]);
 
 		onMounted(() => {
-			refs.value.afterTree.filter();
+
 		});
 
 		const keyClear = (str: string) => {
-			let node = refs.value[str].getNode(props.treelist[0].parent);
+			let node = refs.value[str].getNode(props.treelist[0]);
 
+      console.log(node.childNodes);
 			clearClickRecursion(node.childNodes);
 		};
 
@@ -104,19 +98,24 @@ export default {
 		const towardsRight = () => {
 			let currentBeforeKeyarr = refs.value.beforeTree.getCheckedNodes(true);
 
-			let arr = beforeKeyarr.filter(
-				(item: any) => !currentBeforeKeyarr.some((ele: any) => ele.value === item.value)
-			);
+			let arr = beforeKeyarr.value.filter((item: any) => {
+        return !currentBeforeKeyarr.some((ele: any) => ele.id === item.id)
+      });
 
 			beforeKeyarr.value = arr;
 
-			shuttle();
+      beforeKeyarr.value = [...beforeKeyarr.value, ...currentBeforeKeyarr];
+
+			const node = refs.value.beforeTree.getNode(props.treelist[0]);
+			console.log(node)
+			refs.value.afterTree.append(node.data, node.parent.data);
+			// shuttle();
 		};
 
 		const towardsLeft = () => {
 			afterKeyarr.value = refs.value.afterTree.getCheckedNodes(true);
 
-			let arr = beforeKeyarr.filter((item: any) => {
+			let arr = beforeKeyarr.value.filter((item: any) => {
 				return !afterKeyarr.some((ele: any) => ele.value === item.value);
 			});
 
@@ -128,16 +127,17 @@ export default {
 		const shuttle = async () => {
 			let str = "";
 
-			beforeKeyarr.forEach((item: any) => {
+			beforeKeyarr.value.forEach((item: any) => {
 				if (str) {
-					str = `${str},${item.value}`;
+					str = `${str},${item.id}`;
 				} else {
-					str = item.value;
+					str = item.id;
 				}
 			});
 
 			keyClear("beforeTree");
 			keyClear("afterTree");
+
 
 			await refs.value.beforeTree.setCheckedKeys([]);
 			await refs.value.afterTree.setCheckedKeys([]);
@@ -145,7 +145,8 @@ export default {
 			refs.value.beforeTree.filter(str);
 			refs.value.afterTree.filter(str);
 
-			emit("getcascaderlist", beforeKeyarr);
+      console.log(str, beforeKeyarr.value)
+			emit("getcascaderlist", beforeKeyarr.value);
 		};
 
 		const beforeFilterNode = (value: any, data: any) => {
@@ -164,24 +165,6 @@ export default {
 			return value.indexOf(data.value) !== -1;
 		};
 
-		// 点击全选
-		const clickAllSelect = async () => {
-			console.log(props.treelist)
-
-			nextTick(() => {
-				refs.value.beforeTree.setCheckedNodes(deepTree(props.treelist));
-				// refs.value.beforeTree.setCheckedKeys([2,7]);
-			})
-			// towardsRight();
-		};
-
-		// 点击取消全选
-		const clickCancelAllSelect = () => {
-			refs.value.afterTree.setCheckedNodes(deepTree(props.treelist));
-
-			// towardsLeft();
-		};
-
 		return {
 			refs,
 			setRefs,
@@ -195,8 +178,7 @@ export default {
 			shuttle,
 			beforeFilterNode,
 			afterFilterNode,
-			clickAllSelect,
-			clickCancelAllSelect
+			afterTreeArr,
 		};
 	}
 };
@@ -211,41 +193,6 @@ export default {
 	.leftside, .rightside {
 		> h3 {
 			padding-bottom: 0.5rem;
-		}
-	}
-	.treeBox {
-		border: 1px solid #ccc;
-		height: 400px;
-		width: 330px;
-		color: #fff;
-		position: relative;
-
-		.__title {
-			height: 40px;
-			background: #f5f7fa;
-			margin: 0;
-			padding-left: 15px;
-			border-bottom: 1px solid #ebeef5;
-			box-sizing: border-box;
-			color: #000;
-			cursor: pointer;
-
-			.el-checkbox {
-				height: 100%;
-				width: 100%;
-			}
-		}
-
-		.__content {
-			width: 100%;
-			height: calc(100% - 40px);
-			overflow-y: auto;
-			overflow-x: hidden;
-			box-sizing: border-box;
-
-			.el-tree {
-				width: 100%;
-			}
 		}
 	}
 
