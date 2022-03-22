@@ -79,7 +79,6 @@ import { computed, defineComponent, inject } from "vue";
 import { ContextMenu } from "@cool-vue/crud";
 import { ElMessage } from "element-plus";
 import Clipboard from "clipboard";
-import { useCool } from "/@/cool";
 
 export default defineComponent({
 	name: "cl-upload-space-item",
@@ -97,7 +96,6 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		const space = inject<any>("space");
-		const { service } = useCool();
 
 		// 文件信息
 		const info = computed(() => props.modelValue);
