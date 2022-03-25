@@ -1,6 +1,6 @@
 <template>
   <el-select v-model="value" v-bind="props" multiple @change="onChange">
-    <el-option v-for="(item, i) in list" :key="i" :value="i" :label="item.name" />
+    <el-option v-for="(item, i) in list" :key="i" :value="item.id" :label="item.name" />
   </el-select>
 </template>
 
@@ -34,7 +34,10 @@ export default defineComponent({
   
         // 该组件使用在cl-form时，可以传入方法把值传出
         if (!isEmpty(form) && !isEmpty(item)) {
-          form[props.cloneValue] = item[props.cloneValue] ?? '';
+          const clonelist = props.cloneValue.split(',')
+          clonelist.map((value: string) => {
+            form[value] = item[value] ?? '';
+          })
         }
   
         emit("update:modelValue", [item.id]);

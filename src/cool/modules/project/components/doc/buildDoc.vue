@@ -6,7 +6,7 @@
 					<data-template
 						v-model="doc.data"
 						:docId="doc.id"
-						:tableName="!testMode ? projectObj.tableName : ''"
+						:projectId="projectObj?.value?.id ?? null"
 						:test-mode="testMode"
 					></data-template>
 					<data-form

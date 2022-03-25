@@ -36,7 +36,6 @@ export default defineComponent({
 				purchaser:"",
 				pur_phone:"",
 				totalPrice: 0,
-				tableName:"",
 				tcDate:"",
 				payDate:""
 			}
