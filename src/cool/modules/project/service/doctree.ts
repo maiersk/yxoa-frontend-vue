@@ -4,21 +4,20 @@ import { BaseService, Service, Permission } from "/@/cool";
 class ProjectDocTreeService extends BaseService {
 
   @Permission("prjdoclist")
-	prjdoclist(tableName: any) {
-    console.log(tableName)
+	prjdoclist(projectId: any) {
 		return this.request({
 			url: '/prjdoclist',
 			method: "POST",
-      data: { tableName }
+      data: { projectId }
 		});
 	}
 
   @Permission("prjdocinfo")
-	prjdocinfo({tableName, id}: any) {
+	prjdocinfo({projectId, id}: any) {
 		return this.request({
 			url: '/prjdocinfo',
 			method: "POST",
-      data: { tableName, id }
+      data: { projectId, id }
 		});
 	}
 
