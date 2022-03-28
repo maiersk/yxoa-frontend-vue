@@ -27,20 +27,23 @@ export default defineComponent({
     const list = ref<any[]>([]);
     const value = ref<any>();
 
-    function onChange(idx: any) {
-      console.log(idx);
-      if (!isEmpty(idx)) {
-        const item = list.value[idx];
-  
+    function onChange(idxs: any) {
+      if (!isEmpty(idxs)) {
+        const item: any = list.value.filter((item) => {
+          if (item.id === idxs[0]) {
+            return item;
+          }
+        });
+
         // 该组件使用在cl-form时，可以传入方法把值传出
-        if (!isEmpty(form) && !isEmpty(item)) {
+        if (!isEmpty(form) && !isEmpty(item[0])) {
           const clonelist = props.cloneValue.split(',')
           clonelist.map((value: string) => {
-            form[value] = item[value] ?? '';
+            form[value] = item[0][value] ?? '';
           })
         }
   
-        emit("update:modelValue", [item.id]);
+        emit("update:modelValue", idxs);
       }
     }
 
