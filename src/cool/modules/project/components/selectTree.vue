@@ -47,22 +47,19 @@ export default defineComponent({
 
 	props: {
 		modelValue: [Number, String],
+		projectId: {
+			type: Number,
+			default: 0
+		},
 		listStr: {
 			type: String,
 			default: "list"
-		},
-		tableName: {
-			type: String,
-			default: ""
 		}
 	},
 
 	emits: ["update:modelValue"],
 
 	setup(props, { emit }) {
-
-		const projectObj : any = inject("porject");
-
 		// 请求服务
 		const { service } = useCool();
 
@@ -88,7 +85,7 @@ export default defineComponent({
 
 		// 刷新列表
 		function refresh() {
-			service.project.doctree[props.listStr](props.tableName).then((res: any) => {
+			service.project.doctree[props.listStr](props.projectId).then((res: any) => {
 				const _list = res.filter((e: any) => e.type != 2);
 
 				_list.unshift({

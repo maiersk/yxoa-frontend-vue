@@ -57,9 +57,7 @@
 		</div>
 
 		<!-- 打开树形穿梭框 -->
-		<cl-dialog title="项目文档" v-model="docTreeDialog"
-			width="1000px"
-		>
+		<cl-dialog title="项目文档" v-model="docTreeDialog" width="1000px">
 			<!-- <transfer-tree-box :treelist="list"></transfer-tree-box> -->
 		</cl-dialog>
 
@@ -98,7 +96,7 @@ export default defineComponent({
 	setup(props: any, { emit }) {
 		const { refs, setRefs, service } = useCool();
 
-		const projectObj: any = inject('project');
+		const projectObj: any = inject("project");
 
 		// 树形列表
 		const list = ref<any[]>([]);
@@ -113,7 +111,7 @@ export default defineComponent({
 		const docTreeDialog = ref<boolean>(false);
 
 		function openDocTreeDialog() {
-			docTreeDialog.value = true
+			docTreeDialog.value = true;
 		}
 
 		// 允许托的规则
@@ -131,9 +129,7 @@ export default defineComponent({
 			isDrag.value = false;
 			loading.value = true;
 
-			await service.project.doctree.prjdoclist(
-				projectObj.value.tableName
-			).then((res: any[]) => {
+			await service.project.doctree.prjdoclist(projectObj.value.id).then((res: any[]) => {
 				// console.log(res);
 				list.value = deepTree(res);
 				emit("list-change", list.value);
@@ -180,15 +176,17 @@ export default defineComponent({
 						}
 					},
 					{
-						prop: "name",
-						label: "节点名称",
+						prop: "docId",
+						label: "文档",
 						span: 24,
-						value: '',
-						hidden: ({ scope }: any) => scope.type != 0,
+						hidden: ({ scope }: any) => scope.type != 1,
 						component: {
-							name: "el-input",
+							name: "cl-doc-select",
 							props: {
-								placeholder: "请输入节点名称"
+								cloneValue: "remark,name",
+								multipleLimit: 1,
+								filterable: true,
+								placeholder: "请选择模板文档"
 							}
 						},
 						required: true
@@ -200,25 +198,24 @@ export default defineComponent({
 						component: {
 							name: "cl-prj-select-tree",
 							props: {
-								listStr: 'prjdoclist',
-								tableName: projectObj.value.tableName
+								listStr: "prjdoclist",
+								projectId: projectObj.value.id
 							}
-						}
+						},
+						require: true
 					},
 					{
-						prop: "docId",
-						label: "文档",
+						prop: "name",
+						label: "节点名称",
 						span: 24,
-						hidden: ({ scope }: any) => scope.type != 1,
+						value: '',
 						component: {
-							name: "cl-doc-select",
+							name: "el-input",
 							props: {
-								cloneValue: "remark",
-								multipleLimit: 1,
-								filterable: true,
-								placeholder: "请选择模板文档"
+								placeholder: "请输入节点名称"
 							}
-						}
+						},
+						required: true
 					},
 					{
 						prop: "remark",
@@ -254,10 +251,11 @@ export default defineComponent({
 							id: data.id,
 							type: data.type,
 							docId: data.docId,
+							projectId: projectObj.value.id,
 							name: data.name,
+							remark: data.remark,
 							parentId: e.parentId,
-							orderNum: data.orderNum,
-							tableName: projectObj.value.tableName,
+							orderNum: data.orderNum
 						})
 							.then(() => {
 								ElMessage.success(`新增成功`);
@@ -278,7 +276,7 @@ export default defineComponent({
 			const del = async (f: boolean) => {
 				await service.project.doctree
 					.prjdocdelete({
-						tableName: projectObj.value.tableName,
+						projectId: projectObj.value.id,
 						ids: [e.id],
 						deleteUser: f
 					})
@@ -334,16 +332,16 @@ export default defineComponent({
 
 						deep(list.value, null);
 
-						await service.project.doctree.prjdocorder({
-								tableName: projectObj.value.tableName,
+						await service.project.doctree
+							.prjdocorder({
+								projectId: projectObj.value.id,
 								ids: ids.map((e, i) => {
 									return {
-											id: e.id,
-											parentId: e.parentId,
-											orderNum: i
-										};
-									}
-								)
+										id: e.id,
+										parentId: e.parentId,
+										orderNum: i
+									};
+								})
 							})
 							.then(() => {
 								ElMessage.success("更新排序成功");
@@ -402,7 +400,7 @@ export default defineComponent({
 							rowDel(d);
 							done();
 						}
-					},
+					}
 					// {
 					// 	label: "新增文档",
 					// 	"suffix-icon": "el-icon-user",
@@ -437,7 +435,7 @@ export default defineComponent({
 			rowDel,
 			treeOrder,
 			docTreeDialog,
-			toTree,
+			toTree
 		};
 	}
 });

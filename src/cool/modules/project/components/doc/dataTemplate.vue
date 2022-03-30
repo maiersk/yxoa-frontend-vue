@@ -30,9 +30,9 @@ export default {
       type: Number,
       default: -1
     },
-    tableName: {
-      type: String,
-      default: ""
+    projectId: {
+      type: Number,
+      default: 0
     },
     testMode: {
       type: Boolean,
@@ -77,7 +77,7 @@ export default {
         delete selectNode.value.createTime;
         service.project.doctree.prjdocupdate(
           Object.assign(selectNode.value, {
-            tableName: props.tableName,
+            projectId: props.projectId,
             data: code.value.trim()
           })
         )

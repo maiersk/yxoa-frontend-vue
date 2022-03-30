@@ -110,7 +110,7 @@ export default defineComponent({
 			if (isEmpty(item.docId)) { return }
 
 			service.project.doctree.prjdocinfo({
-				tableName: projectObj.value.tableName,
+				projectId: projectObj.value.id,
 				id: item.id
 			}).then((data: any) => {
 				buildDocObj.value = data; 
