@@ -24,7 +24,11 @@ export default defineComponent({
     const value = ref<any>();
 
     function onChange(val: any) {
-      emit("update:modelValue", val);
+      if ((props.props?.multipleLimit ?? 0) === 1) {
+        emit("update:modelValue", ...val); 
+      } else {
+        emit("update:modelValue", val); 
+      }
     }
 
 		// 解析值
@@ -40,7 +44,6 @@ export default defineComponent({
 
     onMounted(async () => {
       list.value = await service.base.sys.user.list();
-      console.log(list.value)
     });
 
     return {
