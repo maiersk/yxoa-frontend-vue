@@ -7,7 +7,7 @@
       <el-button type="text" @click="saveHandel">保存</el-button>
 		</template>
 		<template #default>
-      <cl-codemirror class="cl-code" v-model="code"></cl-codemirror>
+      <cl-codemirror height="300" class="cl-code" v-model="code"></cl-codemirror>
     </template>
 	</op-card>
 </template>
