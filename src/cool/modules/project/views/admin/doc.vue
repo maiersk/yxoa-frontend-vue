@@ -51,7 +51,6 @@ import { useRefs } from "/@/cool";
 import BuildDoc from "../../components/doc/buildDoc.vue";
 
 export default defineComponent({
-	name: "project-doc",
 	cool: {
 		// 注入视图路由中
 		route: {

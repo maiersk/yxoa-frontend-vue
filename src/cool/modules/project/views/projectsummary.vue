@@ -17,7 +17,7 @@ export default defineComponent({
 	cool: {
 		// 注入视图路由中
 		route: {
-			path: "/project/", // 路由地址
+			path: "/proj", // 路由地址
 			meta: {
 				keepAlive: true, // 是否缓存路由
 				label: "项目" // 路由名称

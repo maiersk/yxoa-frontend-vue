@@ -56,11 +56,19 @@ import { CrudLoad, Table, Upsert, RefreshOp } from "@cool-vue/crud/types";
 import BuildDoc from "../../components/doc/buildDoc.vue";
 
 export default defineComponent({
-	name: "project-doctree",
   components: {
 		BuildDoc
 	},
-
+	cool: {
+		// 注入视图路由中
+		route: {
+			path: "/project/admin/doctree", // 路由地址
+			meta: {
+				keepAlive: true, // 是否缓存路由
+				label: "文档模板" // 路由名称
+			}
+		}
+	},
 	setup() {
 		const { refs, setRefs, service, router } = useCool();
 		const buildDialog = ref<boolean>(false);
@@ -247,6 +255,21 @@ export default defineComponent({
 					}
 				},
 				{
+					prop: "count",
+					label: "数量",
+					span: 24,
+					hidden: ({ scope }: any) => scope.type != 1,
+					component: {
+						name: "el-input-number",
+						props: {
+							placeholder: "请填写数量",
+							min: 1,
+							max: 99,
+							"controls-position": "right"
+						}
+					}
+				},
+				{
 					prop: "remark",
 					label: "备注",
 					span: 24,
@@ -260,7 +283,6 @@ export default defineComponent({
 				{
 					prop: "orderNum",
 					label: "排序号",
-          value: 0,
 					span: 24,
 					component: {
 						name: "el-input-number",
