@@ -5,7 +5,7 @@
 			工程
 		</div>
 		<div class="c">
-			<router-link to="/project">传送门</router-link>
+			<router-link to="/proj">传送门</router-link>
 		</div>
 		<div class="f">
       
