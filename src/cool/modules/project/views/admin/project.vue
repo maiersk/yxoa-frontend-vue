@@ -34,16 +34,16 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
-	cool: {
-		// 注入视图路由中
-		route: {
-			path: "/project/admin/list", // 路由地址
-			meta: {
-				keepAlive: true, // 是否缓存路由
-				label: "项目列表" // 路由名称
-			}
-		}
-	},
+	// cool: {
+	// 	// 注入视图路由中
+	// 	route: {
+	// 		path: "/proj/admin/list", // 路由地址
+	// 		meta: {
+	// 			keepAlive: true, // 是否缓存路由
+	// 			label: "项目列表" // 路由名称
+	// 		}
+	// 	}
+	// },
 	setup() {
 		const { refs, setRefs, service } = useCool();
 

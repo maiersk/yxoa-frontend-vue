@@ -14,18 +14,18 @@ export default defineComponent({
 	components: {
 		ProjectTabs
 	},
-	cool: {
-		// 注入视图路由中
-		route: {
-			path: "/project/detail", // 路由地址
-			meta: {
-				keepAlive: true, // 是否缓存路由
-				label: "项目详细" // 路由名称
-			}
-		}
-	},
+	// cool: {
+	// 	// 注入视图路由中
+	// 	route: {
+	// 		path: "/proj/detail", // 路由地址
+	// 		meta: {
+	// 			keepAlive: true, // 是否缓存路由
+	// 			label: "项目详细" // 路由名称
+	// 		}
+	// 	}
+	// },
 	setup() {
-		const { route, service } = useCool();
+		const { route, service, store } = useCool();
 		const project = ref<any>({
 			value: {
 				name: "",
@@ -48,6 +48,18 @@ export default defineComponent({
 			if (id !== 0) {
 				project.value = await service.project.project.info({ id });
 			}
+
+			const index = store.getters.processList.findIndex((e: any) => {
+				return e.value.split("?")[0] === `/proj/detail/?id=${id}`.split("?")[0]
+			});
+			const { active, keepAlive, value } = store.getters.processList[index];
+			const processList = [...store.getters.processList];
+			processList[index] = {
+				active, keepAlive,
+				label: project.value.name,
+				value: value
+			};
+			store.commit('SET_PROCESS', processList);
 		})
 
 		return {

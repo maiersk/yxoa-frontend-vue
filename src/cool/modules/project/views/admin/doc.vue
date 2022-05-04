@@ -51,16 +51,16 @@ import { useRefs } from "/@/cool";
 import BuildDoc from "../../components/doc/buildDoc.vue";
 
 export default defineComponent({
-	cool: {
-		// 注入视图路由中
-		route: {
-			path: "/project/admin/doc", // 路由地址
-			meta: {
-				keepAlive: true, // 是否缓存路由
-				label: "文档模板" // 路由名称
-			}
-		}
-	},
+	// cool: {
+	// 	// 注入视图路由中
+	// 	route: {
+	// 		path: "/proj/admin/doc", // 路由地址
+	// 		meta: {
+	// 			keepAlive: true, // 是否缓存路由
+	// 			label: "文档模板" // 路由名称
+	// 		}
+	// 	}
+	// },
 	components: {
 		BuildDoc
 	},

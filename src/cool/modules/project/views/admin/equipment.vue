@@ -37,16 +37,16 @@ export default defineComponent({
 	components: {
 
 	},
-	cool: {
-		// 注入视图路由中
-		route: {
-			path: "/project/admin/equipment", // 路由地址
-			meta: {
-				keepAlive: true, // 是否缓存路由
-				label: "项目设备" // 路由名称
-			}
-		}
-	},
+	// cool: {
+	// 	// 注入视图路由中
+	// 	route: {
+	// 		path: "/proj/admin/equipment", // 路由地址
+	// 		meta: {
+	// 			keepAlive: true, // 是否缓存路由
+	// 			label: "项目设备" // 路由名称
+	// 		}
+	// 	}
+	// },
 	setup() {
 		const { refs, setRefs } = useRefs();
 		// 请求服务
