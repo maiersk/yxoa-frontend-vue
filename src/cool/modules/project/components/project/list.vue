@@ -11,11 +11,11 @@
 							<div class="card_title" style="margin: 0; padding: 0;">
 								<span>{{ item.name }}</span>
 
-								<a style="float: right">
-									<router-link :to="`/project/detail/?id=${item.id}`">
+								<div class="operator">
+									<el-button type="text" size="mini" @click="toDetail(item.id)">
 										详细
-									</router-link>
-								</a>
+									</el-button>
+								</div>
 							</div>
 						</template>
 						<div class="card_body">
@@ -75,7 +75,7 @@ export default {
 		const { router } = useCool();
 
 		function toDetail(id: string) {
-			router.push(`/project/detail/${id}`);
+			router.push(`/proj/detail/?id=${id}`);
 		}
 		return {
 			toDetail
@@ -118,6 +118,27 @@ export default {
 				margin-bottom: 18px;
 			}
 		}
+	}
+}
+
+.project-card {
+	margin: 0;
+	padding: 0;
+}
+.project-card::before,
+.project-card::after {
+	display: table;
+	content: "";
+}
+.project-card::after {
+	clear: both;
+}
+
+.operator {
+	float: right;
+	> button {
+		min-height: 0;
+		padding: 0;
 	}
 }
 </style>

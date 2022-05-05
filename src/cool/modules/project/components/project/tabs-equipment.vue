@@ -44,7 +44,7 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
-	name: "project-user",
+	name: "project-equipment",
 	props: {},
 	setup(props: any) {
 		const { refs, setRefs, service } = useCool();
@@ -54,24 +54,81 @@ export default defineComponent({
 		const upsert = reactive<Upsert>({
 			items: [
 				{
-					label: "选择用户",
-					prop: "userId",
+					label: "选择设备",
+					prop: "equipmentId",
 					required: true,
 					component: {
-						name: "cl-user-select",
+						name: "cl-equipment-select",
 						props: {
 							multipleLimit: 1
 						}
 					}
 				},
 				{
-					label: "工作内容",
-					prop: "workCtx",
+					label: "单位",
+					prop: "unit",
 					required: true,
 					component: {
-						name: "el-input"
+						name: "el-select",
+						props: {
+							placeholder: "请选择设备单位"
+						},
+						options: [
+							{
+								label: "个",
+								value: "个"
+							},
+							{
+								label: "条",
+								value: "条"
+							}
+						]
 					}
-				}
+				},
+				{
+					label: "数量",
+					prop: "count",
+					required: true,
+					component: {
+						name: "el-input-number",
+						props: {
+							placeholder: "请输入数量"
+						}
+					}
+				},
+				{
+					label: "含税单价",
+					prop: "price",
+					required: true,
+					component: {
+						name: "el-input-number",
+						props: {
+							placeholder: "请输入含税单价"
+						}
+					}
+				},
+				{
+					label: "投标总价",
+					prop: "totalprice",
+					required: true,
+					component: {
+						name: "el-input-number",
+						props: {
+							placeholder: "请输入投标总价"
+						}
+					}
+				},
+				{
+					label: "备注",
+					prop: "remark",
+					required: true,
+					component: {
+						name: "el-input",
+						props: {
+							placeholder: "请输入备注"
+						}
+					}
+				},
 			]
 		});
 
@@ -79,11 +136,17 @@ export default defineComponent({
 		const table = reactive<Table>({
 			columns: [
 				{ type: "selection" },
-				{ label: "头像", prop: "headImg" },
-				{ label: "姓名", prop: "name" },
-				{ label: "昵称", prop: "nickName" },
-				{ label: "手机", prop: "phone" },
-				{ label: "工作内容", prop: "workCtx" }
+				{ label: "货物名称", prop: "name" },
+				{ label: "品牌", prop: "brand" },
+				{ label: "型号", prop: "model" },
+				{ label: "规格", prop: "norm" },
+				{ label: "制作商名称", prop: "manufacturer" },
+				{ label: "国籍", prop: "country" },
+				{ label: "单位", prop: "unit" },
+				{ label: "数量", prop: "count" },
+				{ label: "含税单价", prop: "price" },
+				{ label: "投标总价", prop: "totalprice" },
+				{ label: "备注", prop: "remark" }
 			]
 		});
 
@@ -95,21 +158,21 @@ export default defineComponent({
 		async function onLoad({ ctx, app }: CrudLoad) {
 			ctx.service({
 				async page() {
-					return service.project.prjuser.page({
+					return service.project.equipments.page({
 						projectId: project.value.id
 					});
 				},
 				list() {
-					return service.project.prjuser.list();
+					return service.project.equipments.list();
 				},
 				add(data) {
-					return service.project.prjuser.add({
+					return service.project.equipments.add({
 						projectId: project.value.id,
 						...data
 					});
 				},
 				delete(data) {
-					return service.project.prjuser.delete(data);
+					return service.project.equipments.delete(data);
 				}
 			}).done();
 			app.refresh();
