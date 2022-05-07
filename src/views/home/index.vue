@@ -3,22 +3,23 @@
 		<el-row :gutter="15">
 			<el-col :lg="6" :md="12" :xs="24">
 				<div class="card">
-					<count-sales />
+					<proj-count />
+					<!-- <count-sales /> -->
 				</div>
 			</el-col>
 			<el-col :lg="6" :md="12" :xs="24">
 				<div class="card">
-					<count-views />
+					<!-- <count-views /> -->
 				</div>
 			</el-col>
 			<el-col :lg="6" :md="12" :xs="24">
 				<div class="card">
-					<count-paid />
+					<!-- <count-paid /> -->
 				</div>
 			</el-col>
 			<el-col :lg="6" :md="12" :xs="24">
 				<div class="card">
-					<count-effect />
+					<!-- <count-effect /> -->
 				</div>
 			</el-col>
 		</el-row>
@@ -26,12 +27,12 @@
 		<el-row :gutter="15">
 			<el-col :lg="14" :xs="24">
 				<div class="card">
-					<tab-chart />
+					<!-- <tab-chart /> -->
 				</div>
 			</el-col>
 			<el-col :lg="10" :xs="24">
 				<div class="card">
-					<sales-rank />
+					<!-- <sales-rank /> -->
 				</div>
 			</el-col>
 		</el-row>
@@ -39,12 +40,12 @@
 		<el-row :gutter="15">
 			<el-col :lg="14" :sm="24">
 				<div class="card card--last">
-					<hot-search />
+					<!-- <hot-search /> -->
 				</div>
 			</el-col>
 			<el-col :lg="10" :sm="24">
 				<div class="card card--last">
-					<category-ratio />
+					<!-- <category-ratio /> -->
 				</div>
 			</el-col>
 		</el-row>
@@ -54,7 +55,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import CategoryRatio from "./components/category-ratio.vue";
-import CountSales from "./components/count-sales.vue";
+// import CountSales from "./components/count-sales.vue";
+import ProjCount from './components/project-count-views.vue';
 import CountViews from "./components/count-views.vue";
 import CountPaid from "./components/count-paid.vue";
 import CountEffect from "./components/count-effect.vue";
@@ -65,7 +67,8 @@ import HotSearch from "./components/hot-search.vue";
 export default defineComponent({
 	components: {
 		CategoryRatio,
-		CountSales,
+		// CountSales,
+		ProjCount,
 		CountViews,
 		CountPaid,
 		CountEffect,

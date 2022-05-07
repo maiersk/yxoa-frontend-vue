@@ -1,8 +1,9 @@
 <template>
 	<div class="page-login">
 		<div class="box">
-			<img class="logo" src="../../static/images/logo.png" alt="" />
-			<p class="desc">{{ app.name }} 后台管理</p>
+			<!-- <img class="logo" src="../../static/images/logo.png" alt="" /> -->
+			<h1 class="desc">登录 {{ app.name }}</h1>
+			<!-- <p class="desc">{{ app.name }} 后台管理</p> -->
 
 			<el-form label-position="top" class="form" size="medium" :disabled="saving">
 				<el-form-item label="用户名">
@@ -162,7 +163,7 @@ export default defineComponent({
 
 		.desc {
 			color: #ccc;
-			font-size: 12px;
+			font-size: 20px;
 			margin-bottom: 60px;
 			letter-spacing: 1px;
 		}
