@@ -15,15 +15,6 @@
 		<el-row>
 			<!-- 数据表格 -->
 			<cl-table :ref="setRefs('table')" v-bind="table" style="max-height: 700px">
-				<!-- 头像 -->
-				<template #column-headImg="{ scope }">
-					<cl-avatar
-						shape="square"
-						size="medium"
-						:src="scope.row.headImg"
-						:style="{ margin: 'auto' }"
-					/>
-				</template>
 			</cl-table>
 		</el-row>
 
@@ -44,7 +35,7 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
-	name: "project-user",
+	name: "project-contacts",
 	props: {},
 	setup(props: any) {
 		const { refs, setRefs, service } = useCool();
@@ -54,22 +45,14 @@ export default defineComponent({
 		const upsert = reactive<Upsert>({
 			items: [
 				{
-					label: "选择用户",
-					prop: "userId",
+					label: "选择联系人",
+					prop: "contactsId",
 					required: true,
 					component: {
-						name: "cl-user-select",
+						name: "cl-contacts-select",
 						props: {
 							multipleLimit: 1
 						}
-					}
-				},
-				{
-					label: "工作内容",
-					prop: "workCtx",
-					required: true,
-					component: {
-						name: "el-input"
 					}
 				}
 			]
@@ -79,11 +62,12 @@ export default defineComponent({
 		const table = reactive<Table>({
 			columns: [
 				{ type: "selection" },
-				{ label: "头像", prop: "headImg" },
-				{ label: "姓名", prop: "name" },
-				{ label: "昵称", prop: "nickName" },
-				{ label: "手机", prop: "phone" },
-				{ label: "工作内容", prop: "workCtx" }
+				{ label: "描述", prop: "name" },
+				{ label: "代表设备/项目性质", prop: "device" },
+				{ label: "生产商", prop: "manufacturer" },
+				{ label: "职位", prop: "jobs" },
+				{ label: "联系人", prop: "person" },
+				{ label: "联系电话", prop: "phone" }
 			]
 		});
 
@@ -94,22 +78,22 @@ export default defineComponent({
 		// crud 加载
 		async function onLoad({ ctx, app }: CrudLoad) {
 			ctx.service({
-				async page() {
-					return service.project.users.page({
+				page() {
+					return service.project.contacts.page({
 						projectId: project.value.id
 					});
 				},
 				list() {
-					return service.project.users.list();
+					return service.project.contacts.list();
 				},
 				add(data) {
-					return service.project.users.add({
+					return service.project.contacts.add({
 						projectId: project.value.id,
 						...data
 					});
 				},
 				delete(data) {
-					return service.project.users.delete(data);
+					return service.project.contacts.delete(data);
 				}
 			}).done();
 			app.refresh();

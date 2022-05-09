@@ -6,21 +6,62 @@
       </span>
       <div class="operator">
         <slot name="operator"></slot>
+        <el-button type="text"
+          @click="showorhide = !showorhide">
+          <span v-if="showorhide">
+            收起
+          </span>
+          <span v-else>
+            展开
+          </span>
+        </el-button>
       </div>
     </template>
     <template #default>
-      <slot></slot>
+      <div class="context" :ref="setRefs('context')">
+        <slot></slot>
+      </div>
     </template>
   </el-card>
 </template>
 
 <script lang="ts">
+import { ref, watch } from 'vue';
+import { useCool } from '/@/cool';
 import { ElCard, ElButton } from 'element-plus';
 
 export default {
+  props: {
+    hide: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     ElCard,
     ElButton
+  },
+  setup(props: any) {
+    const { refs, setRefs } = useCool();
+    const showorhide = ref<boolean>(props.hide)
+
+    watch(
+      () => showorhide,
+      (val: any) => {
+        if (val) {
+          console.log(val, refs)
+          refs.value.context.style.display = 'none';
+        } else {
+          refs.value.context.style.display = 'block';
+        }
+      }
+    )
+
+    return {
+      refs,
+      setRefs,
+      showorhide
+    }
   }
 }
 </script>

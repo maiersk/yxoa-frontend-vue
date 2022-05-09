@@ -60,29 +60,9 @@ export default defineComponent({
 					component: {
 						name: "cl-equipment-select",
 						props: {
-							multipleLimit: 1
+							cloneValue: "unit,",
+							multipleLimit: 1,
 						}
-					}
-				},
-				{
-					label: "单位",
-					prop: "unit",
-					required: true,
-					component: {
-						name: "el-select",
-						props: {
-							placeholder: "请选择设备单位"
-						},
-						options: [
-							{
-								label: "个",
-								value: "个"
-							},
-							{
-								label: "条",
-								value: "条"
-							}
-						]
 					}
 				},
 				{
@@ -94,6 +74,16 @@ export default defineComponent({
 						props: {
 							placeholder: "请输入数量"
 						}
+					}
+				},
+				{
+					label: "单位",
+					prop: "unit",
+					component: {
+						name: "el-input",
+						props: {
+							disabled: true,
+						},
 					}
 				},
 				{
@@ -121,7 +111,6 @@ export default defineComponent({
 				{
 					label: "备注",
 					prop: "remark",
-					required: true,
 					component: {
 						name: "el-input",
 						props: {

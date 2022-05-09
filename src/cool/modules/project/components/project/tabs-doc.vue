@@ -5,8 +5,7 @@
 			<div class="project" :class="[isExpand ? '_expand' : '_collapse']">
 				<prj-tree
 					@row-click="onprojectRowClick"
-					@doc-add="onprojectdocAdd"
-					@list-change="onprojectListChange"
+					@list-change="ondoctreeListChange"
 				/>
 			</div>
 
@@ -47,6 +46,7 @@ export default defineComponent({
 		const buildDialog = ref<boolean>(false);
 		const buildDocObj	= ref<Object>({
 			id: 0,
+			type: 0,
 			data: "",
 			templateFile: ""
 		});
@@ -60,17 +60,13 @@ export default defineComponent({
 				buildDocObj.value = data;
 				buildDialog.value = true;
 			})
-      // service.project.doc.info({id: scope.docId}).then((data: any) => {
-      //   buildDocObj.value = data
-			//   buildDialog.value = true
-      // })
 		}
 
 		// 是否展开
 		const isExpand = ref<boolean>(true);
 
-		// 部门列表
-		const project = ref<any[]>([]);
+		// 文档树列表
+		const doctree = ref<any[]>([]);
 
 		// 浏览器信息
 		const browser = computed(() => store.getters.browser);
@@ -122,16 +118,9 @@ export default defineComponent({
 			}
 		}
 
-		// 文档树下新增节点
-		function onprojectdocAdd(item: any) {
-			refs.value.crud.rowAppend({
-				parentId: item.id
-			});
-		}
-
 		// 文档树列表监听
-		function onprojectListChange(list: any[]) {
-			project.value = list;
+		function ondoctreeListChange(list: any[]) {
+			doctree.value = list;
 		}
 
 		// 是否显示文档树
@@ -144,12 +133,12 @@ export default defineComponent({
 			refs,
 			isExpand,
 			projectObj,
+			buildDocObj,
 			browser,
 			setRefs,
 			onRefresh,
 			onprojectRowClick,
-			onprojectdocAdd,
-			onprojectListChange,
+			ondoctreeListChange,
 			projectExpand,
 			openBuildDialog
 		};

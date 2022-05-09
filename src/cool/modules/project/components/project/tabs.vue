@@ -20,6 +20,9 @@
     <el-tab-pane label="参与人" name="user">
       <component :is="isUser"><slot name="user"></slot></component>
     </el-tab-pane>
+    <el-tab-pane label="各方联系人" name="contact">
+      <component :is="isContact"><slot name="contact"></slot></component>
+    </el-tab-pane>
 	</el-tabs>
 </template>
 
@@ -31,6 +34,7 @@ import TabsEquipment from './tabs-equipment.vue';
 import TabsDoc from './tabs-doc.vue';
 import TabsPointTab from './tabs-pointtab.vue';
 import TabsUser from './tabs-user.vue';
+import TabsContact from './tabs-contacts.vue';
 
 
 export default {
@@ -38,7 +42,8 @@ export default {
     ElTabs,
     TabsDetail,
     TabsDoc,
-    TabsUser
+    TabsUser,
+    TabsContact
   },
   setup() {
     const activename = ref(null);
@@ -47,6 +52,7 @@ export default {
     const isDoc = shallowRef(null);
     const isPointTab = shallowRef(null);
     const isUser = shallowRef(null);
+    const isContact = shallowRef(null);
 
     const handleClick = function () {
       switch (activename.value) {
@@ -64,6 +70,9 @@ export default {
           break
         case 'user' :
           isUser.value = TabsUser
+          break
+        case 'contact' :
+          isContact.value = TabsContact
           break
       }
     }
@@ -84,6 +93,7 @@ export default {
       isPointTab,
       isEquipment,
       isUser,
+      isContact,
       handleClick
     }
   }

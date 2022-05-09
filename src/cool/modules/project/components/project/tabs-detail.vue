@@ -40,16 +40,61 @@
 		<div class="project-contacts card">
 			<h3>项目各方联系人</h3>
 
+				<!-- 数据表格 -->
+				<el-table
+					class="contacts-tab"
+					:data="project?.contacts ?? []"
+					border
+					highlight-current-row
+					style="max-height: 700px"
+				>
+					<el-table-column
+						align="center"
+						prop="name"
+						label="描述"
+					>
+					</el-table-column>
+					<el-table-column
+						align="center"
+						prop="device"
+						label="代表设备/项目性质"
+						width="220">
+					</el-table-column>
+					<el-table-column
+						align="center"
+						prop="manufacturer"
+						label="生产商"
+						width="100">
+					</el-table-column>
+					<el-table-column
+						align="center"
+						prop="jobs"
+						label="职位"
+						width="100">
+					</el-table-column>
+					<el-table-column
+						align="center"
+						prop="person"
+						label="联系人"
+						width="100">
+					</el-table-column>
+					<el-table-column
+						align="center"
+						prop="phone"
+						label="联系电话"
+					>
+					</el-table-column>
+				</el-table>
 		</div>
 	</div>
 </template>
 
 <script lang='ts'>
-import { inject } from 'vue-demi';
+import { inject } from 'vue';
 
 export default {
 	setup() {
-		const project = inject('project')
+		const project: any = inject('project')
 
 		return {
 			project
@@ -64,5 +109,14 @@ export default {
 		padding: 1rem;
 		background-color: white;
 	  box-shadow: 0 2px 4px 0 rgb(54 58 80 / 32%);
+	}
+	.project-contacts {
+		> h3 {
+			padding: 10px;
+		}
+
+		.contacts-tab {
+			width: 100%;
+		}
 	}
 </style>

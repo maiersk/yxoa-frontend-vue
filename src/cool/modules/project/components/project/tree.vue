@@ -1,7 +1,7 @@
 <template>
 	<div class="cl-prj-tree">
 		<div class="cl-prj-tree__header">
-			<div>项目架构</div>
+			<div>项目文档结构</div>
 
 			<ul class="cl-prj-tree__op">
 				<li>
@@ -91,7 +91,7 @@ export default defineComponent({
 		}
 	},
 
-	emits: ["list-change", "row-click", "doc-add"],
+	emits: ["list-change", "row-click"],
 
 	setup(props: any, { emit }) {
 		const { refs, setRefs, service } = useCool();
@@ -149,8 +149,27 @@ export default defineComponent({
 		function rowEdit(e: any) {
 			const method = e.id ? "prjdocupdate" : "prjdocadd";
 
+			// 编辑和新增标题切换
+			const title = method === "prjdocupdate" ? "编辑" : "新增";
+			
+			let itemsOptions: any = [
+				{
+					label: "目录",
+					value: 0
+				},
+				{
+					label: "文档",
+					value: 1
+				}
+			]
+			// 编辑下不添加文档结构选项
+		  method === "prjdocupdate" ? null : itemsOptions.push({
+				label: "文档结构",
+				value: 2
+			});
+
 			refs.value.form.open({
-				title: "编辑",
+				title,
 				width: "550px",
 				props: {
 					labelWidth: "100px"
@@ -163,16 +182,20 @@ export default defineComponent({
 						span: 24,
 						component: {
 							name: "el-radio-group",
-							options: [
-								{
-									label: "目录",
-									value: 0
-								},
-								{
-									label: "文档",
-									value: 1
-								}
-							]
+							options: itemsOptions
+						},
+						required: true
+					},
+					{
+						prop: "docNodes",
+						label: "文档结构",
+						span: 24,
+						hidden: ({ scope }: any) => scope.type != 2,
+						component: {
+							name: "cl-doctree-select",
+							props: {
+								placeholder: "请选择文档结构"
+							}
 						}
 					},
 					{
@@ -207,6 +230,7 @@ export default defineComponent({
 					{
 						prop: "name",
 						label: "节点名称",
+						hidden: ({ scope }: any) => scope.type == 2,
 						span: 24,
 						value: '',
 						component: {
@@ -220,6 +244,7 @@ export default defineComponent({
 					{
 						prop: "remark",
 						label: "备注",
+						hidden: ({ scope }: any) => scope.type == 2,
 						span: 24,
 						component: {
 							name: "el-input",
@@ -252,9 +277,10 @@ export default defineComponent({
 							type: data.type,
 							docId: data.docId,
 							projectId: projectObj.value.id,
+							docNodes: data.docNodes,
 							name: data.name,
 							remark: data.remark,
-							parentId: e.parentId,
+							parentId: data.parentId,
 							orderNum: data.orderNum
 						})
 							.then(() => {
@@ -277,17 +303,10 @@ export default defineComponent({
 				await service.project.doctree
 					.prjdocdelete({
 						projectId: projectObj.value.id,
-						ids: [e.id],
-						deleteUser: f
-					})
-					.then(() => {
+						ids: [e.id]
+					}).then(() => {
 						if (f) {
 							ElMessage.success("删除成功");
-						} else {
-							ElMessageBox.confirm(
-								`“${e.name}” 的文档已成功转移到 “${e.parentName}” 。`,
-								"删除成功"
-							);
 						}
 					});
 
@@ -297,23 +316,17 @@ export default defineComponent({
 			ElMessageBox.confirm(`该操作会删除 “${e.name}” 的所有文档，是否确认？`, "提示", {
 				type: "warning",
 				confirmButtonText: "直接删除",
-				cancelButtonText: "保留文档",
+				cancelButtonText: "取消",
 				distinguishCancelAndClose: true
+			}).then(() => {
+				del(true);
 			})
-				.then(() => {
-					del(true);
-				})
-				.catch((action: string) => {
-					if (action == "cancel") {
-						del(false);
-					}
-				});
 		}
 
 		// 排序
 		function treeOrder(f: boolean) {
 			if (f) {
-				ElMessageBox.confirm("架构已发生改变，是否保存？", "提示", {
+				ElMessageBox.confirm("结构已发生改变，是否保存？", "提示", {
 					type: "warning"
 				})
 					.then(async () => {
@@ -401,15 +414,6 @@ export default defineComponent({
 							done();
 						}
 					}
-					// {
-					// 	label: "新增文档",
-					// 	"suffix-icon": "el-icon-user",
-					// 	hidden: !service.project.doc._permission.add,
-					// 	callback: (_: any, done: Function) => {
-					// 		emit("doc-add", d);
-					// 		done();
-					// 	}
-					// }
 				]
 			});
 		}
