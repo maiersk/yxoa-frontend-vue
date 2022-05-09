@@ -71,13 +71,12 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { ContextMenu } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
 import { deepTree, isArray, revDeepTree, isPc } from "/@/cool/utils";
-// import TransferTreeBox from '../transferTree/index.vue';
 
 export default defineComponent({
 	name: "cl-prj-tree",
 
 	components: {
-		// TransferTreeBox
+
 	},
 
 	props: {
