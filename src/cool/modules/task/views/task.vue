@@ -214,13 +214,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive } from "vue";
+import { computed, defineComponent, inject, onMounted, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import Draggable from "vuedraggable/src/vuedraggable";
 import { checkPerm } from "/$/base";
 import { ContextMenu } from "@cool-vue/crud";
 import Cron from "../components/cron";
-import { useCool } from "/@/cool";
+import { useRefs } from "/@/cool";
 
 export default defineComponent({
 	name: "task",
@@ -231,7 +231,8 @@ export default defineComponent({
 	},
 
 	setup() {
-		const { refs, setRefs, service } = useCool();
+		const { refs, setRefs } = useRefs();
+		const service = inject<any>("service");
 
 		// 任务列表
 		const list = reactive<any[]>([
@@ -315,6 +316,9 @@ export default defineComponent({
 
 		// 更多列表
 		function moreList(res: any, { list, pagination }: any) {
+			if (!res) {
+				return;
+			}
 			const { page, size } = res.pagination;
 			const len = res.list.length;
 			const max = list.length;
@@ -369,7 +373,10 @@ export default defineComponent({
 			const { id, type } = params || {};
 
 			let info: any = {
-				type
+				type,
+				service: "",
+				name: "",
+				cron: ""
 			};
 
 			if (id) {
@@ -380,8 +387,8 @@ export default defineComponent({
 				info.every /= 1000;
 			}
 
-			if (!info.limit) {
-				info.limit = undefined;
+			if (!info.repeatCount) {
+				info.repeatCount = undefined;
 			}
 
 			const { setForm } = refs.value.form.open({
@@ -394,7 +401,6 @@ export default defineComponent({
 					{
 						label: "名称",
 						prop: "name",
-						value: info.name,
 						component: {
 							name: "el-input",
 							props: {
@@ -409,7 +415,7 @@ export default defineComponent({
 					{
 						label: "类型",
 						prop: "taskType",
-						value: info.taskType || 0,
+						value: 0,
 						component: {
 							name: "el-select",
 							options: [
@@ -425,7 +431,7 @@ export default defineComponent({
 							on: {
 								change: (v: number) => {
 									if (v == 0) {
-										setForm("limit", undefined);
+										setForm("repeatCount", undefined);
 										setForm("every", undefined);
 									} else {
 										setForm("cron", undefined);
@@ -440,7 +446,6 @@ export default defineComponent({
 						hidden: ({ scope }: any) => {
 							return scope.taskType == 1;
 						},
-						value: info.cron,
 						component: {
 							name: "slot-cron"
 						},
@@ -451,8 +456,7 @@ export default defineComponent({
 					},
 					{
 						label: "次数",
-						prop: "limit",
-						value: info.limit,
+						prop: "repeatCount",
 						hidden: ({ scope }: any) => {
 							return scope.taskType == 0;
 						},
@@ -467,7 +471,6 @@ export default defineComponent({
 					{
 						label: "间隔(秒)",
 						prop: "every",
-						value: info.every,
 						hidden: ({ scope }: any) => {
 							return scope.taskType == 0;
 						},
@@ -486,40 +489,41 @@ export default defineComponent({
 					{
 						label: "service",
 						prop: "service",
-						value: info.service,
 						component: {
 							name: "el-input",
 							props: {
-								placeholder: "sys.test.add(params)"
+								placeholder: "taskDemoService.test([1,2])"
 							}
 						}
 					},
 					{
 						label: "开始时间",
 						prop: "startDate",
-						value: info.startDate || "",
+						hidden: ({ scope }: any) => {
+							return scope.taskType == 1;
+						},
 						component: {
 							name: "el-date-picker",
 							props: {
-								type: "datetime"
+								type: "datetime",
+								"value-format": "YYYY-MM-DD HH:mm:ss"
 							}
 						}
 					},
 					{
 						label: "结束时间",
 						prop: "endDate",
-						value: info.endDate || "",
 						component: {
 							name: "el-date-picker",
 							props: {
-								type: "datetime"
+								type: "datetime",
+								"value-format": "YYYY-MM-DD HH:mm:ss"
 							}
 						}
 					},
 					{
 						label: "备注",
 						prop: "remark",
-						value: info.remark,
 						component: {
 							name: "el-input",
 							props: {
@@ -530,7 +534,6 @@ export default defineComponent({
 					{
 						label: "状态",
 						prop: "status",
-						value: info.status === 0 ? 0 : 1,
 						component: {
 							name: "el-radio-group",
 							options: [
@@ -546,10 +549,13 @@ export default defineComponent({
 						}
 					}
 				],
+				form: {
+					...info
+				},
 				on: {
 					submit: (data: any, { close, done }: any) => {
-						if (!data.limit) {
-							data.limit = null;
+						if (!data.repeatCount) {
+							data.repeatCount = null;
 						}
 
 						service.task.info[id ? "update" : "add"]({
