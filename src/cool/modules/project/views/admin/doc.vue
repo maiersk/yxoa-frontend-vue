@@ -139,8 +139,7 @@ export default defineComponent({
 							limit: 1,
 							accept: ".doc,.docx"
 						}
-					},
-					required: true
+					}
 				}
 			]
 		});

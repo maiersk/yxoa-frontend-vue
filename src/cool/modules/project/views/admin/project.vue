@@ -51,6 +51,15 @@ export default defineComponent({
 		const upsert = reactive<Upsert>({
 			items: [
 				{
+					label: "项目全称",
+					prop: "fullName",
+					required: true,
+					component: { name: "el-input" },
+					props: {
+						labelWidth: "130px"
+					}
+				},
+				{
 					label: "建设项目名称",
 					prop: "name",
 					required: true,
@@ -89,7 +98,6 @@ export default defineComponent({
 				{
 					label: "进度",
 					prop: "process",
-					required: true,
 					component: { name: "el-input" },
 					props: {
 						labelWidth: "130px"
@@ -158,7 +166,6 @@ export default defineComponent({
 				{
 					label: "收款日",
 					prop: "payDate",
-					required: true,
 					component: {
 						name: "el-date-picker",
 						props: { type: "date", valueFormat: "YYYY-MM-DD" }
@@ -172,6 +179,7 @@ export default defineComponent({
 			columns: [
 				{ type: "selection" },
 				{ label: "ID", prop: "id" },
+				{ label: "建设项目名称", prop: "fullName" },
 				{ label: "建设项目名称", prop: "name" },
 				{ label: "建设单位名称", prop: "builderName" },
 				{ label: "监理单位名称", prop: "supervisionName" },

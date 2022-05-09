@@ -62,7 +62,8 @@ export default defineComponent({
 					span: 24,
 					component: {
 						name: "el-input"
-					}
+					},
+					required: true
 				},
 				{
 					prop: "brand",
@@ -71,14 +72,16 @@ export default defineComponent({
 					value: [],
 					component: {
 						name: 'el-input'
-					}
+					},
+					required: true
 				},
 				{
 					prop: "model",
 					label: "型号",
 					component: {
 						name: "el-input"
-					}
+					},
+					required: true
 				},
 				{
 					prop: "norm",
@@ -86,7 +89,8 @@ export default defineComponent({
 					span: 24,
 					component: {
 						name: "el-input"
-					}
+					},
+					required: true
 				},
 				{
 					prop: "manufacturer",
@@ -94,15 +98,26 @@ export default defineComponent({
 					span: 24,
 					component: {
 						name: "el-input"
-					}
+					},
+					required: true
 				},
 				{
 					prop: "country",
-					label: "国籍",
+					label: "国籍/地区",
 					span: 24,
+					value: "中国",
 					component: {
 						name: "el-input"
 					}
+				},
+				{
+					prop: "unit",
+					label: "数量单位",
+					span: 24,
+					component: {
+						name: "el-input"
+					},
+					required: true,
 				}
 			]
 		});
@@ -141,7 +156,12 @@ export default defineComponent({
 				},
 				{
 					prop: "country",
-					label: "国籍",
+					label: "国籍/地区",
+					width: 80
+				},
+				{
+					prop: "unit",
+					label: "数量单位",
 					width: 80
 				},
 				{

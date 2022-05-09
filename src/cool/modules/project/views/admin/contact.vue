@@ -157,7 +157,7 @@ export default defineComponent({
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
 			// 绑定 service
-			ctx.service(service.project.contacts).done();
+			ctx.service(service.project.contact).done();
 			app.refresh();
 		}
 

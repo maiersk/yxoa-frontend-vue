@@ -247,7 +247,7 @@ export default defineComponent({
 					component: {
 						name: "cl-doc-select",
 						props: {
-              cloneValue: "remark",
+              cloneValue: "count,remark",
 							multipleLimit: 1,
 							filterable: true,
 							placeholder: "请选择模板文档"
@@ -283,6 +283,7 @@ export default defineComponent({
 				{
 					prop: "orderNum",
 					label: "排序号",
+					value: 0,
 					span: 24,
 					component: {
 						name: "el-input-number",

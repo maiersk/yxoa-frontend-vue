@@ -56,7 +56,7 @@ export default defineComponent({
 			const processList = [...store.getters.processList];
 			processList[index] = {
 				active, keepAlive,
-				label: project.value.name,
+				label: project?.value?.name ?? '项目详细',
 				value: value
 			};
 			store.commit('SET_PROCESS', processList);
