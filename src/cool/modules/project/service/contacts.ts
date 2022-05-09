@@ -1,7 +1,7 @@
-import { BaseService, Service, Permission } from "/@/cool";
+import { BaseService, Service } from "/@/cool";
 
 @Service("project/contacts")
-class ProjectContactService extends BaseService {
+class ProjectContactsService extends BaseService {
 }
 
-export default ProjectContactService;
+export default ProjectContactsService;

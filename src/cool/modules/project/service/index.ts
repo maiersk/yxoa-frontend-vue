@@ -1,19 +1,21 @@
 import ProjectDocService from './doc';
 import ProjectService from './project';
 import ProjectDocTreeService from './doctree';
-import ProjectContactService from './contacts';
-import ProjectUserService from './prjuser';
+import ProjectContactService from './contact';
+import ProjectContactsService from './contacts';
+import ProjectUserService from './users';
 import ProjectEquipmentService from './equipment';
-import ProjectEquipmentListService from './equipments';
+import ProjectEquipmentsService from './equipments';
 
 export default {
   project: {
     doc: new ProjectDocService(),
     project: new ProjectService(),
     doctree: new ProjectDocTreeService(),
-    contacts: new ProjectContactService(),
+    contact: new ProjectContactService(),
+    contacts: new ProjectContactsService(),
     prjuser: new ProjectUserService(),
     equipment: new ProjectEquipmentService(),
-    equipments: new ProjectEquipmentListService(),
+    equipments: new ProjectEquipmentsService(),
   }
 };
