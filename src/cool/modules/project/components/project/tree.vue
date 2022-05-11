@@ -398,7 +398,7 @@ export default defineComponent({
 					{
 						label: "编辑",
 						"suffix-icon": "el-icon-edit",
-						hidden: !service.project.doctree._permission.update,
+						hidden: !service.project.doctree._permission.prjdocupdate,
 						callback: (_: any, done: Function) => {
 							rowEdit(d);
 							done();

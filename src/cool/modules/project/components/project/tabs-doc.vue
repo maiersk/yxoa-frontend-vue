@@ -34,7 +34,7 @@ import PrjTree from "../project/tree.vue";
 import BuildDoc from "../doc/buildDoc.vue";
 
 export default defineComponent({
-	name: "sys-doc",
+	name: "tabs-doc",
 	components: {
 		PrjTree,
 		BuildDoc
