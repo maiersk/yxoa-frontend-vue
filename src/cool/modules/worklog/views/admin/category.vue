@@ -34,15 +34,15 @@ import { CrudLoad, Upsert, Table } from "@cool-vue/crud/types";
 import { useRefs } from "/@/cool";
 
 export default defineComponent({
-	cool: {
-		route: {
-			path: "/wlog/admin/category",
-			meta: {
-				keepAlive: true,
-				label: "日志分类"
-			}
-		}
-	},
+	// cool: {
+	// 	route: {
+	// 		path: "/wlog/admin/category",
+	// 		meta: {
+	// 			keepAlive: true,
+	// 			label: "日志分类"
+	// 		}
+	// 	}
+	// },
 	setup() {
 		const { refs, setRefs } = useRefs();
 		// 请求服务

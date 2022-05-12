@@ -19,9 +19,9 @@
 		<!-- 工具栏 -->
 		<ul class="app-topbar__tools">
 			<!-- 消息通知 -->
-			<li v-if="modules.chat">
+			<!-- <li v-if="modules.chat">
 				<cl-chat-notice />
-			</li>
+			</li> -->
 
 			<!-- 主题 -->
 			<li v-if="modules.theme">
