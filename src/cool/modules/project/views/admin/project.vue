@@ -53,7 +53,6 @@ export default defineComponent({
 				{
 					label: "项目全称",
 					prop: "fullName",
-					required: true,
 					component: { name: "el-input" },
 					props: {
 						labelWidth: "130px"
@@ -80,7 +79,6 @@ export default defineComponent({
 				{
 					label: "监理单位名称",
 					prop: "supervisionName",
-					required: true,
 					component: { name: "el-input" },
 					props: {
 						labelWidth: "130px"
@@ -179,7 +177,7 @@ export default defineComponent({
 			columns: [
 				{ type: "selection" },
 				{ label: "ID", prop: "id" },
-				{ label: "建设项目名称", prop: "fullName" },
+				{ label: "项目全称", prop: "fullName" },
 				{ label: "建设项目名称", prop: "name" },
 				{ label: "建设单位名称", prop: "builderName" },
 				{ label: "监理单位名称", prop: "supervisionName" },

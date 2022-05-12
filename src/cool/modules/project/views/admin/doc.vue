@@ -9,7 +9,19 @@
 			<cl-multi-delete-btn />
 			<cl-flex1 />
 			<!-- 关键字搜索 -->
-			<cl-search-key />
+			<cl-search-key
+				field="name"
+				:field-list="[
+					{
+						label: '名称',
+						value: 'name'
+					},
+					{
+						label: '类型',
+						value: 'type'
+					}
+				]"
+			/>
 		</el-row>
 
 		<el-row>
@@ -106,19 +118,6 @@ export default defineComponent({
 					}
 				},
 				{
-					label: "数量",
-					prop: "count",
-					required: true,
-					value: 1,
-					component: {
-						name: "el-input-number",
-						props: {
-							min: 1,
-							max: 99
-						}
-					}
-				},
-				{
 					label: "备注",
 					prop: "remark",
 					component: {
@@ -165,7 +164,6 @@ export default defineComponent({
 					]
 				},
 				{ label: "文件", prop: "templateFile", component: { name: "cl-link" } },
-				{ label: "数量", prop: "count", width: 60 },
 				{ label: "留言", prop: "remark", showOverflowTooltip: true },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },

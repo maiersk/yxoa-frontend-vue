@@ -143,7 +143,8 @@ export default defineComponent({
 					prop: "name",
 					label: "名称",
 					align: "left",
-					width: 200
+					minWidth: 200,
+					width: 350
 				},
 				{
 					prop: "type",
@@ -159,16 +160,6 @@ export default defineComponent({
 							value: 1
 						}
 					]
-				},
-				{
-					prop: "docId",
-					label: "文档Id",
-					minWidth: 100
-				},
-				{
-					prop: "count",
-					label: "数量",
-					width: 100
 				},
 				{
 					prop: "remark",
@@ -251,21 +242,6 @@ export default defineComponent({
 							multipleLimit: 1,
 							filterable: true,
 							placeholder: "请选择模板文档"
-						}
-					}
-				},
-				{
-					prop: "count",
-					label: "数量",
-					span: 24,
-					hidden: ({ scope }: any) => scope.type != 1,
-					component: {
-						name: "el-input-number",
-						props: {
-							placeholder: "请填写数量",
-							min: 1,
-							max: 99,
-							"controls-position": "right"
 						}
 					}
 				},
