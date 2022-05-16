@@ -143,7 +143,7 @@ function useModule(app: any) {
 					d.directives[fname] = value;
 					break;
 			}
-
+			console.log(d);
 			return d;
 		}
 
@@ -172,6 +172,7 @@ function useModule(app: any) {
 
 	// 模块安装
 	modules.forEach((e: any) => {
+		console.log(e);
 		if (!isEmpty(e._services)) {
 			e.service = deepFiles(e._services);
 		}

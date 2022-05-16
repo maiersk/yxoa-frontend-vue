@@ -1,0 +1,17 @@
+.preview-card {
+	width: 100%;
+	height: 100%;
+
+	.header {
+		display: block;
+		margin: 10px;
+		text-align: center;
+	}
+
+	.container {
+		> .preview-iframe {
+			width: 100%;
+			height: 100vh;
+		}
+	}
+}

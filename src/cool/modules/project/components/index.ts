@@ -8,6 +8,9 @@ import SelectContact from './selectContact.vue';
 
 import dataComp from './doc/dataForm/dataComp/';
 
+import BuildDoc from './doc/buildDoc.vue';
+import SearchKey from './search-key';
+
 export default {
   SelectUser,
   SelectDoc,
@@ -16,6 +19,9 @@ export default {
   SelectEquipment,
   SelectDocTree,
   SelectContact,
+
+  BuildDoc,
+  SearchKey,
 
   ...dataComp
 };
