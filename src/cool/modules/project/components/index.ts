@@ -11,6 +11,9 @@ import dataComp from './doc/dataForm/dataComp/';
 import BuildDoc from './doc/buildDoc.vue';
 import SearchKey from './search-key';
 
+import YxTable from './yxtable/';
+import YxLink from './yxlink/index.vue';
+
 export default {
   SelectUser,
   SelectDoc,
@@ -22,6 +25,9 @@ export default {
 
   BuildDoc,
   SearchKey,
+
+  YxTable,
+  YxLink,
 
   ...dataComp
 };

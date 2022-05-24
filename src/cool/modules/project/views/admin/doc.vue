@@ -164,7 +164,7 @@ export default defineComponent({
 					]
 				},
 				{ label: "文件", prop: "templateFile", component: { name: "cl-link" } },
-				{ label: "留言", prop: "remark", showOverflowTooltip: true },
+				{ label: "备注", prop: "remark", showOverflowTooltip: true },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },
 				{ type: "op", buttons: ["slot-build", "edit", "delete"] }
