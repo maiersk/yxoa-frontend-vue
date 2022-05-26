@@ -157,6 +157,20 @@ export default defineComponent({
 					}
 				},
 				{
+					prop: "category",
+					label: "选择分类",
+					value: null,
+					span: 24,
+					component: {
+						name: "cl-doccategory-select",
+						props: {
+							multipleLimit: 1,
+							filterable: true,
+							placeholder: "默认全部文件分类"
+						}
+					}
+				},
+				{
 					label: "备注",
 					prop: "remark",
 					component: {
@@ -167,6 +181,17 @@ export default defineComponent({
 						}
 					}
 				},
+				{
+					label: "模板数据",
+					prop: "data",
+					value: "{}",
+					component: {
+						name: "cl-codemirror",
+						props: {
+							height: 200
+						}
+					}
+				}, 
 				{
 					label: "文件",
 					prop: "templateFile",

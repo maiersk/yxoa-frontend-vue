@@ -4,6 +4,7 @@ import SelectTree from './selectTree.vue';
 import SelectProject from './selectProject.vue';
 import SelectEquipment from './selectEquipment.vue';
 import SelectDocTree from './selectDocTree.vue';
+import SelectDocCategory from './selectDocCategory.vue';
 import SelectContact from './selectContact.vue';
 
 import dataComp from './doc/dataForm/dataComp/';
@@ -21,6 +22,7 @@ export default {
   SelectProject,
   SelectEquipment,
   SelectDocTree,
+  SelectDocCategory,
   SelectContact,
 
   BuildDoc,

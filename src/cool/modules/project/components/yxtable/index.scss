@@ -1,0 +1,7 @@
+.el-table [class*="el-table__row--level"] .el-table__expand-icon {
+  width: 30px !important;
+  > .el-icon-arrow-right {
+    font-weight: 1000;
+    font-size: 15px;
+  }
+}
