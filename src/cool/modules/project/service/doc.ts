@@ -10,6 +10,15 @@ class ProjectDocService extends BaseService {
       data
     })
   }
+
+  @Permission("move")
+  async move(data: any) {
+    return this.request({
+      url: `/move`,
+      method: 'POST',
+      data
+    })
+  }
 }
 
 export default ProjectDocService;

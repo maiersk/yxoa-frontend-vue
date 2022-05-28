@@ -3,6 +3,15 @@ import { BaseService, Service, Permission } from "/@/cool";
 @Service("project/doctree")
 class ProjectDocTreeService extends BaseService {
 
+  @Permission("copy")
+	copy(data: any) {
+		return this.request({
+			url: '/copy',
+			method: "POST",
+      data
+		});
+	}
+
   @Permission("prjdoclist")
 	prjdoclist(projectId: any) {
 		return this.request({
@@ -25,6 +34,15 @@ class ProjectDocTreeService extends BaseService {
 	prjdocadd(data: any) {
 		return this.request({
 			url: "/prjdocadd",
+			method: "POST",
+			data
+		});
+	}
+  
+  @Permission("prjdoccopy")
+	prjdoccopy(data: any) {
+		return this.request({
+			url: "/prjdoccopy",
 			method: "POST",
 			data
 		});

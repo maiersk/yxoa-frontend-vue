@@ -6,7 +6,7 @@
 		</el-row>
 
 		<el-row>
-			<cl-table :ref="setRefs('table')" v-bind="table" @row-click="onRowClick">
+			<cl-yx-table :ref="setRefs('table')" v-bind="table" @row-click="onRowClick">
 				<!-- 生成模板文档 -->
 				<template #slot-build="{ scope }">
 					<el-button
@@ -28,7 +28,7 @@
 						>新增</el-button
 					>
 				</template>
-			</cl-table>
+			</cl-yx-table>
 		</el-row>
 
 		<el-row type="flex">
@@ -114,6 +114,25 @@ export default defineComponent({
 			});
 		}
 
+		function copyAppend({ id, parentId, children=[] }: any) {
+			const nodeIds = [];
+			nodeIds.push(id);
+			const getChild = (nodes: any) => {
+				for (const node of nodes) {
+					nodeIds.push(node.id);
+					if (node.children) {
+						getChild(node.children);
+					}
+				}
+			}
+			getChild(children);
+
+			service.project.doctree.copy({
+				parentId,
+				nodeIds
+			})
+		}
+
 		// 跳转
 		function toUrl(url: string) {
 			router.push(url);
@@ -134,6 +153,15 @@ export default defineComponent({
 							done();
 						}
 					};
+				},
+				(row: any) => {
+					return {
+						label: "复制",
+						callback: (_: any, done: Function) => {
+							copyAppend(row);
+							done();
+						}
+					}
 				},
 				"update",
 				"delete"
