@@ -18,7 +18,12 @@
       </div>
     </template>
     <template #default>
-      <div class="context" :ref="setRefs('context')">
+      <div class="context"
+        :ref="setRefs('context')"
+        :class="{
+          'is-show': showorhide 
+        }"
+      >
         <slot></slot>
       </div>
     </template>
@@ -73,18 +78,34 @@ export default {
 	}
 	.operator-card::before,
 	.operator-card::after {
-		display: table;
+    display: table;
 		content: "";
 	}
 	.operator-card::after {
-		clear: both;
+    clear: both;
 	}
-
   .operator {
-		float: right;
+    float: right;
     > button {
-			min-height: 0;
+      min-height: 0;
       padding: 0;
+    }
+  }
+
+  .el-card__body {
+    padding: 0 !important;
+  }
+
+  .operator-card {
+    .context {
+      overflow: hidden;
+      height: 0;
+    }
+    .is-show {
+      height: calc(100% - 10px);
+      > * {
+        margin: 10px;
+      }
     }
   }
 </style>

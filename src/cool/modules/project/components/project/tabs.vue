@@ -102,29 +102,10 @@ export default {
 
 <style lang="scss">
 .project-tabs {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  box-sizing: border-box;
-  overflow: hidden;
-  flex: 1;
-
-  .el-tabs__content {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    flex: 1;
-    overflow: auto;
-    box-sizing: border-box;
-  }
-
   .el-tabs__header {
     padding: 0 1rem;
     background-color: white;
   }
 
-  .el-tab-pane {
-    height: 100%;
-  }
 }
 </style>

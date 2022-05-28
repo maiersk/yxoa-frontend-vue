@@ -171,7 +171,7 @@ export default defineComponent({
       }
     }
 
-    const isTestMode = () => {
+    const selectProject = () => {
       if (ctx.testMode) {
         const el: any = toRaw(resolveComponent('cl-project-select')) 
 
@@ -200,18 +200,28 @@ export default defineComponent({
       }
     }
 
+    const saveOrBuild = () => {
+      let btnstr = '保存';
+      if (ctx.testMode) {
+        btnstr = '测试生成';
+      };
+      return (
+        <el-form-item>
+          <el-button type="primary" onClick={ctx.handelBuild} >
+            { btnstr }
+          </el-button>
+        </el-form-item>
+      )
+    }
+
     const FormItems = (
       <div>
-        { isTestMode() }
+        { selectProject() }
         { renderFormItem() }
         <el-form-item>
           { errDom() }
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" onClick={ctx.handelBuild} >
-            测试生成
-          </el-button>
-        </el-form-item>
+        { saveOrBuild() }
       </div>
     )
 

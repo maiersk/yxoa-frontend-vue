@@ -17,10 +17,13 @@
 						<i class="el-icon-arrow-right" v-else></i>
 					</div>
 
-					<span>文档预览</span>
+					<span v-if="selectNode.type === 1">文档预览</span>
+					<span v-else>目录预览</span>
 				</div>
 
-				<build-doc />
+				<div class="container">
+					<tree-context></tree-context>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -29,41 +32,33 @@
 <script lang="ts">
 import { computed, defineComponent, inject, provide, reactive, ref, watch } from "vue";
 import { useCool } from "/@/cool";
-import { isEmpty } from "/@/cool/utils";
 import PrjTree from "../project/tree.vue";
-import BuildDoc from "../doc/buildDoc.vue";
+import TreeContext from "../doc/treeContext/index.vue";
 
 export default defineComponent({
 	name: "tabs-doc",
 	components: {
 		PrjTree,
-		BuildDoc
+		TreeContext
 	},
 	setup() {
 		const { refs, setRefs, store, service } = useCool();
 
 		const projectObj: any = inject("project");
-		const buildDialog = ref<boolean>(false);
-		const buildDocObj	= ref<Object>({
+		const docObj	= ref<Object>({
 			id: 0,
-			type: 0,
 			data: "",
 			templateFile: ""
 		});
-		const selectNode = ref<Object>({});
+		const selectNode = ref<Object>({
+			id: 0,
+			type: 0,
+		});
 		provide('select-node', selectNode);
-    provide('doc', buildDocObj);
-
-		// 打开生成对话框
-		function openBuildDialog(scope: any) {
-			service.project.doctree.info({id : scope.docId}).then((data: any) => {
-				buildDocObj.value = data;
-				buildDialog.value = true;
-			})
-		}
+    provide('doc', docObj);
 
 		// 是否展开
-		const isExpand = ref<boolean>(true);
+		const isExpand = ref<boolean>(false);
 
 		// 文档树列表
 		const doctree = ref<any[]>([]);
@@ -103,14 +98,13 @@ export default defineComponent({
 		function onprojectRowClick({ item, ids }: any) {
 			selectNode.value = item
 
-			if (isEmpty(item.docId)) { return }
-
-			service.project.doctree.prjdocinfo({
-				projectId: projectObj.value.id,
-				id: item.id
-			}).then((data: any) => {
-				buildDocObj.value = data; 
-			})
+			if (item?.docId ?? false) {
+				service.project.doc.info({
+					id: item.docId
+				}).then((data: any) => {
+					docObj.value = data; 
+				})
+			}
 
 			// 收起
 			if (browser.value.isMini) {
@@ -133,14 +127,14 @@ export default defineComponent({
 			refs,
 			isExpand,
 			projectObj,
-			buildDocObj,
 			browser,
+			docObj,
+			selectNode,
 			setRefs,
 			onRefresh,
 			onprojectRowClick,
 			ondoctreeListChange,
-			projectExpand,
-			openBuildDialog
+			projectExpand
 		};
 	}
 });
@@ -148,7 +142,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .project-doctdetail {
-	height: auto;
 	margin: 0.5rem;
 	padding: 1rem;
 	background-color: white;
@@ -178,6 +171,7 @@ export default defineComponent({
 
 	.doc {
 		width: calc(100% - 310px);
+		height: 100%;
 		flex: 1;
 
 		.header {
@@ -208,15 +202,9 @@ export default defineComponent({
 				padding-left: 10px;
 			}
 		}
-	}
-
-	.project,
-	.doc {
-		overflow: hidden;
-		height: 100%;
 
 		.container {
-			height: calc(100% - 10px);
+			height: 100%;
 		}
 	}
 

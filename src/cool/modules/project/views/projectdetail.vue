@@ -1,5 +1,5 @@
 <template>
-	<div class="project-detail">
+	<div class="project-detail scroller1">
 		<project-tabs>
 		</project-tabs>
 	</div>
@@ -11,6 +11,8 @@ import { useCool } from "/@/cool";
 import ProjectTabs from "../components/project/tabs.vue";
 
 export default defineComponent({
+	name: "project-detail",
+
 	components: {
 		ProjectTabs
 	},
@@ -74,26 +76,22 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .project-detail {
-	.header {
-		h3 {
-			margin: 0.5rem 0;
-		}
-	}
-	.header::after {
-		content: "";
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		width: 100%;
-		height: 2px;
-		background-color: var(--el-border-color-light);
-		z-index: var(--el-index-normal);
-	}
+	// .header {
+	// 	h3 {
+	// 		margin: 0.5rem 0;
+	// 	}
+	// }
+	// .header::after {
+	// 	content: "";
+	// 	position: absolute;
+	// 	left: 0;
+	// 	bottom: 0;
+	// 	width: 100%;
+	// 	height: 2px;
+	// 	background-color: var(--el-border-color-light);
+	// 	z-index: var(--el-index-normal);
+	// }
 
 	// background-color: white;
 }
-</style>
-
-<style lang="scss" scoped>
-
 </style>

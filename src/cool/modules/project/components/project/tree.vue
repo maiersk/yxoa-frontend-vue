@@ -25,10 +25,7 @@
 
 		<div class="cl-prj-tree__container" @contextmenu.stop.prevent="openCM">
 			<el-tree
-				v-loading="loading"
-				node-key="id"
-				highlight-current
-				default-expand-all
+				:ref="setRefs('treeRef')"
 				:data="list"
 				:props="{
 					label: 'name'
@@ -37,13 +34,22 @@
 				:allow-drag="allowDrag"
 				:allow-drop="allowDrop"
 				:expand-on-click-node="false"
+				v-loading="loading"
 				@node-contextmenu="openCM"
+				highlight-current
+				default-expand-all
+				node-key="id"
 			>
 				<template #default="{ node, data }">
 					<div class="cl-prj-tree__node">
-						<span class="cl-prj-tree__node-label" @click="rowClick(data)">{{
-							node.label
-						}}</span>
+						<span class="cl-prj-tree__node-label"
+							@click="rowClick(data)"
+							:class="{
+								'cl-prj-tree__node-label-success': node.data?.file ?? false ? true : false,
+							}"
+						>
+							{{ node.label }}
+						</span>
 						<span
 							v-if="isMini"
 							class="cl-prj-tree__node-icon"
@@ -55,11 +61,6 @@
 				</template>
 			</el-tree>
 		</div>
-
-		<!-- 打开树形穿梭框 -->
-		<cl-dialog title="项目文档" v-model="docTreeDialog" width="1000px">
-			<!-- <transfer-tree-box :treelist="list"></transfer-tree-box> -->
-		</cl-dialog>
 
 		<cl-form :ref="setRefs('form')" />
 	</div>
@@ -106,12 +107,6 @@ export default defineComponent({
 
 		// 是否能拖动
 		const isDrag = ref<boolean>(false);
-
-		const docTreeDialog = ref<boolean>(false);
-
-		function openDocTreeDialog() {
-			docTreeDialog.value = true;
-		}
 
 		// 允许托的规则
 		function allowDrag({ data }: any) {
@@ -296,6 +291,36 @@ export default defineComponent({
 			});
 		}
 
+		// 复制
+		async function rowCopy(data: any) {
+			const nodes: any = [];
+			nodes.push(data.id);
+			const addNodeinList = (n: any) => {
+				if (n.children) {
+					n.children.forEach((child: any) => {
+						nodes.push(child.id);
+						addNodeinList(child);
+					})
+				}
+			}
+			await addNodeinList(data);
+
+			await service.project.doctree.prjdoccopy({
+				id: data.id,
+				type: 2,
+				docId: data.docId,
+				projectId: projectObj.value.id,
+				nodeIds: nodes,
+				name: data.name,
+				remark: data.remark,
+				parentId: data.parentId,
+				orderNum: data.orderNum
+			}).then((res: any) => {
+				console.log(res);
+				refresh();
+			})
+		}
+
 		// 删除
 		function rowDel(e: any) {
 			const del = async (f: boolean) => {
@@ -386,12 +411,20 @@ export default defineComponent({
 							(n && n.level >= props.level) ||
 							!service.project.doctree._permission.prjdocadd,
 						callback: (_: any, done: Function) => {
-							// openDocTreeDialog()
 							rowEdit({
 								name: "",
 								parentName: d.name,
 								parentId: d.id
 							});
+							done();
+						}
+					},
+					{
+						label: "复制",
+						"suffix-icon": "el-icon-copy-document",
+						hidden: !service.project.doctree._permission.prjdoccopy,
+						callback: (_: any, done: Function) => {
+							rowCopy(d);
 							done();
 						}
 					},
@@ -418,7 +451,6 @@ export default defineComponent({
 		}
 
 		onMounted(function () {
-			console.log(projectObj);
 			refresh();
 		});
 
@@ -437,7 +469,6 @@ export default defineComponent({
 			rowEdit,
 			rowDel,
 			treeOrder,
-			docTreeDialog,
 			toTree
 		};
 	}
@@ -515,6 +546,10 @@ export default defineComponent({
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+
+			&-success {
+				color: green;
+			}
 		}
 
 		&-icon {

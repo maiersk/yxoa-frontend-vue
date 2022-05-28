@@ -1,9 +1,6 @@
 <template>
 	<div class="project-list">
-		<div class="__header">
-			<span>工程列表</span>
-		</div>
-		<div class="__body">
+		<div class="__container">
 			<ul class="project-ul">
 				<li v-for="(item, i) in list" :key="i">
 					<el-card class="project-card" shadow="hover">
@@ -12,8 +9,12 @@
 								<span>{{ item.name }}</span>
 
 								<div class="operator">
-									<el-button type="text" size="mini" @click="toDetail(item.id)">
+									<el-button type="text" @click="toDetail(item.id)">
 										详细
+									</el-button>
+
+									<el-button type="text" @click="delBtn(item.id)">
+										删除
 									</el-button>
 								</div>
 							</div>
@@ -71,14 +72,21 @@ export default {
 			}
 		}
 	},
-	setup(props: any, ctx: any) {
+	emits: ["delProject"],
+	setup(props: any, { emit }: any) {
 		const { router } = useCool();
 
 		function toDetail(id: string) {
 			router.push(`/proj/detail/?id=${id}`);
 		}
+
+		function delBtn(id: string) {
+			emit("delProject", id)
+		}
+
 		return {
-			toDetail
+			toDetail,
+			delBtn
 		};
 	}
 };
@@ -86,16 +94,7 @@ export default {
 
 <style lang="scss" scoped>
 .project-list {
-
-	.__header {
-		height: 40px;
-		width: 100vw;
-		line-height: 40px;
-		padding: 0 1rem;
-		background-color: white;
-	}
-
-	.__body {
+	.__container {
 
 	}
 	.project-ul {
@@ -132,6 +131,10 @@ export default {
 }
 .project-card::after {
 	clear: both;
+}
+
+.card_body {
+	padding: 20px;
 }
 
 .operator {

@@ -52,16 +52,16 @@ export default {
     watch(
       () => props.modelValue,
       (val:any) => {
-        code.value = ``+beautifyJs(val);
+        code.value = val;
       }
     )
 
-    watch(
-      () => code.value,
-      (val: any) => {
-        emit('update:modelValue', val);
-      }
-    )
+    // watch(
+    //   () => code.value,
+    //   (val: any) => {
+    //     emit('update:modelValue', val);
+    //   }
+    // )
 
     const saveHandel = () => {
       emit('update:modelValue', code.value);

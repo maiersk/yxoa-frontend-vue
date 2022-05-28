@@ -1,26 +1,22 @@
 <template>
 	<el-container class="doc-build">
-		<main>
-			<el-row class="doc-build__body">
-				<el-col class="form-data">
-					<data-template
-						v-model="doc.data"
-						:docId="doc.id"
-						:projectId="projectObj?.value?.id ?? null"
-						:test-mode="testMode"
-					></data-template>
-					<data-form
-						v-model="doc.data"
-						:docId="doc.id"
-						:test-mode="testMode"
-						@build-doc="handelBuild"
-					></data-form>
-				</el-col>
-				<el-col class="doc-perview">
-					<doc-perview :url="doc.templateFile"></doc-perview>
-				</el-col>
-			</el-row>
-		</main>
+		<el-col class="form-data">
+			<data-template
+				v-model="doc.data"
+				:docId="doc.id"
+				:projectId="projectObj?.value?.id ?? null"
+				:test-mode="testMode"
+			></data-template>
+			<data-form
+				v-model="doc.data"
+				:docId="doc.id"
+				:test-mode="testMode"
+				@build-doc="handelBuild"
+			></data-form>
+		</el-col>
+		<el-col class="doc-perview">
+			<doc-perview :url="doc.templateFile"></doc-perview>
+		</el-col>
 	</el-container>
 </template>
 
@@ -31,7 +27,7 @@ import { isEmpty } from "/@/cool/core/utils";
 import { ElMessage } from "element-plus";
 import DataForm from "./dataForm/";
 import DataTemplate from "./dataTemplate.vue";
-import DocPerview from "./perview.vue";
+import DocPerview from "./perview/";
 
 export default {
 	components: {
@@ -114,11 +110,8 @@ export default {
 
 <style lang="scss" scoped>
 .doc-build {
-	> main {
-		width: 100%;
-	}
-}
-.doc-build__body {
+	width: 100%;
+	height: calc(100% - 10px);
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
