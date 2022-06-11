@@ -4,7 +4,7 @@
 
 <script>
 export default {
-
+  name: 'yx-proj-tab-pointtab'
 }
 </script>
 

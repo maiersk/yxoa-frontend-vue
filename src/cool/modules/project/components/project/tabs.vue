@@ -38,6 +38,7 @@ import TabsContact from './tabs-contacts.vue';
 
 
 export default {
+  name: 'yx-proj-tabs',
   components: {
     ElTabs,
     TabsDetail,

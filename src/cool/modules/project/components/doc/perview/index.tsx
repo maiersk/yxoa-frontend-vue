@@ -3,6 +3,7 @@ import { computed, defineComponent } from "vue";
 import ViewUrl from "../../../utils/viewFile";
 
 export default defineComponent({
+	name: "yx-proj-doc-perview",
 	props: {
 		url: {
 			type: String,
@@ -13,7 +14,6 @@ export default defineComponent({
 			default: 0
 		}
 	},
-	name: "doc-perview",
 	setup(props: any, ctx: any) {
 		const getUrl = computed(() => ViewUrl`test${props.url}`);
 

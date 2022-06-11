@@ -3,6 +3,24 @@ import { BaseService, Service, Permission } from "/@/cool";
 @Service("project/doctree")
 class ProjectDocTreeService extends BaseService {
 
+  // @Permission("success")
+	success(data: any) {
+		return this.request({
+			url: '/success',
+			method: "POST",
+      data
+		});
+	}
+
+  // @Permission("save")
+	save(data: any) {
+		return this.request({
+			url: '/save',
+			method: "POST",
+      data
+		});
+	}
+
   @Permission("copy")
 	copy(data: any) {
 		return this.request({

@@ -1,49 +1,42 @@
 <template>
 	<div class="project-summary scroller1">
-		<el-col
-			class="project-opation"
-			v-permission="service.project.project.permission.add"
-		>
-			<div class="card">
-				<el-button
-					type="primary"
-					size="mini"
-					@click="openForm()"
-				>
-					工程立项
-				</el-button>
-
-				<cl-form ref="formRef">
-					
-				</cl-form>
-			</div>
-		</el-col>
-
 		<el-col class="project-list">
-			<el-row type="flex" align="middle" class="__title">
-				<span>工程列表</span>
+			<el-row type="flex" align="middle" class="__listhead">
+				<div class="__opations">
+					<el-button
+						v-permission="service.project.project.permission.add"
+						type="primary"
+						size="mini"
+						@click="openForm()"
+					>
+						工程立项
+					</el-button>
+					<cl-flex1 />
 
-				<cl-flex1 />
-				<cl-yx-search-key
-					field="name"
-					:field-list="[
-						{
-							label: '名称',
-							value: 'name'
-						},
-						{
-							label: '建设单位',
-							value: 'builderName'
-						},
-						{
-							label: '承建单位',
-							value: 'undertookName'
-						}
-					]"
-				/>
+					<cl-yx-search-key
+						field="name"
+						:field-list="[
+							{
+								label: '名称',
+								value: 'name'
+							},
+							{
+								label: '建设单位',
+								value: 'builderName'
+							},
+							{
+								label: '承建单位',
+								value: 'undertookName'
+							}
+						]"
+					/>
+				</div>
 			</el-row>
 			<project-list @delProject="delProject" :list="list"></project-list>
 		</el-col>
+
+		<cl-form ref="formRef">
+		</cl-form>
 	</div>
 </template>
 
@@ -264,12 +257,19 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .project-list {
-	.__title {
+	.__listhead {
+		display: flex;
 		height: 40px;
 		width: 100%;
 		line-height: 40px;
 		padding: 0 1rem;
 		background-color: white;
+
+		.__opations {
+			display: flex;
+			width: 100%;
+			align-items: center;
+		}
 	}
 
 	margin-top: 10px;

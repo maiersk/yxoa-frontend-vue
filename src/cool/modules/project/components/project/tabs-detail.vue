@@ -18,10 +18,10 @@
 					<el-tag size="small">{{ project.process }}</el-tag>
 				</el-descriptions-item>
 				<el-descriptions-item label="采购人:">
-					<el-tag size="small">{{ project.process }}</el-tag>
+					<el-tag size="small">{{ project.purchaser }}</el-tag>
 				</el-descriptions-item>
 				<el-descriptions-item label="采购人联系电话:">
-					<el-tag size="small">{{ project.process }}</el-tag>
+					<el-tag size="small">{{ project.pur_phone }}</el-tag>
 				</el-descriptions-item>
 				<el-descriptions-item label="总价:">
 					<el-tag size="small">{{ project.totalPrice }}</el-tag>
@@ -93,6 +93,7 @@
 import { inject } from 'vue';
 
 export default {
+	name: "yx-proj-tab-detail",
 	setup() {
 		const project: any = inject('project')
 

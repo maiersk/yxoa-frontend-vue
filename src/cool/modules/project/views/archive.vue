@@ -14,7 +14,11 @@
 
 		<el-row>
 			<!-- 数据表格 -->
-			<cl-table :ref="setRefs('table')" v-bind="table" />
+			<cl-table :ref="setRefs('table')" v-bind="table">
+				<template #slot-detail>
+					<el-button type="text" size="mini" @click="toDetail">详细</el-button>
+				</template>
+			</cl-table>
 		</el-row>
 
 		<el-row type="flex">
@@ -35,17 +39,21 @@ import { useCool } from "/@/cool";
 
 export default defineComponent({
 	// cool: {
-	// 	// 注入视图路由中
+		// 	// 注入视图路由中
 	// 	route: {
-	// 		path: "/proj/admin/list", // 路由地址
+		// 		path: "/proj/admin/list", // 路由地址
 	// 		meta: {
-	// 			keepAlive: true, // 是否缓存路由
+		// 			keepAlive: true, // 是否缓存路由
 	// 			label: "项目列表" // 路由名称
 	// 		}
 	// 	}
 	// },
 	setup() {
-		const { refs, setRefs, service } = useCool();
+		const { refs, setRefs, service, router } = useCool();
+
+		function toDetail() {
+			router.push('/archive/detail')
+		}
 
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
@@ -192,7 +200,7 @@ export default defineComponent({
 				{ label: "收款日", prop: "payDate" },
 				{ label: "创建时间", prop: "createTime" },
 				{ label: "更新时间", prop: "updateTime" },
-				{ type: "op", buttons: ["edit", "delete"] }
+				{ type: "op", buttons: ["slot-detail", "edit", "delete"] }
 			]
 		});
 
@@ -208,7 +216,8 @@ export default defineComponent({
 			setRefs,
 			upsert,
 			table,
-			onLoad
+			onLoad,
+			toDetail
 		};
 	}
 });

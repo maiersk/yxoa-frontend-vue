@@ -44,7 +44,7 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
-	name: "project-user",
+	name: "yx-proj-tab-user",
 	props: {},
 	setup(props: any) {
 		const { refs, setRefs, service } = useCool();

@@ -30,6 +30,7 @@ import DataTemplate from "./dataTemplate.vue";
 import DocPerview from "./perview/";
 
 export default {
+	name: 'yx-proj-doc-build',
 	components: {
 		DataForm,
 		DataTemplate,

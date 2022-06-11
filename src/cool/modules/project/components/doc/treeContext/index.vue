@@ -9,13 +9,27 @@
 				</span>
 			</el-col>
 			<el-col class="doc-success__opation">
-				<el-upload>
-					<el-button type="primary" size="mini" @click="reUpload">
+				<el-button v-if="doc.type !== 1" type="warning" size="mini" @click="openEdit">
+					重新编辑
+				</el-button>
+				<cl-upload
+					active=""
+					type="file"
+					limit="1"
+					limitSize="100"
+					listType="text"
+					v-model="fileUrl"
+					size="300px"
+					text="重新上传"
+					:showFileList="false"
+					:on-success="saveDoc"
+				>
+					<el-button type="warning" size="mini">
 						重新上传
 					</el-button>
-				</el-upload>
-				<el-button type="primary" size="mini" @click="openEdit">
-					重新编辑
+				</cl-upload>
+				<el-button v-if="selectNode.status === 'wait'" type="success" size="mini" @click="docSuccess">
+					确认无误
 				</el-button>
 				<el-button type="primary" size="mini" @click="download">
 					下载
@@ -28,7 +42,10 @@
 		<!-- 没有则，提供文档模板数据编辑，保存(生成到节点file字段并存档), 上传功能 -->
 		<el-col v-else>
 			<el-col v-if="selectNode.type === 0">
-
+				<span class="info-alert">
+					<el-icon class="el-icon-warning"></el-icon>&nbsp;
+				 	“ {{ selectNode.name }} ” 目录，请在左侧项目文档结构列表中，右键该目录添加文档等操作。
+				</span>
 			</el-col>
 			<!-- 有模板文档的，提供编辑，保存，直接上传功能。 -->
 			<div v-else-if="doc.type === 0"
@@ -47,14 +64,24 @@
 					>
 						编辑
 					</el-button>
-					<el-upload>
+					<cl-upload
+						active=""
+						type="file"
+						limit="1"
+						limitSize="100"
+						listType="text"
+						v-model="fileUrl"
+						size="300px"
+						text="上传"
+						:showFileList="false"
+						:on-success="saveDoc"
+					>
 						<el-button type="primary"
 							size="mini"
-							@click="uploadDoc"
 						>
 							上传文档
 						</el-button>
-					</el-upload>
+					</cl-upload>
 					<el-button type="primary" size="mini" @click="download">
 						下载
 					</el-button>
@@ -74,12 +101,12 @@
 				<cl-upload active=""
           type="file"
           limit="1"
-
+					limitSize="100"
           v-model="fileUrl"
           size="300px"
           text="上传"
+					:on-success="saveDoc"
         />
-        <el-button type="primary" size="mini" @click="saveDoc">保存</el-button>
 			</div>
 		</el-col>
 
@@ -87,7 +114,7 @@
 			<data-template
 				v-model="selectNode.data"
 				:docId="doc.id"
-				:projectId="projectObj?.value?.id ?? null"
+				:projectId="projectObj?.id ?? null"
 				:test-mode="testMode"
 			></data-template>
 			<data-form
@@ -111,6 +138,7 @@ import DataTemplate from "../dataTemplate.vue";
 import DocPerview from "../perview/";
 
 export default {
+	name: 'yx-proj-tree-context',
 	components: {
 		DataForm,
 		DataTemplate,
@@ -122,7 +150,8 @@ export default {
 			default: false
 		}
 	},
-	setup(props: any, ctx: any) {
+	emits: ['treeRefresh'],
+	setup(props: any, { emit }: any) {
 		const { service } = useCool();
 		const doc: any = inject("doc");
 		const selectNode: any = inject("select-node");
@@ -141,67 +170,66 @@ export default {
 
 			let id = doc.value.id;
 			if (!props.testMode) {
-				id = doc.value.docId;
+				id = selectNode.value.docId;
 			}
 
 			const res = await service.project.doc.generate(id, {
 				projectId,
 				fields: {
 					...form
-				}
+				},
+				node: selectNode.value
 			});
 
-			const { fileName, file } = res;
-			const fileurl = new URL(file).pathname;
+			if (!props.testMode) {
+				delete selectNode.value.updateTime;
+				delete selectNode.value.createTime;
+				await service.project.doctree.prjdocupdate(
+					Object.assign(selectNode.value, {
+						projectId: projectId,
+						data: `${selectNode.value.data}`.trim()
+					})
+				)
+			}
 
-			const fileRes = await fetch(
-				"/dev/" + fileurl.split("/").splice(1, fileurl.length).join("/")
-			);
-			console.log(fileRes);
-			const blob = await fileRes.blob();
-			const objectUrl = await URL.createObjectURL(blob);
-			const a = await document.createElement("a");
-			a.setAttribute("target", "_blank");
-			a.setAttribute("download", fileName);
-			a.href = objectUrl;
-			a.style.display = "none";
-
-			document.body.appendChild(a);
-
-			a.dispatchEvent(
-				new MouseEvent("click", {
-					bubbles: true,
-					cancelable: true,
-					view: window
-				})
-			);
-
-			document.body.removeChild(a);
-
-			ElMessage.success("生成成功");
+			res && ElMessage.success("生成并保存成功");
+			emit('treeRefresh');
 		};
 
     const fileUrl = ref<string>("");
 		const showDialog = ref<boolean>(false);
 
-		function uploadDoc() {
-
-		}
-
-		function reUpload() {
-
-		}
-
 		function openEdit() {
 			showDialog.value = !showDialog.value;
 		}
 
-    function saveDoc() {
+		function docSuccess () {
+			service.project.doctree.success({
+				projectId: projectObj.value.id,
+				node: selectNode.value
+			}).then((res: any) => {
+				ElMessage.success('文档已标记完成');
+				emit('treeRefresh');
+			})
+		}
 
+    function saveDoc(res: any, file: any) {
+			fileUrl.value = res.data;
+
+			service.project.doctree.save({
+				projectId: projectObj.value.id,
+				node: selectNode.value,
+				fileUrl: fileUrl.value
+			}).then((res: any) => {
+				ElMessage.success('保存成功，文档标记为待确认');
+				emit('treeRefresh');
+				fileUrl.value = '';
+				showDialog.value = false;
+			})
     }
 
-	 async function download() {
-			const { name, file } = selectNode.value;
+	 	async function download() {
+			 const { name, file } = selectNode.value;
 			const fileName = name;
 			let fileurl: any
 			if (!file) {
@@ -213,12 +241,13 @@ export default {
 			const fileRes = await fetch(
 				"/dev/" + fileurl.split("/").splice(1, fileurl.length).join("/")
 			);
-			console.log(fileRes);
+			// console.log(fileRes);
+			const fileFormat = fileurl.split(".").reverse()[0];
 			const blob = await fileRes.blob();
 			const objectUrl = await URL.createObjectURL(blob);
 			const a = await document.createElement("a");
 			a.setAttribute("target", "_blank");
-			a.setAttribute("download", fileName);
+			a.setAttribute("download", `${fileName}.${fileFormat}`);
 			a.href = objectUrl;
 			a.style.display = "none";
 
@@ -243,9 +272,8 @@ export default {
       fileUrl,
 			showDialog,
 			openEdit,
-			reUpload,
-			uploadDoc,
       saveDoc,
+			docSuccess,
 			download
 		};
 	}

@@ -18,6 +18,7 @@
 import OpCard from './opCard.vue';
 
 export default {
+  name: 'yx-proj-doc-datacard',
   components: {
     OpCard,
   },

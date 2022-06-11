@@ -61,6 +61,7 @@
 import { useCool } from "/@/cool";
 
 export default {
+	name: 'yx-proj-list',
 	props: {
 		list: {
 			type: Array,
@@ -94,6 +95,8 @@ export default {
 
 <style lang="scss" scoped>
 .project-list {
+	width: 100% !important;
+
 	.__container {
 
 	}

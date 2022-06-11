@@ -4,7 +4,8 @@
 			<!-- 文档架构 -->
 			<div class="project" :class="[isExpand ? '_expand' : '_collapse']">
 				<prj-tree
-					@row-click="onprojectRowClick"
+					ref="prj_treeRef"
+					@row-click="onNodeRowClick"
 					@list-change="ondoctreeListChange"
 				/>
 			</div>
@@ -22,7 +23,7 @@
 				</div>
 
 				<div class="container">
-					<tree-context></tree-context>
+					<tree-context @treeRefresh="reqRefresh"></tree-context>
 				</div>
 			</div>
 		</div>
@@ -30,13 +31,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, provide, reactive, ref, watch } from "vue";
+import { computed, defineComponent, inject, provide, ref, watch } from "vue";
 import { useCool } from "/@/cool";
 import PrjTree from "../project/tree.vue";
 import TreeContext from "../doc/treeContext/index.vue";
 
 export default defineComponent({
-	name: "tabs-doc",
+	name: "yx-proj-tab-doc",
 	components: {
 		PrjTree,
 		TreeContext
@@ -54,8 +55,19 @@ export default defineComponent({
 			id: 0,
 			type: 0,
 		});
+		const prj_treeRef = ref<any>();
 		provide('select-node', selectNode);
     provide('doc', docObj);
+
+		//刷新树和树内容组件
+		//	treeContext 提交请求刷新，tree实现原本node方法获取新旧node。
+		//	执行选中节点使用刷新后的node数据
+		const reqRefresh = async () => {
+			const selected = await prj_treeRef.value.getCurrentNode();
+		  await	prj_treeRef.value.refresh();
+			const nowSelect = await prj_treeRef.value.getNode(selected);
+			await	onNodeRowClick({ item: nowSelect.data });
+		}
 
 		// 是否展开
 		const isExpand = ref<boolean>(false);
@@ -77,25 +89,8 @@ export default defineComponent({
 			}
 		);
 
-		// 刷新监听
-		async function onRefresh(params: any, { next, render }: any) {
-			const { list } = await next(params);
-
-			render(
-				list.map((e: any) => {
-					if (e.roleName) {
-						e.roleNameList = e.roleName.split(",");
-					}
-
-					e.status = Boolean(e.status);
-
-					return e;
-				})
-			);
-		}
-
-		// 目录选择监听
-		function onprojectRowClick({ item, ids }: any) {
+		// 节点选中监听
+		function onNodeRowClick({ item, ids }: any) {
 			selectNode.value = item
 
 			if (item?.docId ?? false) {
@@ -123,6 +118,7 @@ export default defineComponent({
 		}
 
 		return {
+			prj_treeRef,
 			service,
 			refs,
 			isExpand,
@@ -131,10 +127,10 @@ export default defineComponent({
 			docObj,
 			selectNode,
 			setRefs,
-			onRefresh,
-			onprojectRowClick,
+			onNodeRowClick,
 			ondoctreeListChange,
-			projectExpand
+			projectExpand,
+			reqRefresh
 		};
 	}
 });

@@ -36,6 +36,7 @@ import { useCool } from '/@/cool';
 import { ElCard, ElButton } from 'element-plus';
 
 export default {
+  name: 'yx-proj-opcard',
   props: {
     hide: {
       type: Boolean,

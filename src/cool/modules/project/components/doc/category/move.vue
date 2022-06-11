@@ -19,6 +19,7 @@ import { deepTree } from '/@/cool/utils';
 import { ElMessage, ElMessageBox } from 'element-plus';
 
 export default {
+  name: 'yx-proj-category-move',
   setup(props, { emit }) {
     const { refs, setRefs, service } = useCool();
 

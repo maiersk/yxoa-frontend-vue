@@ -28,7 +28,7 @@
 				:ref="setRefs('treeRef')"
 				:data="list"
 				:props="{
-					label: 'name'
+					label: 'orderName'
 				}"
 				:draggable="isDrag"
 				:allow-drag="allowDrag"
@@ -45,7 +45,8 @@
 						<span class="cl-prj-tree__node-label"
 							@click="rowClick(data)"
 							:class="{
-								'cl-prj-tree__node-label-success': node.data?.file ?? false ? true : false,
+								'cl-prj-tree__node-label-wait': node.data.type === 1 && node.data?.status === 'wait',
+								'cl-prj-tree__node-label-success': node.data?.status === 'success'
 							}"
 						>
 							{{ node.label }}
@@ -71,10 +72,11 @@ import { defineComponent, inject, onMounted, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { ContextMenu } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
-import { deepTree, isArray, revDeepTree, isPc } from "/@/cool/utils";
+import { isArray, revDeepTree, isPc } from "/@/cool/utils";
+import { deepTree } from '../../utils/';
 
 export default defineComponent({
-	name: "cl-prj-tree",
+	name: "yx-proj-tree",
 
 	components: {
 
@@ -124,7 +126,6 @@ export default defineComponent({
 			loading.value = true;
 
 			await service.project.doctree.prjdoclist(projectObj.value.id).then((res: any[]) => {
-				// console.log(res);
 				list.value = deepTree(res);
 				emit("list-change", list.value);
 			});
@@ -191,6 +192,15 @@ export default defineComponent({
 								placeholder: "请选择文档结构"
 							}
 						}
+					},
+					{
+						prop: "root",
+						label: "含根节点",
+						value: false,
+						hidden: ({ scope }: any) => scope.type != 2,
+						component: {
+							name: "el-switch"
+						},
 					},
 					{
 						prop: "docId",
@@ -266,12 +276,19 @@ export default defineComponent({
 				form: e,
 				on: {
 					submit: (data: any, { done, close }: any) => {
+						let docNodes = data.docNodes;			
+						if (!data.root && data.docNodes) {
+							if (data.docNodes[0]?.children ?? false) {
+								docNodes.shift();
+							}
+						}
+
 						service.project.doctree[method]({
 							id: data.id,
 							type: data.type,
 							docId: data.docId,
 							projectId: projectObj.value.id,
-							docNodes: data.docNodes,
+							docNodes,
 							name: data.name,
 							remark: data.remark,
 							parentId: data.parentId,
@@ -454,6 +471,14 @@ export default defineComponent({
 			refresh();
 		});
 
+		function getCurrentNode() {
+			return refs.value.treeRef.getCurrentNode();
+		}
+
+		function getNode(node: any) {
+			return refs.value.treeRef.getNode(node);
+		}
+
 		return {
 			refs,
 			list,
@@ -469,7 +494,9 @@ export default defineComponent({
 			rowEdit,
 			rowDel,
 			treeOrder,
-			toTree
+			toTree,
+			getNode,
+			getCurrentNode
 		};
 	}
 });
@@ -547,6 +574,9 @@ export default defineComponent({
 			text-overflow: ellipsis;
 			white-space: nowrap;
 
+			&-wait {
+				color: #e6a23c;
+			}
 			&-success {
 				color: green;
 			}

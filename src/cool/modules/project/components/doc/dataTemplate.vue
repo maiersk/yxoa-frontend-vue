@@ -20,6 +20,7 @@ import { useCool } from '/@/cool/core';
 import beautifyJs from "js-beautify";
 
 export default {
+  name: 'yx-proj-doc-datatemplate',
   components: {
     ElForm,
     ElFormItem,
