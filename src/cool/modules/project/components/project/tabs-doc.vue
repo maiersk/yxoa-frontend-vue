@@ -51,11 +51,12 @@ export default defineComponent({
 			data: "",
 			templateFile: ""
 		});
-		const selectNode = ref<Object>({
-			id: 0,
-			type: 0,
-		});
 		const prj_treeRef = ref<any>();
+		const selectNode = ref<Object>({
+			id: 1713,
+			type: 0,
+			test: []
+		});
 		provide('select-node', selectNode);
     provide('doc', docObj);
 
@@ -91,7 +92,10 @@ export default defineComponent({
 
 		// 节点选中监听
 		function onNodeRowClick({ item, ids }: any) {
-			selectNode.value = item
+			selectNode.value = {
+				...item,
+		  	root: prj_treeRef.value.list,
+			} 
 
 			if (item?.docId ?? false) {
 				service.project.doc.info({

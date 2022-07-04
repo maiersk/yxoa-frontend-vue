@@ -56,6 +56,7 @@ import { CrudLoad, Table, Upsert, RefreshOp } from "@cool-vue/crud/types";
 import BuildDoc from "../../components/doc/buildDoc.vue";
 
 export default defineComponent({
+	name: "view-doctree",
   components: {
 		BuildDoc
 	},

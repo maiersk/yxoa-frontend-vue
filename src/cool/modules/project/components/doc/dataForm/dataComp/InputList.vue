@@ -43,7 +43,7 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props: any, { emit }: any) {
     const currentInput = ref<string>("");
-    const data = reactive<any[]>(props.modelValue.split(','));
+    const data = reactive<any[]>(props.modelValue === "" ? [] : props.modelValue.split(','));
 
     const handelAdd = () => {
       if (!_.isEmpty(currentInput.value)) {

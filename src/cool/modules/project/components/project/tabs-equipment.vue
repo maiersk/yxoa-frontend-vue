@@ -5,6 +5,10 @@
 			<cl-refresh-btn />
 			<!-- 新增按钮 -->
 			<cl-add-btn />
+			<!-- 导入按钮 -->
+			<cl-import-btn :columns="XLSXcolumns" :on-import="onImport" />
+			<!-- 导出按钮 -->
+			<cl-export-btn :columns="XLSXcolumns" />
 			<!-- 删除按钮 -->
 			<cl-multi-delete-btn />
 			<cl-flex1 />
@@ -41,6 +45,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, inject } from "vue";
 import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
+import { ElMessage } from "element-plus";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
@@ -50,19 +55,69 @@ export default defineComponent({
 		const { refs, setRefs, service } = useCool();
 		const project = inject<any>("project");
 
+		const XLSXcolumns = reactive<any>([
+			{ label: "货物名称", prop: "name" },
+			{ label: "品牌", prop: "brand" },
+			{ label: "型号", prop: "model" },
+			{ label: "规格", prop: "norm" },
+			{ label: "制作商名称", prop: "manufacturer" },
+			{ label: "国籍", prop: "country" },
+			{ label: "单位", prop: "unit" },
+			{ label: "数量", prop: "count" },
+			{ label: "含税单价", prop: "price" },
+			{ label: "投标总价", prop: "totalprice" },
+			{ label: "备注", prop: "remark" }
+		]);
+
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
 			items: [
 				{
-					label: "选择设备",
-					prop: "equipmentId",
+					label: "货物名称",
+					prop: "name",
 					required: true,
 					component: {
-						name: "cl-equipment-select",
-						props: {
-							cloneValue: "unit,",
-							multipleLimit: 1,
-						}
+						name: "el-input"
+					}
+				},
+				{
+					label: "品牌",
+					prop: "brand",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "型号",
+					prop: "model",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "规格",
+					prop: "norm",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "制作商名称",
+					prop: "manufacturer",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "国籍",
+					prop: "country",
+					required: true,
+					component: {
+						name: "el-input"
 					}
 				},
 				{
@@ -79,11 +134,9 @@ export default defineComponent({
 				{
 					label: "单位",
 					prop: "unit",
+					required: true,
 					component: {
-						name: "el-input",
-						props: {
-							disabled: true,
-						},
+						name: "el-input"
 					}
 				},
 				{
@@ -117,7 +170,7 @@ export default defineComponent({
 							placeholder: "请输入备注"
 						}
 					}
-				},
+				}
 			]
 		});
 
@@ -139,9 +192,7 @@ export default defineComponent({
 			]
 		});
 
-		onMounted(async () => {
-
-		});
+		onMounted(async () => {});
 
 		// crud 加载
 		async function onLoad({ ctx, app }: CrudLoad) {
@@ -167,13 +218,31 @@ export default defineComponent({
 			app.refresh();
 		}
 
+		async function onImport(data: Array<any> = []) {
+			data.map((item) => {
+				service.project.equipments
+					.add({
+						projectId: project.value.id,
+						...item
+					})
+					.then(() => {
+						ElMessage.success("导入成功");
+					})
+					.catch(() => {
+						ElMessage.error("导入出错，可能导入了不完整数据");
+					});
+			});
+		}
+
 		return {
 			refs,
 			upsert,
 			table,
 			onLoad,
 			setRefs,
-			project
+			project,
+			onImport,
+			XLSXcolumns
 		};
 	}
 });
@@ -181,7 +250,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .project-crud-user {
-	height: calc(100% - 30%);
+	display: flex;
+	height: 100%;
+	width: 100%;
+	position: relative;
 	margin: 0.5rem;
 	padding: 1rem;
 	background-color: white;

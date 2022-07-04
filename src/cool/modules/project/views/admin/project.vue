@@ -34,6 +34,7 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
+	name: "view-project",
 	// cool: {
 	// 	// 注入视图路由中
 	// 	route: {

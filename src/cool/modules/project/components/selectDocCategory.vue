@@ -22,27 +22,12 @@ export default defineComponent({
 
   setup(props: any, { emit }) {
     const service = inject<any>("service");
-    const form = inject<any>("form");
 
     const list = ref<any[]>([]);
     const value = ref<any>();
 
     function onChange(idxs: any) {
       if (!isEmpty(idxs)) {
-        const item: any = list.value.filter((item) => {
-          if (item.id === idxs[0]) {
-            return item;
-          }
-        });
-
-        // 该组件使用在cl-form时，可以传入方法把值传出
-        if (!isEmpty(form) && !isEmpty(item[0]) && props.cloneValue) {
-          const clonelist = props.cloneValue.split(',')
-          clonelist.map((value: string) => {
-            form[value] = item[0][value] ?? '';
-          })
-        }
-  
         if (props.props.multipleLimit === 1) {
           emit("update:modelValue", idxs[0]);
         } else {
@@ -64,6 +49,10 @@ export default defineComponent({
 
     onMounted(async () => {
       list.value = await service.project.doccategory.list();
+      if (props.props.value) {
+        value.value = (isArray(props.props.value) ? props.props.value : [props.props.value]).filter(Boolean);
+        emit("update:modelValue", value.value[0]);
+      }
     });
 
     return {

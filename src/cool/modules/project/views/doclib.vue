@@ -1,7 +1,7 @@
 <template>
 	<div class="doc-lib">
 		<div class="left-category">
-			<category v-model="selectCategory" @change="refresh()" />
+			<category v-model="categoryValue" @change="refresh()" />
 		</div>
 
 		<div class="right-docs">
@@ -39,10 +39,6 @@
 								{
 									label: '名称',
 									value: 'name'
-								},
-								{
-									label: '类型',
-									value: 'type'
 								}
 							]"
 						/>
@@ -91,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, provide, reactive, ref } from "vue";
+import { defineComponent, inject, computed, provide, reactive, ref } from "vue";
 import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useRefs } from "/@/cool";
 import BuildDoc from "../components/doc/buildDoc.vue";
@@ -121,6 +117,18 @@ export default defineComponent({
 		const buildDialog = ref<boolean>(false);
 		const buildDocObj = ref<any>({});
 		provide('doc', buildDocObj);
+
+		const selects = reactive<any>({
+			ids: []
+		});
+
+		const selectCategory = ref<any>(null)
+		const categoryValue = computed({
+			get: () => selectCategory.value,
+			set: val => {
+				selectCategory.value = val;
+			}
+		})
 
 		// 打开生成对话框 
 		function openBuildDialog(scope: any) {
@@ -164,9 +172,10 @@ export default defineComponent({
 					component: {
 						name: "cl-doccategory-select",
 						props: {
+							value: categoryValue,
 							multipleLimit: 1,
 							filterable: true,
-							placeholder: "默认全部文件分类"
+							placeholder: "默认全部文件分类/选中的分类"
 						}
 					}
 				},
@@ -246,11 +255,6 @@ export default defineComponent({
 			selects.ids = selection.map((e) => e.id);
 		}
 
-		const selects = reactive<any>({
-			ids: []
-		});
-		const selectCategory = ref<number>();
-
 		function toMove(e: any) {
 			let ids = [];
 
@@ -308,7 +312,7 @@ export default defineComponent({
 			selects,
 			buildDialog,
 			buildDocObj,
-			selectCategory,
+			categoryValue,
 			refresh,
 			open,
 			close,

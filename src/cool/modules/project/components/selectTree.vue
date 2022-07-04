@@ -54,6 +54,10 @@ export default defineComponent({
 		listStr: {
 			type: String,
 			default: "list"
+		},
+		ser: {
+			type: String,
+			default: "doctree"
 		}
 	},
 
@@ -85,7 +89,7 @@ export default defineComponent({
 
 		// 刷新列表
 		function refresh() {
-			service.project.doctree[props.listStr](props.projectId).then((res: any) => {
+			service.project[props.ser][props.listStr](props.projectId).then((res: any) => {
 				const _list = res.filter((e: any) => e.type != 2);
 
 				_list.unshift({

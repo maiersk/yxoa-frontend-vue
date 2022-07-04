@@ -25,6 +25,10 @@
 								value: 'builderName'
 							},
 							{
+								label: '监理单位',
+								value: 'supervisionName'
+							},
+							{
 								label: '承建单位',
 								value: 'undertookName'
 							}

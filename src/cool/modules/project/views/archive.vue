@@ -9,14 +9,35 @@
 			<cl-multi-delete-btn />
 			<cl-flex1 />
 			<!-- 关键字搜索 -->
-			<cl-search-key field="name" />
+			<cl-search-key
+				field="name"
+				:field-list="[
+					{
+						label: '名称',
+						value: 'name'
+					},
+					{
+						label: '建设单位',
+						value: 'builderName'
+					},
+					{
+						label: '监理单位',
+						value: 'supervisionName'
+					},
+					{
+						label: '承建单位',
+						value: 'undertookName'
+					}
+				]"
+			/>
+			<cl-yx-adv-search/>
 		</el-row>
 
 		<el-row>
 			<!-- 数据表格 -->
 			<cl-table :ref="setRefs('table')" v-bind="table">
-				<template #slot-detail>
-					<el-button type="text" size="mini" @click="toDetail">详细</el-button>
+				<template #slot-detail="{ scope }">
+					<el-button type="text" size="mini" @click="toDetail(scope.row.id)">详细</el-button>
 				</template>
 			</cl-table>
 		</el-row>
@@ -38,21 +59,12 @@ import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
 export default defineComponent({
-	// cool: {
-		// 	// 注入视图路由中
-	// 	route: {
-		// 		path: "/proj/admin/list", // 路由地址
-	// 		meta: {
-		// 			keepAlive: true, // 是否缓存路由
-	// 			label: "项目列表" // 路由名称
-	// 		}
-	// 	}
-	// },
+	name: "view-archive",
 	setup() {
 		const { refs, setRefs, service, router } = useCool();
 
-		function toDetail() {
-			router.push('/archive/detail')
+		function toDetail(id: string) {
+			router.push(`/archive/detail/?id=${id}`)
 		}
 
 		// 新增、编辑配置
@@ -102,14 +114,6 @@ export default defineComponent({
 					}
 				},
 				{
-					label: "进度",
-					prop: "process",
-					component: { name: "el-input" },
-					props: {
-						labelWidth: "130px"
-					}
-				},
-				{
 					label: "采购人",
 					prop: "purchaser",
 					required: true,
@@ -137,8 +141,8 @@ export default defineComponent({
 					}
 				},
 				{
-					label: "计划开工日期",
-					prop: "startDate",
+					label: "归档日期",
+					prop: "archiveDate",
 					required: true,
 					component: {
 						name: "el-date-picker",
@@ -146,35 +150,6 @@ export default defineComponent({
 					},
 					props: {
 						labelWidth: "130px"
-					}
-				},
-				{
-					label: "计划竣工日期",
-					prop: "planDate",
-					required: true,
-					component: {
-						name: "el-date-picker",
-						props: { type: "date", valueFormat: "YYYY-MM-DD" }
-					},
-					props: {
-						labelWidth: "130px"
-					}
-				},
-				{
-					label: "工期(天)",
-					prop: "dateCount",
-					required: true,
-					component: { name: "el-input-number", props: { min: 0 } },
-					props: {
-						labelWidth: "130px"
-					}
-				},
-				{
-					label: "收款日",
-					prop: "payDate",
-					component: {
-						name: "el-date-picker",
-						props: { type: "date", valueFormat: "YYYY-MM-DD" }
 					}
 				}
 			]
@@ -190,16 +165,10 @@ export default defineComponent({
 				{ label: "建设单位名称", prop: "builderName" },
 				{ label: "监理单位名称", prop: "supervisionName" },
 				{ label: "承建单位名称", prop: "undertookName" },
-				{ label: "进度", prop: "process" },
 				{ label: "采购人", prop: "purchaser" },
 				{ label: "采购人联系电话", prop: "pur_phone" },
 				{ label: "总价", prop: "totalPrice" },
-				{ label: "计划开工日期", prop: "startDate" },
-				{ label: "工期", prop: "dateCount" },
-				{ label: "计划竣工日期", prop: "planDate" },
-				{ label: "收款日", prop: "payDate" },
-				{ label: "创建时间", prop: "createTime" },
-				{ label: "更新时间", prop: "updateTime" },
+				{ label: "归档日期", prop: "archiveDate" },
 				{ type: "op", buttons: ["slot-detail", "edit", "delete"] }
 			]
 		});

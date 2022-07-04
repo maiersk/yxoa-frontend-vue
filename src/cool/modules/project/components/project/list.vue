@@ -78,7 +78,7 @@ export default {
 		const { router } = useCool();
 
 		function toDetail(id: string) {
-			router.push(`/proj/detail/?id=${id}`);
+			router.push(`/work1_proj/detail/?id=${id}`);
 		}
 
 		function delBtn(id: string) {

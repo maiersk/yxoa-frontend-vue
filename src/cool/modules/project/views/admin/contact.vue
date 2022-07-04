@@ -34,6 +34,7 @@ import { CrudLoad, Upsert, Table } from "@cool-vue/crud/types";
 import { useRefs } from "/@/cool";
 
 export default defineComponent({
+	name: "view-contact",
 	components: {
 
 	},

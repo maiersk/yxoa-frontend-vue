@@ -129,7 +129,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .project-crud-user {
-	height: calc(100% - 30%);
+	display: flex;
+	height: 100%;
+	width: 100%;
+	position: relative;
 	margin: 0.5rem;
 	padding: 1rem;
 	background-color: white;

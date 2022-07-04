@@ -1,8 +1,8 @@
+import _ from "lodash";
 import { useCool } from '/@/cool';
+import { ElButton, ElForm, ElFormItem, ElMessage } from 'element-plus';
 import { defineComponent, h, reactive, toRefs, watch, ref, toRaw, resolveComponent, onMounted } from 'vue'
 import DataCard from '../dataCard.vue';
-import { ElButton, ElForm, ElFormItem, ElMessage } from 'element-plus';
-import _ from "lodash";
 
 export default defineComponent({
   name: "dataForm",
@@ -123,7 +123,7 @@ export default defineComponent({
           const renderEl: any = toRaw(resolveComponent(e.component.name))        
 
           // 读取模板内保存的值
-          ctx.form[k] = e.value !== "" ? `${e.value}` : ctx.form[k]
+          ctx.form[k] = e.value !== "" ? `${decodeURI(e.value)}` : ctx.form[k]
 
           return (
             <el-col span={24}>
@@ -144,7 +144,7 @@ export default defineComponent({
                             modelValue: ctx.form[k],
                             "onUpdate:modelValue": function(val: any) {
                               ctx.form[k] = val;
-                              e.value = val;
+                              e.value = encodeURI(val);
                             }
                           }    
                         )
