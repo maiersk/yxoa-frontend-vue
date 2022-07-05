@@ -25,7 +25,8 @@ export function customEncode(str: string) {
 	let code = encode(str);
 	Object.keys(mixin).forEach((key) => {
 		if (code.indexOf(key) !== -1) {
-			code = code.replaceAll(key, mixin[key]);
+			// code = code.replace(new RegExp(key, "g"), mixin[key]);
+			code = code.split(key).join(mixin[key]);
 		}
 	})
 	return code;
@@ -35,7 +36,8 @@ export function customDecode(code: string) {
 	let res = code;
 	Object.keys(mixin).forEach(k => {
 		if (code.indexOf(mixin[k]) !== -1) {
-			res = res.replaceAll(mixin[k], k);
+			// res = res.replace(new RegExp(mixin[k]), k);
+			res = res.split(mixin[k]).join(k)
 		}
 	})
 	return decode(res);
