@@ -122,6 +122,7 @@ export default defineComponent({
 			ids: []
 		});
 
+		// 文档选择当前分类
 		const selectCategory = ref<any>(null)
 		const categoryValue = computed({
 			get: () => selectCategory.value,

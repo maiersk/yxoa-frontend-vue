@@ -1,18 +1,18 @@
 <template>
 	<el-container style="width=100%;">
 		<!-- 已有生成/完成的文档，提供文档预览，重新上传，编辑，下载功能 -->
-		<el-col v-if="selectNode.file" class="doc-success">
-			<el-col class="doc-success__info">
-				<span class="info-alert">
+		<div v-if="selectNode.file" class="doc-success">
+			<div class="doc-success__info" v-if="!archive">
+				<span class="info-alert" >
 					<el-icon class="el-icon-warning"></el-icon>&nbsp;
 				 	已完成的文档预览，如有错漏请重新上传或重新编辑。
 				</span>
-			</el-col>
-			<el-col class="doc-success__opation">
-				<el-button v-if="doc.type !== 1" type="warning" size="mini" @click="openEdit">
+			</div>
+			<div class="doc-success__opation" >
+				<el-button v-if="doc.type !== 1 && !archive" type="warning" size="mini" @click="openEdit">
 					重新编辑
 				</el-button>
-				<cl-upload
+				<cl-upload v-if="!archive"
 					active=""
 					type="file"
 					limit="1"
@@ -28,36 +28,38 @@
 						重新上传
 					</el-button>
 				</cl-upload>
-				<el-button v-if="selectNode.status === 'wait'" type="success" size="mini" @click="docSuccess">
+				<el-button v-if="selectNode.status === 'wait' && !archive" type="success" size="mini" @click="docSuccess">
 					确认无误
 				</el-button>
 				<el-button type="primary" size="mini" @click="download">
 					下载
 				</el-button>
-			</el-col>
-			<el-col class="doc-success__perview">
+			</div>
+			<div class="doc-success__perview">
 				<doc-perview :url="selectNode.file"></doc-perview>
-			</el-col>
-		</el-col>
+			</div>
+		</div>
 		<!-- 没有则，提供文档模板数据编辑，保存(生成到节点file字段并存档), 上传功能 -->
-		<el-col v-else>
-			<el-col v-if="selectNode.type === 0">
+		<div class="doc-wait-todo" v-else>
+			<div v-if="selectNode.type === 0">
 				<span class="info-alert">
 					<el-icon class="el-icon-warning"></el-icon>&nbsp;
 				 	“ {{ selectNode.name }} ” 目录，请在左侧项目文档结构列表中，右键该目录添加文档等操作。
 				</span>
-			</el-col>
+
+				<doc-menu class="doc-menu" :tree="selectNode.root"></doc-menu>
+			</div>
 			<!-- 有模板文档的，提供编辑，保存，直接上传功能。 -->
 			<div v-else-if="doc.type === 0"
 				class="doc-build"
 			>
-				<el-col class="doc-build__info">
+				<div class="doc-build__info">
 					<span class="info-alert">
 						<el-icon class="el-icon-warning"></el-icon>&nbsp;
 						待完成的模板文档，编辑信息并生成文档，或上传已完成的文档。
 					</span>
-				</el-col>
-				<el-col class="doc-build__opation">
+				</div>
+				<div class="doc-build__opation">
 					<el-button type="primary"
 						size="mini"
 						@click="openEdit"
@@ -85,10 +87,10 @@
 					<el-button type="primary" size="mini" @click="download">
 						下载
 					</el-button>
-				</el-col>
-				<el-col class="doc-perview">
+				</div>
+				<div class="doc-perview">
 					<doc-perview :url="doc.templateFile"></doc-perview>
-				</el-col>
+				</div>
 			</div>
 			<!-- 没有模板文档的待上传 -->
 			<div v-else-if="doc.type === 1" class="doc-needupload">
@@ -108,7 +110,7 @@
 					:on-success="saveDoc"
         />
 			</div>
-		</el-col>
+		</div>
 
 		<cl-dialog title="编辑" v-model="showDialog">
 			<data-template
@@ -136,16 +138,22 @@ import { ElMessage } from "element-plus";
 import DataForm from "../dataForm/";
 import DataTemplate from "../dataTemplate.vue";
 import DocPerview from "../perview/";
+import DocMenu from './docmenu';
 
 export default {
 	name: 'yx-proj-tree-context',
 	components: {
 		DataForm,
 		DataTemplate,
-		DocPerview
+		DocPerview,
+		DocMenu,
 	},
 	props: {
 		testMode: {
+			type: Boolean,
+			default: false
+		},
+		archive: {
 			type: Boolean,
 			default: false
 		}
@@ -291,6 +299,8 @@ export default {
 }
 
 .doc-success {
+	width: 100%;
+
   &__opation {
 		display: flex;
     margin-bottom: 10px;
@@ -305,7 +315,10 @@ export default {
 	}
 }
 
+.doc-wait-todo { width: 100%; }
+
 .doc-needupload {
+	width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -332,5 +345,11 @@ export default {
 	&__opation {
 		@extend .doc-success__opation;
 	}
+}
+
+.doc-menu {
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 10px;
 }
 </style>

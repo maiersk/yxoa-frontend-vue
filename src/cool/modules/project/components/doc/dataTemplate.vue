@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { ElForm, ElFormItem } from "element-plus";
+import { ElForm, ElFormItem, ElMessage } from "element-plus";
 import { inject, ref, watch } from "vue";
 import OpCard from "./opCard.vue";
 import { useCool } from '/@/cool/core';
@@ -81,7 +81,9 @@ export default {
             projectId: props.projectId,
             data: code.value.trim()
           })
-        )
+        ).then((res: any) => {
+          ElMessage.success('保存成功');
+        })
       }
     }
 

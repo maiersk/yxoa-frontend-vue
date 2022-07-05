@@ -205,6 +205,9 @@ export default defineComponent({
 
 		.container {
 			height: 100%;
+			> .cl-crud {
+				min-height: 600px;
+			}
 		}
 	}
 

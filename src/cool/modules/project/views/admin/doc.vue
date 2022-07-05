@@ -192,11 +192,11 @@ export default defineComponent({
 				{
 					label: "模板数据",
 					prop: "data",
-					value: `{
-						"template": {
+					value: JSON.stringify({
+						template: {
 
 						}
-					}`,
+					}),
 					component: {
 						name: "cl-codemirror",
 						props: {

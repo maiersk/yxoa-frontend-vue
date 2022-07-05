@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
 
@@ -47,6 +47,15 @@ export default defineComponent({
 	// },
 	setup() {
 		const { refs, setRefs, service } = useCool();
+		const planDate = ref<any>();
+
+		onMounted(() => {
+			planDate.value = refs.value.upsert;
+		})
+		
+		watch(planDate.value, (val) => {
+			console.log(val);
+		})
 
 		// 新增、编辑配置
 		const upsert = reactive<Upsert>({
@@ -97,24 +106,6 @@ export default defineComponent({
 				{
 					label: "进度",
 					prop: "process",
-					component: { name: "el-input" },
-					props: {
-						labelWidth: "130px"
-					}
-				},
-				{
-					label: "采购人",
-					prop: "purchaser",
-					required: true,
-					component: { name: "el-input" },
-					props: {
-						labelWidth: "130px"
-					}
-				},
-				{
-					label: "采购人联系电话",
-					prop: "pur_phone",
-					required: true,
 					component: { name: "el-input" },
 					props: {
 						labelWidth: "130px"
@@ -184,8 +175,6 @@ export default defineComponent({
 				{ label: "监理单位名称", prop: "supervisionName" },
 				{ label: "承建单位名称", prop: "undertookName" },
 				{ label: "进度", prop: "process" },
-				{ label: "采购人", prop: "purchaser" },
-				{ label: "采购人联系电话", prop: "pur_phone" },
 				{ label: "总价", prop: "totalPrice" },
 				{ label: "计划开工日期", prop: "startDate" },
 				{ label: "工期", prop: "dateCount" },
@@ -216,5 +205,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 </style>

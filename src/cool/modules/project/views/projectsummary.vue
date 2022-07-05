@@ -1,6 +1,6 @@
 <template>
 	<div class="project-summary scroller1">
-		<el-col class="project-list">
+		<div class="project-list">
 			<el-row type="flex" align="middle" class="__listhead">
 				<div class="__opations">
 					<el-button
@@ -37,7 +37,7 @@
 				</div>
 			</el-row>
 			<project-list @delProject="delProject" :list="list"></project-list>
-		</el-col>
+		</div>
 
 		<cl-form ref="formRef">
 		</cl-form>
@@ -132,24 +132,6 @@ export default defineComponent({
 			{
 				label: "进度",
 				prop: "process",
-				component: { name: "el-input" },
-				props: {
-					labelWidth: "130px"
-				}
-			},
-			{
-				label: "采购人",
-				prop: "purchaser",
-				required: true,
-				component: { name: "el-input" },
-				props: {
-					labelWidth: "130px"
-				}
-			},
-			{
-				label: "采购人联系电话",
-				prop: "pur_phone",
-				required: true,
 				component: { name: "el-input" },
 				props: {
 					labelWidth: "130px"

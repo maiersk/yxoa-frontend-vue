@@ -114,6 +114,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .project-crud-contacts {
 	display: flex;
+	min-height: 600px;
 	height: 100%;
 	width: 100%;
 	position: relative;

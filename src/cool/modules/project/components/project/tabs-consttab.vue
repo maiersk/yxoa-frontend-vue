@@ -18,7 +18,7 @@
 				</div>
 
 				<div class="container">
-					<cl-crud :ref="setRefs('crud')" @load="onLoad">
+					<cl-crud :ref="setRefs('crud')" :on-refresh="onRefresh" @load="onLoad">
 						<el-row type="flex">
 							<cl-refresh-btn />
 							<cl-add-btn />
@@ -122,6 +122,17 @@ export default defineComponent({
 			]
 		});
 
+		// 刷新监听
+		async function onRefresh(params: any, { next, render }: any) {
+			const { list } = await next(params);
+
+			render(
+				list.map((e: any) => {
+					return e;
+				})
+			);
+		}
+
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
 			// 绑定 service
@@ -151,6 +162,7 @@ export default defineComponent({
 			isExpand,
 			table,
 			upsert,
+			onRefresh,
 			onLoad,
 			clickExpand,
 			onImport
@@ -161,6 +173,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .project-consttab {
+	min-height: 600px;
+	height: 100%;
 	margin: 0.5rem;
 	padding: 1rem;
 	background-color: white;
@@ -224,6 +238,9 @@ export default defineComponent({
 
 		.container {
 			height: 100%;
+			> .cl-crud {
+				min-height: 600px;
+			}
 		}
 	}
 

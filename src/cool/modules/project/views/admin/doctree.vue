@@ -131,6 +131,8 @@ export default defineComponent({
 			service.project.doctree.copy({
 				parentId,
 				nodeIds
+			}).then((res: any) => {
+				refs.value.crud.refresh();
 			})
 		}
 
