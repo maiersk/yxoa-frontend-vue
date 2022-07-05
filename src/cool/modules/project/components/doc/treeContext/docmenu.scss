@@ -1,0 +1,26 @@
+.__docmenu th {
+	border: 1px solid #000;
+	border-left: none;
+}
+.__docmenu th:first-child {
+	border-left: 1px solid #000;
+}
+.__docmenu td {
+	border-bottom: 1px solid #000;
+	border-right: 1px solid #000;
+}
+.__docmenu td:first-child {
+	border-left: 1px solid #000;
+}
+
+.__docmenu_tr {
+	text-align: center;
+
+}
+
+.selectnode {
+	color: rgb(90, 150, 250);
+}
+.tr_child td:first-child {
+	border-left: none;
+}
