@@ -7,6 +7,9 @@
 			<cl-add-btn />
 			<!-- 删除按钮 -->
 			<cl-multi-delete-btn />
+			<cl-import-btn filename="各方联系人导入模板" :columns="table.columns" :on-import="onImport" />
+			<!-- 导出按钮 -->
+			<cl-export-btn filename="各方联系人" :columns="table.columns" />
 			<cl-flex1 />
 			<!-- 关键字搜索 -->
 			<cl-search-key />
@@ -33,6 +36,7 @@
 import { defineComponent, onMounted, reactive, inject } from "vue";
 import { CrudLoad, Table, Upsert } from "@cool-vue/crud/types";
 import { useCool } from "/@/cool";
+import { ElMessage } from "element-plus";
 
 export default defineComponent({
 	name: "yx-proj-tab-contacts",
@@ -45,14 +49,51 @@ export default defineComponent({
 		const upsert = reactive<Upsert>({
 			items: [
 				{
-					label: "选择联系人",
-					prop: "contactsId",
+					label: "描述",
+					prop: "name",
 					required: true,
 					component: {
-						name: "cl-contacts-select",
-						props: {
-							multipleLimit: 1
-						}
+						name: "el-input"
+					}
+				},
+				{
+					label: "代表设备/项目性质",
+					prop: "device",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "生产商",
+					prop: "manufacturer",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "职位",
+					prop: "jobs",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "联系人",
+					prop: "person",
+					required: true,
+					component: {
+						name: "el-input"
+					}
+				},
+				{
+					label: "联系电话",
+					prop: "phone",
+					required: true,
+					component: {
+						name: "el-input"
 					}
 				}
 			]
@@ -78,13 +119,20 @@ export default defineComponent({
 		// crud 加载
 		async function onLoad({ ctx, app }: CrudLoad) {
 			ctx.service({
-				page() {
+				page(data) {
 					return service.project.contacts.page({
-						projectId: project.value.id
+						projectId: project.value.id,
+						...data
 					});
 				},
 				list() {
 					return service.project.contacts.list();
+				},
+				info(data) { 
+					return service.project.contacts.info(data);
+				},
+				update(data) {
+					return service.project.contacts.update(data);
 				},
 				add(data) {
 					return service.project.contacts.add({
@@ -99,13 +147,31 @@ export default defineComponent({
 			app.refresh();
 		}
 
+		async function onImport(data: Array<any> = []) {
+			data.map((item) => {
+				service.project.contacts
+					.add({
+						projectId: project.value.id,
+						...item
+					})
+					.then(() => {
+						ElMessage.success("导入成功");
+						refs.value.crud.refresh();
+					})
+					.catch(() => {
+						ElMessage.error("导入出错，可能导入了不完整数据");
+					});
+			});
+		}
+
 		return {
 			refs,
 			upsert,
 			table,
 			onLoad,
 			setRefs,
-			project
+			project,
+			onImport
 		};
 	}
 });
