@@ -108,6 +108,7 @@ export default defineComponent({
 			})
 
 			if (props.onImport) props.onImport(decode_data.value);
+			fileRef.value.value = null;
 		}
 
 		async function getHeader(columns: any[], fields: any[]) {
