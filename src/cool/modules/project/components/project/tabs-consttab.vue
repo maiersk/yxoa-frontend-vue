@@ -23,7 +23,8 @@
 							<cl-refresh-btn />
 							<cl-add-btn />
 							<cl-multi-delete-btn />
-							<cl-import-btn :columns="table.columns" :on-import="onImport" />
+							<cl-import-btn filename="点位导入模板" :columns="table.columns" :on-import="onImport" />
+							<cl-export-btn filename="点位" :columns="table.columns" />
 							<cl-flex1 />
 							<cl-search-key />
 						</el-row>
@@ -135,8 +136,32 @@ export default defineComponent({
 
 		// crud 加载
 		function onLoad({ ctx, app }: CrudLoad) {
-			// 绑定 service
-			ctx.service(service.project.point).done();
+			ctx.service({
+				page(data) {
+					return service.project.point.page({
+						projectId: project.value.id,
+						...data
+					});
+				},
+				list() {
+					return service.project.point.list();
+				},
+				info(data) { 
+					return service.project.point.info(data);
+				},
+				update(data) {
+					return service.project.point.update(data);
+				},
+				add(data) {
+					return service.project.point.add({
+						projectId: project.value.id,
+						...data
+					});
+				},
+				delete(data) {
+					return service.project.point.delete(data);
+				}
+			}).done();
 			app.refresh();
 		}
 
@@ -149,6 +174,7 @@ export default defineComponent({
 					})
 					.then(() => {
 						ElMessage.success("导入成功");
+						refs.value.crud.refresh();
 					})
 					.catch(() => {
 						ElMessage.error("导入出错，可能导入了不完整数据");

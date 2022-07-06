@@ -6,9 +6,9 @@
 			<!-- 新增按钮 -->
 			<cl-add-btn />
 			<!-- 导入按钮 -->
-			<cl-import-btn :columns="XLSXcolumns" :on-import="onImport" />
+			<cl-import-btn filename="设备导入模板" :columns="XLSXcolumns" :on-import="onImport" />
 			<!-- 导出按钮 -->
-			<cl-export-btn :columns="XLSXcolumns" />
+			<cl-export-btn filename="设备" :columns="XLSXcolumns" />
 			<!-- 删除按钮 -->
 			<cl-multi-delete-btn />
 			<cl-flex1 />
@@ -197,13 +197,20 @@ export default defineComponent({
 		// crud 加载
 		async function onLoad({ ctx, app }: CrudLoad) {
 			ctx.service({
-				async page() {
+				page(data) {
 					return service.project.equipments.page({
-						projectId: project.value.id
+						projectId: project.value.id,
+						...data
 					});
 				},
 				list() {
 					return service.project.equipments.list();
+				},
+				info(data) { 
+					return service.project.equipments.info(data);
+				},
+				update(data) {
+					return service.project.equipments.update(data);
 				},
 				add(data) {
 					return service.project.equipments.add({
