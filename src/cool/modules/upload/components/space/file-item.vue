@@ -29,6 +29,10 @@
 				></video>
 			</template>
 
+			<template v-else-if="fileformat === 'png'">
+				<el-image fit="cover" :src="info.url" lazy />
+			</template>
+
 			<template v-else-if="fileformat === 'doc' || fileformat === 'docx' || fileformat === 'wps'">
 				<icon-svg class="file-icon" name="file-word"></icon-svg>
 			</template>
